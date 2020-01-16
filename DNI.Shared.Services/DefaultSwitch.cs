@@ -1,6 +1,7 @@
 ﻿using DNI.Shared.Contracts;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,7 +12,9 @@ namespace DNI.Shared.Services
 {
     internal class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
     {
-        public TValue this[TKey key] => _dictionary[key];
+        public TValue this[TKey key] => TryGetValue(key, out var value) 
+            ? value 
+            : default;
 
         public IEnumerable<TKey> Keys => _dictionary.Keys;
 
@@ -24,7 +27,9 @@ namespace DNI.Shared.Services
 
         public static ISwitch<TKey, TValue> Create()
         {
-            return new DefaultSwitch<TKey, TValue>();
+            return new DefaultSwitch<TKey, TValue>(
+                new ConcurrentDictionary<TKey, TValue>(),
+                new ConcurrentDictionary<TKey, TKey>());
         }
 
         public bool ContainsKey(TKey key)
@@ -42,10 +47,10 @@ namespace DNI.Shared.Services
             return _dictionary.TryGetValue(key, out value);
         }
 
-        protected DefaultSwitch()
+        protected DefaultSwitch(IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TKey> alternateKeysDictionary)
         {
-            _dictionary = new Dictionary<TKey, TValue>();
-            _alternateKeysDictionary = new Dictionary<TKey, TKey>();
+            _dictionary = dictionary;
+            _alternateKeysDictionary = alternateKeysDictionary;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -55,21 +60,23 @@ namespace DNI.Shared.Services
 
         public ISwitch<TKey, TValue> CaseWhen(TKey key, TValue value, params TKey[] alternateKeys)
         {
-            if(!ContainsKey(key))
-                _dictionary.Add(key, value);
+            if(ContainsKey(key) 
+                || !_dictionary.TryAdd(key, value))
+                throw new ArgumentException($"Unable to add key: {key}", nameof(key));
 
             if(alternateKeys != null 
                 && alternateKeys.Length > 0)
                 foreach(var alternateKey in alternateKeys)
-                    _alternateKeysDictionary.Add(alternateKey, key);
+                    if(!_alternateKeysDictionary.TryAdd(alternateKey, key))
+                        throw new ArgumentException($"Unable to add alternate key: {key}", nameof(key));
 
             return this;
         }
 
         public TValue Case(TKey key)
         {
-            if(_dictionary.ContainsKey(key))
-                return this[key];
+            if(_dictionary.ContainsKey(key) && _dictionary.TryGetValue(key, out var value))
+                return value;
 
             if(_alternateKeysDictionary.TryGetValue(key, out var primaryKey))
                 return Case(primaryKey);
@@ -77,7 +84,7 @@ namespace DNI.Shared.Services
             return default;
         }
 
-        private IDictionary<TKey, TKey> _alternateKeysDictionary;
-        private IDictionary<TKey, TValue> _dictionary;
+        private readonly IDictionary<TKey, TKey> _alternateKeysDictionary;
+        private readonly IDictionary<TKey, TValue> _dictionary;
     }
 }
