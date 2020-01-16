@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<installation installDirectory="C:\Source\_Repos" projectName="DNI.Shared">
+  <projects>
+    <project name="DNI.Shared.App" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.App" />
+    <project name="DNI.Shared.Broker" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.Broker" />
+    <project name="DNI.Shared.Contracts" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.Contracts" />
+    <project name="DNI.Shared.Domains" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.Domains" />
+    <project name="DNI.Shared.Services" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.Services" />
+    <project name="DNI.Shared.Shared" path="C:\Source\_Repos\DNI.Shared\DNI.Shared.Shared" />
+  </projects>
+</installation>
