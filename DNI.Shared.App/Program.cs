@@ -38,16 +38,20 @@ namespace DNI.Shared.App
 
             Try.Create()
                 .Try(() => throw new FieldAccessException())
-                .Catch<FieldAccessException>(ex => Console.WriteLine(ex.Message))
+                .Catch<FieldAccessException>(OnCatch)
                 .Invoke();
 
-            await Task.WhenAll(
-                Try.Create<Task>()
+             await Try.CreateAsync()
                     .Try(async() => {  await Task.Delay(2000); throw new TimeoutException(); })
                     .Try(async() => await Task.Delay(2000))
                     .Try(async() => await Task.Delay(2000))
-                    .Catch<TimeoutException>(ex => Console.WriteLine(ex))
-                    .Invoke());
+                    .Catch<TimeoutException>(OnCatch)
+                    .InvokeAsync();
+        }
+
+        public static void OnCatch(Exception ex)
+        {
+            Console.WriteLine(ex);
         }
 
         class MClass

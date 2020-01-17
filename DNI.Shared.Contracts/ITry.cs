@@ -22,7 +22,14 @@ namespace DNI.Shared.Contracts
 
     public interface ITry<T, TResult> : ITry<TResult>
     {
-        TResult Invoke(T value);
-        ITry Try(Func<T, TResult> result);
+        IEnumerable<TResult> Invoke(T value);
+        ITry<T, TResult> Try(Func<T, TResult> result);
+    }
+
+    public interface ITryAsync : ITry<Task>
+    {
+        Task InvokeAsync();
+        new ITryAsync Try(Func<Task> result);
+        new ITryAsync Catch<TException>(Action<Exception> exceptionAction);
     }
 }

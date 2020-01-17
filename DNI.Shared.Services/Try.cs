@@ -18,5 +18,10 @@ namespace DNI.Shared.Services
         {
             return DefaultTry<TResult>.Create();
         }
+
+        public static ITryAsync CreateAsync()
+        {
+            return DefaultTryAsync.Create();
+        }
     }
 }
