@@ -47,6 +47,12 @@ namespace DNI.Shared.App
                     .Try(async() => await Task.Delay(2000))
                     .Catch<TimeoutException>(OnCatch)
                     .InvokeAsync();
+
+            var results = await Try.CreateAsync<int, int>()
+                .Try(async (a) => await Task.FromResult(a + 5))
+                .Try(async (a) => await Task.FromResult(a + 10))
+                .Try(async (a) => await Task.FromResult(a + 15))
+                .InvokeAsync(5);
         }
 
         public static void OnCatch(Exception ex)

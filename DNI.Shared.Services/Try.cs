@@ -11,17 +11,26 @@ namespace DNI.Shared.Services
     {
         public static ITry Create()
         {
-            return DefaultTry.Create();
+            return DefaultTry
+                .Create();
         }
 
         public static ITry<TResult> Create<TResult>()
         {
-            return DefaultTry<TResult>.Create();
+            return DefaultTry<TResult>
+                .Create();
         }
 
         public static ITryAsync CreateAsync()
         {
-            return DefaultTryAsync.Create();
+            return DefaultTryAsync
+                .Create();
+        }
+
+        public static ITryAsync<T, TResult> CreateAsync<T, TResult>()
+        {
+            return DefaultTryAsync<T, TResult>
+                .Create();
         }
     }
 }

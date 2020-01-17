@@ -32,4 +32,11 @@ namespace DNI.Shared.Contracts
         new ITryAsync Try(Func<Task> result);
         new ITryAsync Catch<TException>(Action<Exception> exceptionAction);
     }
+
+    public interface ITryAsync<T, TResult> : ITry<T, Task<TResult>>
+    {
+        Task<IEnumerable<TResult>> InvokeAsync(T value);
+        new ITryAsync<T, TResult> Try(Func<T, Task<TResult>> result);
+        new ITryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction);
+    }
 }

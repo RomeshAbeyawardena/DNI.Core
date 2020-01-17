@@ -71,10 +71,8 @@ namespace DNI.Shared.Services
             var resultList = new List<TResult>();
             try
             {
-                foreach(var action in _actionList)
-                    resultList.Add(action.Invoke());
-
-                return resultList;
+                resultList.AddRange(
+                    GetResults(_actionList, (a) => a()));
             }
             catch(Exception exception)
             {
@@ -101,6 +99,16 @@ namespace DNI.Shared.Services
             return (ITry<TResult>)base.Catch<TException>(exceptionAction);
         }
 
+        protected IEnumerable<TResult> GetResults<TDelegate>(IList<TDelegate> delegateList, Func<TDelegate,TResult> getResult)
+            where TDelegate : Delegate
+        {
+            var resultList = new List<TResult>();
+
+            foreach(var action in delegateList)
+                    resultList.Add(getResult(action));
+
+            return resultList;
+        }
         
         protected DefaultTry(IList<Func<TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(null, catchActionSwitch)
@@ -123,10 +131,7 @@ namespace DNI.Shared.Services
             var resultList = new List<TResult>();
             try
             {
-                foreach(var action in _actionList)
-                    resultList.Add(action.Invoke(value));
-
-                return resultList;
+                resultList.AddRange(GetResults(_actionList, a => a.Invoke(value)));
             }
             catch(Exception exception)
             {
@@ -143,7 +148,7 @@ namespace DNI.Shared.Services
             return this;
         }
 
-        private DefaultTry(IList<Func<T, TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        protected DefaultTry(IList<Func<T, TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(null, catchActionSwitch)
         {
             _actionList = actionList;
@@ -184,6 +189,45 @@ namespace DNI.Shared.Services
             : base(actionList, catchActionSwitch)
         {
 
+        }
+    }
+
+    internal class DefaultTryAsync<T, TResult> : DefaultTry<T, Task<TResult>>, ITryAsync<T, TResult>
+    {
+        public DefaultTryAsync(IList<Func<T, Task<TResult>>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+            : base(actionList, catchActionSwitch)
+        {
+
+        }
+
+        public async Task<IEnumerable<TResult>> InvokeAsync(T value)
+        {
+            try
+            {
+                return await Task.WhenAll(Invoke(value));
+            }
+            catch(Exception exception)
+            {
+                if(!HandleException(exception))
+                    throw;
+            }
+
+            return default;
+        }
+
+        public new ITryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction)
+        {
+            return (ITryAsync<T, TResult>)base.Catch<TException>(exceptionAction);
+        }
+
+        public new ITryAsync<T, TResult> Try(Func<T, Task<TResult>> result)
+        {
+            return (ITryAsync<T, TResult>)base.Try(result);
+        }
+
+        public new static ITryAsync<T, TResult> Create()
+        {
+            return new DefaultTryAsync<T, TResult>(new List<Func<T, Task<TResult>>>(), Switch.Create<Type, Action<Exception>>());
         }
     }
 }
