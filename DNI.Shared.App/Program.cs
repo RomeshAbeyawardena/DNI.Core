@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.Shared.Extensions;
 using System.Linq;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace DNI.Shared.App
 {
@@ -30,7 +31,7 @@ namespace DNI.Shared.App
             //var case5 = booleanSwitch.Case("A");
 
             //var mClassArray = new [] { new MClass { K1 = 12456, V1 = "htfhd" } };
-            
+
             //var test = booleanSwitch["YES"];
 
             //var myDict = DictionaryBuilder.Create<int, string>()
@@ -80,8 +81,15 @@ namespace DNI.Shared.App
             var hash1 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
             var hash2 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
 
-            if(!hash1.SequenceEqual(hash2))
+            if (!hash1.SequenceEqual(hash2))
                 throw new InvalidOperationException();
+
+            var derivedBytes = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
+
+            var derivedBytes2 = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
+
+            Console.WriteLine("{0}", BitConverter.ToString(derivedBytes.ToArray()));
+            Console.WriteLine("{0}", BitConverter.ToString(derivedBytes2.ToArray()));
         }
 
         public static void OnCatch(Exception ex)

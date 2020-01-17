@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace DNI.Shared.Contracts.Providers
     public interface IHashingProvider
     {
         IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes);
-        IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, int iteration, int totalNumberOfBytes);
+        IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, 
+            KeyDerivationPrf keyDerivationPrf, int iteration, int totalNumberOfBytes);
     }
 }

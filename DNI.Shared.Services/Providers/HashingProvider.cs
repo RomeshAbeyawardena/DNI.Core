@@ -18,9 +18,10 @@ namespace DNI.Shared.Services.Providers
                             () => HashAlgorithm.Create(hashName));
         }
 
-        public IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, int iteration, int totalNumberOfBytes)
+        public IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, 
+            KeyDerivationPrf keyDerivationPrf, int iteration, int totalNumberOfBytes)
         {
-            return KeyDerivation.Pbkdf2(password, salt.ToArray(), KeyDerivationPrf.HMACSHA512, iteration, totalNumberOfBytes);
+            return KeyDerivation.Pbkdf2(password, salt.ToArray(), keyDerivationPrf, iteration, totalNumberOfBytes);
         }
     }
 }
