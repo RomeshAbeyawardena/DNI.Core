@@ -24,13 +24,13 @@ namespace DNI.Shared.Contracts
         /// <typeparam name="TException"></typeparam>
         /// <param name="exceptionAction"></param>
         /// <returns></returns>
-        IFluentTry Catch<TException>(Action<Exception> exceptionAction);
+        IFluentTry Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown = false);
     }
 
     public interface IFluentTry<TResult> : IFluentTry
     {
         /// <summary>
-        /// Invokes all registered delegates in a try catch block
+        /// Invokes all registered delegates in a try catch block.  The operation will abort on either an unhandled or handled exception.
         /// </summary>
         /// <returns></returns>
         new IEnumerable<TResult> Invoke();
@@ -46,19 +46,20 @@ namespace DNI.Shared.Contracts
         /// <typeparam name="TException"></typeparam>
         /// <param name="exceptionAction"></param>
         /// <returns></returns>
-        new IFluentTry<TResult> Catch<TException>(Action<Exception> exceptionAction);
+        new IFluentTry<TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
     }
 
     public interface IFluentTry<T, TResult> : IFluentTry<TResult>
     {
         IEnumerable<TResult> Invoke(T value);
         IFluentTry<T, TResult> Try(Func<T, TResult> result);
+        new IFluentTry<T, TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
     }
 
     public interface IFluentTryAsync : IFluentTry<Task>
     {
         /// <summary>
-        /// Invokes all registered delegates async in a try catch block
+        /// Invokes all registered delegates async in a try catch block.  The operation will abort on either an unhandled or handled exception.
         /// </summary>
         /// <returns></returns>
         Task InvokeAsync();
@@ -74,7 +75,7 @@ namespace DNI.Shared.Contracts
         /// <typeparam name="TException">Represents the exception type to handle</typeparam>
         /// <param name="exceptionAction"></param>
         /// <returns></returns>
-        new IFluentTryAsync Catch<TException>(Action<Exception> exceptionAction);
+        new IFluentTryAsync Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
     }
 
     public interface IFluentTryAsync<T, TResult> : IFluentTry<T, Task<TResult>>
@@ -86,7 +87,7 @@ namespace DNI.Shared.Contracts
         /// <returns></returns>
         Task<IEnumerable<TResult>> InvokeAsync(T value);
         /// <summary>
-        /// Registers an async delegate to run in a try block
+        /// Registers an async delegate to run in a try block. The operation will abort on either an unhandled or handled exception.
         /// </summary>
         /// <param name="result"></param>
         /// <returns></returns>
@@ -97,6 +98,6 @@ namespace DNI.Shared.Contracts
         /// <typeparam name="TException"></typeparam>
         /// <param name="exceptionAction"></param>
         /// <returns></returns>
-        new IFluentTryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction);
+        new IFluentTryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
     }
 }
