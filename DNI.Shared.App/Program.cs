@@ -3,12 +3,13 @@ using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 
 namespace DNI.Shared.App
 {
     public static class Program
     {
-        public static void Main()
+        public static async Task Main()
         {
             var serviceCollection = new ServiceCollection();
 
@@ -34,6 +35,19 @@ namespace DNI.Shared.App
 
             var myList = ListBuilder.Create<int>()
                 .AddRange(mClassArray, mClass => mClass.K1);
+
+            Try.Create()
+                .Try(() => throw new FieldAccessException())
+                .Catch<FieldAccessException>(ex => Console.WriteLine(ex.Message))
+                .Invoke();
+
+            await Task.WhenAll(
+                Try.Create<Task>()
+                    .Try(async() => {  await Task.Delay(2000); throw new TimeoutException(); })
+                    .Try(async() => await Task.Delay(2000))
+                    .Try(async() => await Task.Delay(2000))
+                    .Catch<TimeoutException>(ex => Console.WriteLine(ex))
+                    .Invoke());
         }
 
         class MClass
