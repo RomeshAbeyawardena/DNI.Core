@@ -14,7 +14,8 @@ namespace DNI.Shared.Services.Providers
         public IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes)
         {
             return DisposableHelper
-                .Use(sha512 => sha512.ComputeHash(bytes.ToArray()), () => HashAlgorithm.Create(hashName));
+                    .Use(sha512 => sha512.ComputeHash(bytes.ToArray()), 
+                            () => HashAlgorithm.Create(hashName));
         }
 
         public IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, int iteration, int totalNumberOfBytes)

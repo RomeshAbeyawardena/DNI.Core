@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DNI.Shared.Contracts\DNI.Shared.Contracts.csproj" />
     <ProjectReference Include="..\DNI.Shared.Services\DNI.Shared.Services.csproj" />
+    <ProjectReference Include="..\DNI.Shared.Shared\DNI.Shared.Shared.csproj" />
   </ItemGroup>
 
 </Project>

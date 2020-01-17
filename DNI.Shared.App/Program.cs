@@ -1,9 +1,13 @@
 ﻿using DNI.Shared.Services;
 using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Services.Extensions;
+using DNI.Shared.Services.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Text;
 using System.Threading.Tasks;
+using DNI.Shared.Shared.Extensions;
+using System.Linq;
 
 namespace DNI.Shared.App
 {
@@ -58,18 +62,26 @@ namespace DNI.Shared.App
             //    .Catch<ArithmeticException>(OnCatch, true)
             //    .InvokeAsync(5);
 
-            DisposableHelper
-                .Use<MyDisposable>(myDisposable => { myDisposable.CallMe(); }, "I" );
+            //DisposableHelper
+            //    .Use<MyDisposable>(myDisposable => { myDisposable.CallMe(); }, "I" );
 
-            await DisposableHelper
-                .UseAsync<MyDisposable>(async(myDisposable) => await myDisposable.CallMeAsync(), "IAsync");
+            //await DisposableHelper
+            //    .UseAsync<MyDisposable>(async(myDisposable) => await myDisposable.CallMeAsync(), "IAsync");
 
-            var number = await DisposableHelper
-                .UseAsync<int, MyDisposable>(async(myDisposable) => await myDisposable.GetNumberAsync(), "IAsync");
-            Console.WriteLine("Number returned: {0}", number);
-            var number1 = DisposableHelper
-                .Use<int, MyDisposable>(myDisposable => myDisposable.GetNumber(), null, "I");
-            Console.WriteLine("Number returned: {0}", number1);
+            //var number = await DisposableHelper
+            //    .UseAsync<int, MyDisposable>(async(myDisposable) => await myDisposable.GetNumberAsync(), "IAsync");
+            //Console.WriteLine("Number returned: {0}", number);
+            //var number1 = DisposableHelper
+            //    .Use<int, MyDisposable>(myDisposable => myDisposable.GetNumber(), null, "I");
+            //Console.WriteLine("Number returned: {0}", number1);
+
+            var hashingProvider = new HashingProvider();
+
+            var hash1 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
+            var hash2 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
+
+            if(!hash1.SequenceEqual(hash2))
+                throw new InvalidOperationException();
         }
 
         public static void OnCatch(Exception ex)
@@ -121,7 +133,7 @@ namespace DNI.Shared.App
                 Console.WriteLine($"{ Name } CallMe was invoked async.");
             }
 
-            void Dispose(bool gc)
+            protected virtual void Dispose(bool gc)
             {
                 if(gc)
                     Console.WriteLine($"Then { Name } was disposed");
