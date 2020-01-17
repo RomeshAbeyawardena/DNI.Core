@@ -36,22 +36,26 @@ namespace DNI.Shared.App
             var myList = ListBuilder.Create<int>()
                 .AddRange(mClassArray, mClass => mClass.K1);
 
-            Try.Create()
+            FluentTry.Create()
                 .Try(() => throw new FieldAccessException())
                 .Catch<FieldAccessException>(OnCatch)
                 .Invoke();
 
-             await Try.CreateAsync()
+             await FluentTry.CreateAsync()
                     .Try(async() => {  await Task.Delay(2000); throw new TimeoutException(); })
                     .Try(async() => await Task.Delay(2000))
                     .Try(async() => await Task.Delay(2000))
                     .Catch<TimeoutException>(OnCatch)
                     .InvokeAsync();
 
-            var results = await Try.CreateAsync<int, int>()
-                .Try(async (a) => await Task.FromResult(a + 5))
+            var results = await FluentTry.CreateAsync<int, int>()
+                .Try(async (a) => { var result = a + 5; 
+                    if(result==10) 
+                        throw new ArithmeticException(); 
+                    return await Task.FromResult(result); })
                 .Try(async (a) => await Task.FromResult(a + 10))
                 .Try(async (a) => await Task.FromResult(a + 15))
+                .Catch<ArithmeticException>(OnCatch)
                 .InvokeAsync(5);
         }
 

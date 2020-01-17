@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    internal class DefaultTry : ITry
+    internal class DefaultFluentTry : IFluentTry
     {
         private IList<Action> _actionList;
         private ISwitch<Type, Action<Exception>> _catchActionSwitch;
 
-        public ITry Catch<TException>(Action<Exception> exceptionAction)
+        public IFluentTry Catch<TException>(Action<Exception> exceptionAction)
         {
             _catchActionSwitch
                 .CaseWhen(typeof(TException), exceptionAction);
@@ -33,15 +33,15 @@ namespace DNI.Shared.Services
             }
         }
 
-        public ITry Try(Action action)
+        public IFluentTry Try(Action action)
         {
             _actionList.Add(action);
             return this;
         }
 
-        public static ITry Create()
+        public static IFluentTry Create()
         {
-            return new DefaultTry(new List<Action>(), Switch.Create<Type, Action<Exception>>());
+            return new DefaultFluentTry(new List<Action>(), Switch.Create<Type, Action<Exception>>());
         }
 
         protected bool HandleException(Exception exception)
@@ -55,14 +55,14 @@ namespace DNI.Shared.Services
             return true;
         }
 
-        protected DefaultTry(IList<Action> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        protected DefaultFluentTry(IList<Action> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
         {
             _actionList = actionList;
             _catchActionSwitch = catchActionSwitch;
         }
     }
 
-    internal class DefaultTry<TResult> : DefaultTry, ITry<TResult>
+    internal class DefaultFluentTry<TResult> : DefaultFluentTry, IFluentTry<TResult>
     {
         private IList<Func<TResult>> _actionList;
 
@@ -83,20 +83,20 @@ namespace DNI.Shared.Services
             return resultList;
         }
 
-        public ITry<TResult> Try(Func<TResult> action)
+        public IFluentTry<TResult> Try(Func<TResult> action)
         {
             _actionList.Add(action);
             return this;
         }
 
-        public static new ITry<TResult> Create()
+        public static new IFluentTry<TResult> Create()
         {
-            return new DefaultTry<TResult>(new List<Func<TResult>>(), Switch.Create<Type, Action<Exception>>());
+            return new DefaultFluentTry<TResult>(new List<Func<TResult>>(), Switch.Create<Type, Action<Exception>>());
         }
 
-        public new ITry<TResult> Catch<TException>(Action<Exception> exceptionAction)
+        public new IFluentTry<TResult> Catch<TException>(Action<Exception> exceptionAction)
         {
-            return (ITry<TResult>)base.Catch<TException>(exceptionAction);
+            return (IFluentTry<TResult>)base.Catch<TException>(exceptionAction);
         }
 
         protected IEnumerable<TResult> GetResults<TDelegate>(IList<TDelegate> delegateList, Func<TDelegate,TResult> getResult)
@@ -110,20 +110,20 @@ namespace DNI.Shared.Services
             return resultList;
         }
         
-        protected DefaultTry(IList<Func<TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        protected DefaultFluentTry(IList<Func<TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(null, catchActionSwitch)
         {
             _actionList = actionList;
         }
     }
 
-    internal class DefaultTry<T, TResult> : DefaultTry<TResult>, ITry<T, TResult>
+    internal class DefaultFluentTry<T, TResult> : DefaultFluentTry<TResult>, IFluentTry<T, TResult>
     {
         private readonly IList<Func<T, TResult>> _actionList;
 
-        public new static ITry<T, TResult> Create()
+        public new static IFluentTry<T, TResult> Create()
         {
-            return new DefaultTry<T, TResult>(new List<Func<T, TResult>>(), Switch.Create<Type, Action<Exception>>());
+            return new DefaultFluentTry<T, TResult>(new List<Func<T, TResult>>(), Switch.Create<Type, Action<Exception>>());
         }
 
         public IEnumerable<TResult> Invoke(T value)
@@ -142,24 +142,24 @@ namespace DNI.Shared.Services
             return resultList;
         }
 
-        public ITry<T, TResult> Try(Func<T, TResult> result)
+        public IFluentTry<T, TResult> Try(Func<T, TResult> result)
         {
             _actionList.Add(result);
             return this;
         }
 
-        protected DefaultTry(IList<Func<T, TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        protected DefaultFluentTry(IList<Func<T, TResult>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(null, catchActionSwitch)
         {
             _actionList = actionList;
         }
     }
 
-    internal class DefaultTryAsync : DefaultTry<Task>, ITryAsync
+    internal class DefaultFluentTryAsync : DefaultFluentTry<Task>, IFluentTryAsync
     {
-        public new static ITryAsync Create()
+        public new static IFluentTryAsync Create()
         {
-            return new DefaultTryAsync(new List<Func<Task>>(), Switch.Create<Type, Action<Exception>>());
+            return new DefaultFluentTryAsync(new List<Func<Task>>(), Switch.Create<Type, Action<Exception>>());
         }
 
         public async Task InvokeAsync()
@@ -175,26 +175,26 @@ namespace DNI.Shared.Services
             }
         }
 
-        public new ITryAsync Catch<TException>(Action<Exception> exceptionAction)
+        public new IFluentTryAsync Catch<TException>(Action<Exception> exceptionAction)
         {
-            return(ITryAsync)base.Catch<TException>(exceptionAction);
+            return(IFluentTryAsync)base.Catch<TException>(exceptionAction);
         }
 
-        public new ITryAsync Try(Func<Task> result)
+        public new IFluentTryAsync Try(Func<Task> result)
         {
-            return(ITryAsync)base.Try(result);
+            return(IFluentTryAsync)base.Try(result);
         }
 
-        private DefaultTryAsync(IList<Func<Task>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        private DefaultFluentTryAsync(IList<Func<Task>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(actionList, catchActionSwitch)
         {
 
         }
     }
 
-    internal class DefaultTryAsync<T, TResult> : DefaultTry<T, Task<TResult>>, ITryAsync<T, TResult>
+    internal class DefaultFluentTryAsync<T, TResult> : DefaultFluentTry<T, Task<TResult>>, IFluentTryAsync<T, TResult>
     {
-        public DefaultTryAsync(IList<Func<T, Task<TResult>>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
+        public DefaultFluentTryAsync(IList<Func<T, Task<TResult>>> actionList, ISwitch<Type, Action<Exception>> catchActionSwitch)
             : base(actionList, catchActionSwitch)
         {
 
@@ -215,19 +215,19 @@ namespace DNI.Shared.Services
             return default;
         }
 
-        public new ITryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction)
+        public new IFluentTryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction)
         {
-            return (ITryAsync<T, TResult>)base.Catch<TException>(exceptionAction);
+            return (IFluentTryAsync<T, TResult>)base.Catch<TException>(exceptionAction);
         }
 
-        public new ITryAsync<T, TResult> Try(Func<T, Task<TResult>> result)
+        public new IFluentTryAsync<T, TResult> Try(Func<T, Task<TResult>> result)
         {
-            return (ITryAsync<T, TResult>)base.Try(result);
+            return (IFluentTryAsync<T, TResult>)base.Try(result);
         }
 
-        public new static ITryAsync<T, TResult> Create()
+        public new static IFluentTryAsync<T, TResult> Create()
         {
-            return new DefaultTryAsync<T, TResult>(new List<Func<T, Task<TResult>>>(), Switch.Create<Type, Action<Exception>>());
+            return new DefaultFluentTryAsync<T, TResult>(new List<Func<T, Task<TResult>>>(), Switch.Create<Type, Action<Exception>>());
         }
     }
 }
