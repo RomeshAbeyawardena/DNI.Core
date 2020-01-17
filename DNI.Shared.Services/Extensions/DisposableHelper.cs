@@ -33,10 +33,12 @@ namespace DNI.Shared.Services.Extensions
         /// <param name="useAction">Delegate to run within an using block</param>
         /// <param name="constructorArguments">Parameters to instantiate TDisposable</param>
         /// <returns></returns>
-        public static TResult Use<TResult, TDisposable>(Func<TDisposable, TResult> useAction, params object[] constructorArguments)
+        public static TResult Use<TResult, TDisposable>(Func<TDisposable, TResult> useAction, Func<TDisposable> instanceCreationAction = null, params object[] constructorArguments)
             where TDisposable : IDisposable
         {
-            using(var disposable = CreateInstance<TDisposable>(constructorArguments))
+            using(var disposable = instanceCreationAction == null 
+                ? CreateInstance<TDisposable>(constructorArguments) 
+                : instanceCreationAction())
             {
                 return useAction(disposable);
             }

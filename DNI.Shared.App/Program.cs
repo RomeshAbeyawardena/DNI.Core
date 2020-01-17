@@ -68,7 +68,7 @@ namespace DNI.Shared.App
                 .UseAsync<int, MyDisposable>(async(myDisposable) => await myDisposable.GetNumberAsync(), "IAsync");
             Console.WriteLine("Number returned: {0}", number);
             var number1 = DisposableHelper
-                .Use<int, MyDisposable>(myDisposable => myDisposable.GetNumber(), "I");
+                .Use<int, MyDisposable>(myDisposable => myDisposable.GetNumber(), null, "I");
             Console.WriteLine("Number returned: {0}", number1);
         }
 
