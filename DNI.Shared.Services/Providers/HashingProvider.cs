@@ -21,7 +21,7 @@ namespace DNI.Shared.Services.Providers
         public IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes)
         {
             return DisposableHelper
-                    .Use(sha512 => sha512.ComputeHash(bytes.ToArray()), 
+                    .Use(hashAlgorithm => hashAlgorithm.ComputeHash(bytes.ToArray()), 
                             () => HashAlgorithm.Create(hashName));
         }
 

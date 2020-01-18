@@ -54,10 +54,10 @@ namespace DNI.Shared.Services.Providers
 
         private static async Task<string> Decrypt(ICryptoTransform decryptor, IEnumerable<byte> encryptedData)
         {
-            using (var memoryStream = new MemoryStream(encryptedData.ToArray()))
-                using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                    using(var srDecrypt = new StreamReader(cryptoStream))
-                        return await srDecrypt.ReadToEndAsync();
+            using var memoryStream = new MemoryStream(encryptedData.ToArray());
+            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            using var srDecrypt = new StreamReader(cryptoStream);
+            return await srDecrypt.ReadToEndAsync();
         }
 
         private static async Task<IEnumerable<byte>> Encrypt(string value, SymmetricAlgorithm symmetricAlgorithm)
