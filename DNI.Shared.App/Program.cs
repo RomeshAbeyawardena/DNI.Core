@@ -22,7 +22,7 @@ namespace DNI.Shared.App
 
             var crypto = new CryptographyProvider(hashingProvider);
 
-            var cryptoCredentials = crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, "myPassword123456", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), 1000000, 32, null);
+            var cryptoCredentials = crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null);
 
             var firstRun = true;
             ConsoleKeyInfo lastConsoleKeyInfo = default;

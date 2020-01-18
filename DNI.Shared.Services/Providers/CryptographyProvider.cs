@@ -2,6 +2,7 @@
 using DNI.Shared.Contracts.Providers;
 using DNI.Shared.Domains;
 using DNI.Shared.Services.Extensions;
+using DNI.Shared.Shared.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,12 @@ namespace DNI.Shared.Services.Providers
         {
             var key = _hashingProvider.PasswordDerivedBytes(password, salt, keyDerivationPrf, iterations, totalNumberOfBytes);
             return GetCryptographicCredentials<TCryptographicCredentials>(Constants.AES, key, initialVector);
+        }
+
+        public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(KeyDerivationPrf keyDerivationPrf, Encoding encoding, string password, string salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
+        {
+            var saltByteArray = salt.GetBytes(encoding);
+            return GetCryptographicCredentials<TCryptographicCredentials>(keyDerivationPrf, password, saltByteArray, iterations, totalNumberOfBytes, initialVector);
         }
 
         public CryptographyProvider(IHashingProvider hashingProvider)
