@@ -6,50 +6,25 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using DNI.Shared.Shared.Extensions;
+
 using System.Linq;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using DNI.Shared.Contracts;
-using System.Collections.Generic;
 
 namespace DNI.Shared.App
 {
-    public static class Program
+    public static partial class Program
     {
         public static async Task Main()
         {
-            var hashingProvider = new HashingProvider();
-
-            var crypto = new CryptographyProvider(hashingProvider);
-
-            var cryptoCredentials = crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null);
-
-            var firstRun = true;
-            ConsoleKeyInfo lastConsoleKeyInfo = default;
-            while(firstRun || (lastConsoleKeyInfo = Console.ReadKey()).Key != ConsoleKey.Escape)
-            { 
-                if(lastConsoleKeyInfo != default)
-                    Console.Write(lastConsoleKeyInfo.KeyChar);
-
-                firstRun = false;
-                Console.Write("\r\nValue to encrypt: ");
-                var encryptedValue = crypto.Encrypt(cryptoCredentials, Console.ReadLine());
-                var decryptedValue = crypto.Decrypt(cryptoCredentials, await encryptedValue);
-                Console.WriteLine("You entered: {0}", await decryptedValue);
-            }
-            
+            await new DefaultAppHost<Startup>()
+                .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>())
+                .ConfigureStartupDelegate((startup, args) => startup.Begin(args.ToArray()))
+                .Start();
         }
 
         public static void OnCatch(Exception ex)
         {
             Console.WriteLine(ex);
-        }
-
-        class MCryptographicCredentials : ICryptographicCredentials
-        {
-            public IEnumerable<byte> Key { get; set; }
-            public IEnumerable<byte> InitialVector { get; set; }
-            public string SymmetricAlgorithm { get; set; }
         }
 
 
