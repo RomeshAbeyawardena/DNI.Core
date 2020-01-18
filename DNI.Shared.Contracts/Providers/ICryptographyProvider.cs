@@ -10,7 +10,7 @@ namespace DNI.Shared.Contracts.Providers
     public interface ICryptographyProvider
     {
         TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(
-            string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector)
+            string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector, int initialVectorSize = 16)
             where TCryptographicCredentials : ICryptographicCredentials;
         TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(
             KeyDerivationPrf keyDerivationPrf, string password, IEnumerable<byte> salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector)

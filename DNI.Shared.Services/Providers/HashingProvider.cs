@@ -11,6 +11,13 @@ namespace DNI.Shared.Services.Providers
 {
     public class HashingProvider : IHashingProvider
     {
+        public IEnumerable<byte> GetRandomNumberGeneratorBytes(int length)
+        {
+            var buffer = new byte[length];
+            DisposableHelper.Use(randomNumberGenerator => randomNumberGenerator.GetBytes(buffer), () => RandomNumberGenerator.Create());
+            return buffer;
+        }
+
         public IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes)
         {
             return DisposableHelper

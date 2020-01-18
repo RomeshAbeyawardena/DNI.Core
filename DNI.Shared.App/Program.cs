@@ -80,22 +80,25 @@ namespace DNI.Shared.App
 
             var hashingProvider = new HashingProvider();
 
-            var hash1 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
-            var hash2 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
+            //var hash1 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
+            //var hash2 = hashingProvider.HashBytes("SHA512", "Hello World".GetBytes(Encoding.ASCII));
 
-            if (!hash1.SequenceEqual(hash2))
-                throw new InvalidOperationException();
+            //if (!hash1.SequenceEqual(hash2))
+            //    throw new InvalidOperationException();
 
-            var derivedBytes = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
+            //var derivedBytes = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
 
-            var derivedBytes2 = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
+            //var derivedBytes2 = hashingProvider.PasswordDerivedBytes("My Password", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), KeyDerivationPrf.HMACSHA512, 100000, 32);
 
-            Console.WriteLine("{0}", BitConverter.ToString(derivedBytes.ToArray()));
-            Console.WriteLine("{0}", BitConverter.ToString(derivedBytes2.ToArray()));
+            //Console.WriteLine("{0}", BitConverter.ToString(derivedBytes.ToArray()));
+            //Console.WriteLine("{0}", BitConverter.ToString(derivedBytes2.ToArray()));
 
             var crypto = new CryptographyProvider(hashingProvider);
 
-            crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, "myPassword123456", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), 100000, 32, null);
+            var cryptoCredentials = crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, "myPassword123456", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), 100000, 32, null);
+
+            var encryptedValue = crypto.Encrypt(cryptoCredentials, "Hello World");
+            var decryptedValue = await crypto.Decrypt(cryptoCredentials, await encryptedValue);
             
         }
 

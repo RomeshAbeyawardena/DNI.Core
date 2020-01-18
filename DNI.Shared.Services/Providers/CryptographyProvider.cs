@@ -81,7 +81,7 @@ namespace DNI.Shared.Services.Providers
             return encrypted;
         }
 
-        public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
+        public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector, int initialVectorSize = 16) where TCryptographicCredentials : ICryptographicCredentials
         {
             var instance = Activator.CreateInstance<TCryptographicCredentials>();
 
@@ -89,12 +89,8 @@ namespace DNI.Shared.Services.Providers
             instance.Key = key;
             
             if(initialVector == null)
-            {
-                var initialVectorBytes = new byte[16];
-                DisposableHelper.Use(randomNumberGenerator => randomNumberGenerator.GetBytes(initialVectorBytes), () => RandomNumberGenerator.Create());
-                initialVector = initialVectorBytes;
-            }
-
+                initialVector = _hashingProvider.GetRandomNumberGeneratorBytes(initialVectorSize);
+            
             instance.InitialVector = initialVector;
 
             return instance;
