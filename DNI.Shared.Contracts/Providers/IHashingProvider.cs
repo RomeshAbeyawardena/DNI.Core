@@ -12,5 +12,6 @@ namespace DNI.Shared.Contracts.Providers
         IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes);
         IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, 
             KeyDerivationPrf keyDerivationPrf, int iteration, int totalNumberOfBytes);
+        IEnumerable<byte> GetRandomNumberGeneratorBytes(int length);
     }
 }

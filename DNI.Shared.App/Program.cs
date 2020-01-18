@@ -93,7 +93,9 @@ namespace DNI.Shared.App
             Console.WriteLine("{0}", BitConverter.ToString(derivedBytes.ToArray()));
             Console.WriteLine("{0}", BitConverter.ToString(derivedBytes2.ToArray()));
 
-            var crypto = new CryptographyProvider();
+            var crypto = new CryptographyProvider(hashingProvider);
+
+            crypto.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, "myPassword123456", "MySecureSalt1234567890101".GetBytes(Encoding.ASCII), 100000, 32, null);
             
         }
 

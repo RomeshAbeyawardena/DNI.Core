@@ -1,6 +1,8 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Providers;
+using DNI.Shared.Domains;
 using DNI.Shared.Services.Extensions;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +15,8 @@ namespace DNI.Shared.Services.Providers
 {
     public class CryptographyProvider : ICryptographyProvider
     {
+        private readonly IHashingProvider _hashingProvider;
+
         public async Task<string> Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> value)
         {
             return await CreateSymmetricAlgorithm(cryptographicCredentials, 
@@ -83,9 +87,28 @@ namespace DNI.Shared.Services.Providers
 
             instance.SymmetricAlgorithm = symmetricAlgorithm;
             instance.Key = key;
+            
+            if(initialVector == null)
+            {
+                var initialVectorBytes = new byte[16];
+                DisposableHelper.Use(randomNumberGenerator => randomNumberGenerator.GetBytes(initialVectorBytes), () => RandomNumberGenerator.Create());
+                initialVector = initialVectorBytes;
+            }
+
             instance.InitialVector = initialVector;
 
             return instance;
+        }
+
+        public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(KeyDerivationPrf keyDerivationPrf, string password, IEnumerable<byte> salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
+        {
+            var key = _hashingProvider.PasswordDerivedBytes(password, salt, keyDerivationPrf, iterations, totalNumberOfBytes);
+            return GetCryptographicCredentials<TCryptographicCredentials>(Constants.AES, key, initialVector);
+        }
+
+        public CryptographyProvider(IHashingProvider hashingProvider)
+        {
+            _hashingProvider = hashingProvider;
         }
     }
 }
