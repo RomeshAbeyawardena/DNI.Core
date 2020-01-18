@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using DNI.Shared.Shared.Extensions;
 using System.Linq;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using DNI.Shared.Contracts;
+using System.Collections.Generic;
 
 namespace DNI.Shared.App
 {
@@ -90,12 +92,23 @@ namespace DNI.Shared.App
 
             Console.WriteLine("{0}", BitConverter.ToString(derivedBytes.ToArray()));
             Console.WriteLine("{0}", BitConverter.ToString(derivedBytes2.ToArray()));
+
+            var crypto = new CryptographyProvider();
+            
         }
 
         public static void OnCatch(Exception ex)
         {
             Console.WriteLine(ex);
         }
+
+        class MCryptographicCredentials : ICryptographicCredentials
+        {
+            public IEnumerable<byte> Key { get; set; }
+            public IEnumerable<byte> InitialVector { get; set; }
+            public string SymmetricAlgorithm { get; set; }
+        }
+
 
         class MClass
         {

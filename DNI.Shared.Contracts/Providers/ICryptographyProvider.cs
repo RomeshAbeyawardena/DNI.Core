@@ -8,7 +8,10 @@ namespace DNI.Shared.Contracts.Providers
 {
     public interface ICryptographyProvider
     {
-        IEnumerable<byte> Encrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> key, string value);
-        string Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> key, IEnumerable<byte> value);
+        TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(
+            string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector)
+            where TCryptographicCredentials : ICryptographicCredentials;
+        Task<IEnumerable<byte>> Encrypt(ICryptographicCredentials cryptographicCredentials, string value);
+        Task<string> Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> value);
     }
 }

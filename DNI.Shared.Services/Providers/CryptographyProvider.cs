@@ -13,15 +13,21 @@ namespace DNI.Shared.Services.Providers
 {
     public class CryptographyProvider : ICryptographyProvider
     {
-        public string Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> key, IEnumerable<byte> value)
+        public async Task<string> Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> value)
         {
-            return DisposableHelper.Use((symmetricAlgorithm) => Decrypt(value, symmetricAlgorithm, cryptographicCredentials), 
-                () => CreateSymmetricAlgorithm(cryptographicCredentials));
+            return await CreateSymmetricAlgorithm(cryptographicCredentials, 
+                async(symmetricAlgorithm) => await Decrypt(value, symmetricAlgorithm));
         }
 
-        public IEnumerable<byte> Encrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> key, string value)
+        public async Task<IEnumerable<byte>> Encrypt(ICryptographicCredentials cryptographicCredentials, string value)
         {
-            return DisposableHelper.Use((symmetricAlgorithm) => Encrypt(symmetricAlgorithm, cryptographicCredentials), 
+            return await CreateSymmetricAlgorithm(cryptographicCredentials, 
+                async(symmetricAlgorithm) => await Encrypt(value, symmetricAlgorithm));
+        }
+
+        private async Task<T> CreateSymmetricAlgorithm<T>(ICryptographicCredentials cryptographicCredentials, Func<SymmetricAlgorithm, Task<T>> action)
+        {
+            return await DisposableHelper.UseAsync(async(symmetricAlgorithm) => await action(symmetricAlgorithm), 
                 () => CreateSymmetricAlgorithm(cryptographicCredentials));
         }
 
@@ -35,20 +41,51 @@ namespace DNI.Shared.Services.Providers
             return symmetricAlgorithm;
         }
 
-        private static string Decrypt(IEnumerable<byte> encryptedData, SymmetricAlgorithm symmetricAlgorithm, ICryptographicCredentials cryptographicCredentials)
+        private static async Task<string> Decrypt(IEnumerable<byte> encryptedData, SymmetricAlgorithm symmetricAlgorithm)
         {
-            return DisposableHelper.Use((decryptor) => Decrypt(decryptor, encryptedData), () => symmetricAlgorithm.CreateDecryptor());
+            return await DisposableHelper
+                .UseAsync(async(decryptor) => await Decrypt(decryptor, encryptedData), 
+                    () => symmetricAlgorithm.CreateDecryptor());
         }
 
-        private static string Decrypt(ICryptoTransform decryptor, IEnumerable<byte> encryptedData)
+        private static async Task<string> Decrypt(ICryptoTransform decryptor, IEnumerable<byte> encryptedData)
         {
-            return DisposableHelper.Use<string, MemoryStream>(memoryStream => )
+            using (var memoryStream = new MemoryStream(encryptedData.ToArray()))
+                using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                    using(var srDecrypt = new StreamReader(cryptoStream))
+                        return await srDecrypt.ReadToEndAsync();
         }
 
-        private static IEnumerable<byte> Encrypt(SymmetricAlgorithm symmetricAlgorithm, ICryptographicCredentials cryptographicCredentials)
+        private static async Task<IEnumerable<byte>> Encrypt(string value, SymmetricAlgorithm symmetricAlgorithm)
         {
-            var decryptor = symmetricAlgorithm.CreateEncryptor();
-            return Array.Empty<byte>();
+            return await DisposableHelper.UseAsync(async(encryptor) => await Encrypt(encryptor, value), 
+                () => symmetricAlgorithm.CreateEncryptor());
+        }
+
+        private static async Task<IEnumerable<byte>> Encrypt(ICryptoTransform decryptor, string plainText)
+        {
+            var encrypted = Array.Empty<byte>();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write))
+                    using(var srDecrypt = new StreamWriter(cryptoStream))
+                        await srDecrypt.WriteAsync(plainText);
+                encrypted = memoryStream.ToArray();
+            }
+
+            return encrypted;
+        }
+
+        public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(string symmetricAlgorithm, IEnumerable<byte> key, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
+        {
+            var instance = Activator.CreateInstance<TCryptographicCredentials>();
+
+            instance.SymmetricAlgorithm = symmetricAlgorithm;
+            instance.Key = key;
+            instance.InitialVector = initialVector;
+
+            return instance;
         }
     }
 }
