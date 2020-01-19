@@ -12,5 +12,10 @@ namespace DNI.Shared.Shared.Extensions
         {
             return encoding.GetBytes(value);
         }
+
+        public static string DisplayIf(this string value, bool condition = true, string valueOnConditionFalse = default)
+        {
+            return condition ? value : valueOnConditionFalse;
+        }
     }
 }
