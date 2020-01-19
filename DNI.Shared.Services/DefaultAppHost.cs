@@ -8,11 +8,19 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultAppHost<TStartup> : IAppHost<TStartup>
+    internal class DefaultAppHost<TStartup> : IAppHost<TStartup>
         where TStartup : class
     {
         private readonly IServiceCollection _serviceCollection;
         private Func<TStartup, IEnumerable<object>, Task> _startupDelegate;
+
+        private Task GetStartup(object[] args)
+        {
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            var startup = serviceProvider.GetRequiredService<TStartup>();
+            return _startupDelegate(startup, args);
+        }
+
         public IAppHost<TStartup> ConfigureServices(Action<IServiceCollection> registerServices)
         {
             registerServices(_serviceCollection);
@@ -27,19 +35,18 @@ namespace DNI.Shared.Services
 
         public async Task<T> Start<T>(params object[] args)
         {
-            var serviceProvider = _serviceCollection.BuildServiceProvider();
-            var startup = serviceProvider.GetRequiredService<TStartup>();
-            
-            var genericTask = (Task<T>)_startupDelegate(startup, args);
-            return await genericTask.ConfigureAwait(false);
+            var startupTask = GetStartup(args);
+            if (!(startupTask is Task<T> genericTask))
+                throw new InvalidCastException($"Unable to cast {typeof(Task)} to Task<{typeof(T)}>");
+
+            return await genericTask
+                .ConfigureAwait(false);
         }
 
         public async Task Start(params object[] args)
         {
-            var serviceProvider = _serviceCollection.BuildServiceProvider();
-            var startup = serviceProvider.GetRequiredService<TStartup>();
-
-            await _startupDelegate(startup, args).ConfigureAwait(false);;
+            await GetStartup(args)
+                .ConfigureAwait(false);;
         }
 
         public DefaultAppHost()

@@ -10,6 +10,7 @@ namespace DNI.Shared.Contracts
     public interface IAppHost<TStartup>
     {
         Task Start(params object[] args);
+        Task<T> Start<T>(params object[] args);
         IAppHost<TStartup> ConfigureServices(Action<IServiceCollection> services);
         IAppHost<TStartup> ConfigureStartupDelegate(Func<TStartup, IEnumerable<object>, Task> getStartupDelegate);
     }

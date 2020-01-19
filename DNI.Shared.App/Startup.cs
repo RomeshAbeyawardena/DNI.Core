@@ -14,7 +14,7 @@ namespace DNI.Shared.App
         private readonly IHashingProvider _hashingProvider;
         private readonly ICryptographyProvider _cryptographyProvider;
 
-        public async Task Begin(params object[] args)
+        public async Task<int> Begin(params object[] args)
         {
 
             var firstRun = true;
@@ -29,7 +29,10 @@ namespace DNI.Shared.App
                 var encryptedValue = _cryptographyProvider.Encrypt(_cryptographicCredentials, Console.ReadLine());
                 var decryptedValue = _cryptographyProvider.Decrypt(_cryptographicCredentials, await encryptedValue);
                 Console.WriteLine("You entered: {0}", await decryptedValue);
+                Console.WriteLine("Press any key to continue, press Escape to quit.");
             }
+
+            return 0;
         }
 
         public Startup(ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 

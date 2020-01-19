@@ -1,25 +1,23 @@
 ﻿using DNI.Shared.Services;
 using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Services.Extensions;
-using DNI.Shared.Services.Providers;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Text;
 using System.Threading.Tasks;
 
 using System.Linq;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace DNI.Shared.App
 {
     public static partial class Program
     {
-        public static async Task Main(string[] args)
+        public static async Task<int> Main(string[] args)
         {
-            await new DefaultAppHost<Startup>()
+            var value = await AppHost.Build<Startup>()
                 .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>())
                 .ConfigureStartupDelegate((startup, args) => startup.Begin(args.ToArray()))
-                .Start(args);
+                .Start<int>(args).ConfigureAwait(false);
+
+            return value;
         }
 
         public static void OnCatch(Exception ex)
