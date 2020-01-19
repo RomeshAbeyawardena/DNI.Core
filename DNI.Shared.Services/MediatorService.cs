@@ -16,12 +16,12 @@ namespace DNI.Shared.Services
         public async Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default) 
             where TNotification : INotification
         {
-            await _mediator.Publish(notification, cancellationToken);
+            await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);;
         }
 
         public async Task<TResponse> Send<TResponse, TRequest>(TRequest request, CancellationToken cancellationToken = default) where TRequest : IRequest<TResponse>
         {
-            return await _mediator.Send(request, cancellationToken);
+            return await _mediator.Send(request, cancellationToken).ConfigureAwait(false);;
         }
 
         public MediatorService(IMediator mediator)

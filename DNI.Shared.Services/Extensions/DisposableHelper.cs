@@ -48,7 +48,7 @@ namespace DNI.Shared.Services.Extensions
             where TDisposable : IDisposable
         {
             using var disposable = CreateInstance(instanceCreationAction, constructorArguments);
-            await useAction(disposable);
+            await useAction(disposable).ConfigureAwait(false);;
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace DNI.Shared.Services.Extensions
             where TDisposable : IDisposable
         {
             using var disposable = CreateInstance(instanceCreationAction, constructorArguments);
-            return await useAction(disposable);
+            return await useAction(disposable).ConfigureAwait(false);;
         }
 
 

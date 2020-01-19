@@ -23,19 +23,19 @@ namespace DNI.Shared.Services.Providers
         public async Task<string> Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> value)
         {
             return await CreateSymmetricAlgorithm(cryptographicCredentials,
-                async (symmetricAlgorithm) => await Decrypt(value, symmetricAlgorithm));
+                async (symmetricAlgorithm) => await Decrypt(value, symmetricAlgorithm)).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<byte>> Encrypt(ICryptographicCredentials cryptographicCredentials, string value)
         {
             return await CreateSymmetricAlgorithm(cryptographicCredentials,
-                async (symmetricAlgorithm) => await Encrypt(value, symmetricAlgorithm));
+                async (symmetricAlgorithm) => await Encrypt(value, symmetricAlgorithm)).ConfigureAwait(false);
         }
 
         private async Task<T> CreateSymmetricAlgorithm<T>(ICryptographicCredentials cryptographicCredentials, Func<SymmetricAlgorithm, Task<T>> action)
         {
             return await DisposableHelper.UseAsync(async (symmetricAlgorithm) => await action(symmetricAlgorithm),
-                () => CreateSymmetricAlgorithm(cryptographicCredentials));
+                () => CreateSymmetricAlgorithm(cryptographicCredentials)).ConfigureAwait(false);;
         }
 
         private static SymmetricAlgorithm CreateSymmetricAlgorithm(ICryptographicCredentials cryptographicCredentials)
@@ -52,7 +52,7 @@ namespace DNI.Shared.Services.Providers
         {
             return await DisposableHelper
                 .UseAsync(async (decryptor) => await Decrypt(decryptor, encryptedData),
-                    () => symmetricAlgorithm.CreateDecryptor());
+                    () => symmetricAlgorithm.CreateDecryptor()).ConfigureAwait(false);
         }
 
         private async Task<string> Decrypt(ICryptoTransform decryptor, IEnumerable<byte> encryptedData)
@@ -60,13 +60,13 @@ namespace DNI.Shared.Services.Providers
             using var memoryStream = _memoryStreamManager.GetStream(buffer: encryptedData.ToArray());
             using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using var srDecrypt = new StreamReader(cryptoStream);
-            return await srDecrypt.ReadToEndAsync();
+            return await srDecrypt.ReadToEndAsync().ConfigureAwait(false);;
         }
            
         private async Task<IEnumerable<byte>> Encrypt(string value, SymmetricAlgorithm symmetricAlgorithm)
         {
             return await DisposableHelper.UseAsync(async (encryptor) => await Encrypt(encryptor, value),
-                () => symmetricAlgorithm.CreateEncryptor());
+                () => symmetricAlgorithm.CreateEncryptor()).ConfigureAwait(false);
         }
 
         private async Task<IEnumerable<byte>> Encrypt(ICryptoTransform decryptor, string plainText)
@@ -77,7 +77,7 @@ namespace DNI.Shared.Services.Providers
             {
                 using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write))
                     using (var srDecrypt = new StreamWriter(cryptoStream))
-                        await srDecrypt.WriteAsync(plainText);
+                        await srDecrypt.WriteAsync(plainText).ConfigureAwait(false);
                 encrypted = memoryStream.ToArray();
             }
 

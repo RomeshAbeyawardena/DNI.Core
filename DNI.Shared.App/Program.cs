@@ -14,12 +14,12 @@ namespace DNI.Shared.App
 {
     public static partial class Program
     {
-        public static async Task Main()
+        public static async Task Main(string[] args)
         {
             await new DefaultAppHost<Startup>()
                 .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>())
                 .ConfigureStartupDelegate((startup, args) => startup.Begin(args.ToArray()))
-                .Start();
+                .Start(args);
         }
 
         public static void OnCatch(Exception ex)

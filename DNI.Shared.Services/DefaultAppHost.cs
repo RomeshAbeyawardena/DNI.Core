@@ -25,12 +25,21 @@ namespace DNI.Shared.Services
             return this;
         }
 
+        public async Task<T> Start<T>(params object[] args)
+        {
+            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            var startup = serviceProvider.GetRequiredService<TStartup>();
+            
+            var genericTask = (Task<T>)_startupDelegate(startup, args);
+            return await genericTask.ConfigureAwait(false);
+        }
+
         public async Task Start(params object[] args)
         {
             var serviceProvider = _serviceCollection.BuildServiceProvider();
             var startup = serviceProvider.GetRequiredService<TStartup>();
 
-            await _startupDelegate(startup, args);
+            await _startupDelegate(startup, args).ConfigureAwait(false);;
         }
 
         public DefaultAppHost()

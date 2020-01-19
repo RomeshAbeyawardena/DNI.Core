@@ -197,7 +197,7 @@ namespace DNI.Shared.Services
         {
             try
             {
-                await Task.WhenAll(Invoke());
+                await Task.WhenAll(Invoke()).ConfigureAwait(false);;
             }
             catch(Exception exception)
             {
@@ -235,7 +235,7 @@ namespace DNI.Shared.Services
         {
             try
             {
-                return await Task.WhenAll(Invoke(value));
+                return await Task.WhenAll(Invoke(value)).ConfigureAwait(false);;
             }
             catch(Exception exception)
             {
