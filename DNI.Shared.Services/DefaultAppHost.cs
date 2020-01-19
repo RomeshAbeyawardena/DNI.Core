@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Domains;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -37,16 +38,27 @@ namespace DNI.Shared.Services
         {
             var startupTask = GetStartup(args);
             if (!(startupTask is Task<T> genericTask))
-                throw new InvalidCastException($"Unable to cast {typeof(Task)} to Task<{typeof(T)}>");
+                throw new InvalidCastException($"Unable to cast {typeof(Task)} to {typeof(Task<T>)}");
 
-            return await genericTask
-                .ConfigureAwait(false);
+            var result = await FluentTry
+                .CreateAsync<T>()
+                .Try(async() => await genericTask)
+                .InvokeAsync().ConfigureAwait(false);
+            
+
+            return result.FirstOrDefault();
         }
 
         public async Task Start(params object[] args)
         {
             await GetStartup(args)
-                .ConfigureAwait(false);;
+                .ConfigureAwait(false);
+        }
+
+        public IAppHost<TStartup> Configure(Action<IAppHost<TStartup>> configureAction)
+        {
+            configureAction(this);
+            return this;
         }
 
         public DefaultAppHost()

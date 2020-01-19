@@ -42,6 +42,12 @@ namespace DNI.Shared.Services
                 .Create();
         }
 
+        public static IFluentTryAsync<TResult> CreateAsync<TResult>()
+        {
+            return DefaultFluentTryAsync<TResult>
+                .Create();
+        }
+
         public static IFluentTryAsync<T, TResult> CreateAsync<T, TResult>()
         {
             return DefaultFluentTryAsync<T, TResult>

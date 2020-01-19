@@ -223,6 +223,35 @@ namespace DNI.Shared.Services
         }
     }
 
+    internal class DefaultFluentTryAsync<TResult> : DefaultFluentTry<Task<TResult>>, IFluentTryAsync<TResult>
+    {
+        public new static IFluentTryAsync<TResult> Create()
+        {
+            return new DefaultFluentTryAsync<TResult>(new ConcurrentBag<Func<Task<TResult>>>(), Switch.Create<Type, ExceptionHandler>());
+        }
+        public new IFluentTryAsync<TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown)
+        {
+            return (IFluentTryAsync<TResult>)base.Catch<TException>(exceptionAction, continueOnExceptionThrown);
+        }
+
+        public new IFluentTryAsync<TResult> Try(Func<Task<TResult>> result)
+        {
+            return (IFluentTryAsync<TResult>)base.Try(result);
+        }
+
+        public async Task<IEnumerable<TResult>> InvokeAsync()
+        {
+            return await Task.WhenAll(Invoke());
+        }
+
+        private DefaultFluentTryAsync(ConcurrentBag<Func<Task<TResult>>> actionConcurrentBag, 
+            ISwitch<Type, ExceptionHandler> catchActionSwitch)
+            : base(actionConcurrentBag, catchActionSwitch)
+        {
+
+        }
+    }
+
     internal class DefaultFluentTryAsync<T, TResult> : DefaultFluentTry<T, Task<TResult>>, IFluentTryAsync<T, TResult>
     {
         public DefaultFluentTryAsync(ConcurrentBag<Func<T, Task<TResult>>> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)

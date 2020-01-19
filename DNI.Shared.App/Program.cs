@@ -5,6 +5,7 @@ using System;
 using System.Threading.Tasks;
 
 using System.Linq;
+using DNI.Shared.Contracts;
 
 namespace DNI.Shared.App
 {
@@ -13,11 +14,17 @@ namespace DNI.Shared.App
         public static async Task<int> Main(string[] args)
         {
             var value = await AppHost.Build<Startup>()
+                .Configure(appHost => appHost.OnStart += AppHost_OnStart)
                 .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>())
                 .ConfigureStartupDelegate((startup, args) => startup.Begin(args.ToArray()))
                 .Start<int>(args).ConfigureAwait(false);
 
             return value;
+        }
+
+        private static void AppHost_OnStart(object sender, IAppHostEventArgs e)
+        {
+            Console.WriteLine("Arguments: ",string.Join(',', e.Arguments));
         }
 
         public static void OnCatch(Exception ex)

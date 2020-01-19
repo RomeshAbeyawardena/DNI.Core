@@ -100,4 +100,11 @@ namespace DNI.Shared.Contracts
         /// <returns></returns>
         new IFluentTryAsync<T, TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
     }
+
+    public interface IFluentTryAsync<TResult> : IFluentTry<Task<TResult>>
+    {
+        Task<IEnumerable<TResult>> InvokeAsync();
+        new IFluentTryAsync<TResult> Try(Func<Task<TResult>> result);
+        new IFluentTryAsync<TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown  = false);
+    }
 }

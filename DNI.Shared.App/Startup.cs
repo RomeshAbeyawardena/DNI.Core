@@ -1,7 +1,8 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Providers;
+using DNI.Shared.Domains;
 using System;
-using System.Collections.Generic;
+using DNI.Shared.Shared.Extensions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,16 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
+            Console.Write("Enter Password:");
+            var password = _hashingProvider.HashBytes(Constants.SHA512, Console.ReadLine()
+                .GetBytes(Encoding.ASCII));
+
+            Console.Write("Confirm Password:");
+            var confirmPassword = _hashingProvider.HashBytes(Constants.SHA512, Console.ReadLine()
+                .GetBytes(Encoding.ASCII));
+
+            if(password.SequenceEqual(confirmPassword))
+                Console.WriteLine("Password's match!");
 
             var firstRun = true;
             ConsoleKeyInfo lastConsoleKeyInfo = default;
