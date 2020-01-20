@@ -1,5 +1,20 @@
 ﻿@model SectionViewComponentModel
 
-<section class="section--@Model.Container">
-    @Html.Raw(Model.Content)
-</section>
+@switch(Model.Type)
+{
+    case SectionType.Section:
+        <section class="section--@Model.Container">
+            @Html.Raw(Model.Content)
+        </section>
+        break;
+    case SectionType.Block:
+        <div class="block--@Model.Container">
+            @Html.Raw(Model.Content)
+        </div>
+        break;
+    case SectionType.Segment:
+        <li class="segment--@Model.Container">
+            @Html.Raw(Model.Content)
+        </li>
+        break;
+}

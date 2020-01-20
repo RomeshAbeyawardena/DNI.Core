@@ -6,6 +6,6 @@ namespace DNI.Shared.Web.ViewModels
     {
         public string Container { get; set; }
         public string Content { get; set; }
-        public SectionType SectionType { get; }
+        public SectionType Type { get; }
     }
 }
