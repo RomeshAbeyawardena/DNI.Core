@@ -14,8 +14,8 @@ namespace DNI.Shared.Web.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync(PageViewComponentRequestViewModel request)
         {
             var pageTask = _pageService.GetPage(request.PageName, request.ParentPageId);
-
-            var pageViewComponentViewModel = Map<Page, PageViewComponentViewModel>(await pageTask);
+            var pages = await pageTask;
+            var pageViewComponentViewModel = Map<Page, PageViewComponentViewModel>(pages);
 
             return View(pageViewComponentViewModel);
         }

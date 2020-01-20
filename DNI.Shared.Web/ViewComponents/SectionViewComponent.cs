@@ -1,7 +1,10 @@
 ﻿using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Web.Contracts;
+using DNI.Shared.Web.Domains;
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DNI.Shared.Web.ViewComponents
 {
@@ -9,8 +12,9 @@ namespace DNI.Shared.Web.ViewComponents
     {
         private readonly IPageService _pageService;
 
-        public IViewComponentResult Invoke(SectionViewComponentModel sectionViewComponentViewModel)
+        public async Task<IViewComponentResult> InvokeAsync(SectionViewComponentModel sectionViewComponentViewModel)
         {
+            sectionViewComponentViewModel.Sections = Map<Section, SectionViewComponentModel>(await _pageService.GetPageSections(1));
             return View(sectionViewComponentViewModel);
         }
 

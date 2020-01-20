@@ -1,20 +1,19 @@
-﻿@model SectionViewComponentModel
+﻿@using DNI.Shared.Services;
+@model SectionViewComponentModel
 
-@switch(Model.Type)
-{
-    case SectionType.Section:
-        <section class="section--@Model.Container">
-            @Html.Raw(Model.Content)
-        </section>
-        break;
-    case SectionType.Block:
-        <div class="block--@Model.Container">
-            @Html.Raw(Model.Content)
-        </div>
-        break;
-    case SectionType.Segment:
-        <li class="segment--@Model.Container">
-            @Html.Raw(Model.Content)
-        </li>
-        break;
+@{
+    var identifier = Html.Switch(Switch.Create<SectionType, string>()
+        .CaseWhen(SectionType.Section,"section")
+        .CaseWhen(SectionType.Block,"div")
+        .CaseWhen(SectionType.Segment,"li"), Model.Type);
+
+    var replacedContent = Html.Raw(Model.Content);
+
+    if(Model.Sections != null)
+        foreach (var section in Model?.Sections)
+            replacedContent = replacedContent.Replace(Html, $"[!{section.Name}]", await Component.InvokeAsync<SectionViewComponent>());
 }
+
+    <@identifier class="@identifier--@Model.Container">
+        @replacedContent
+    </@identifier>

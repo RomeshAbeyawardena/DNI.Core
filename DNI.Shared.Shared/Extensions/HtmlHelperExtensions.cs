@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using DNI.Shared.Contracts;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
@@ -122,6 +123,11 @@ namespace DNI.Shared.Shared.Extensions
                 displayOnConditionFalse == null 
                 ? null 
                 : htmlHelper.Raw(displayOnConditionFalse));
+        }
+
+        public static IHtmlContent Switch<TKey, TValue>(this IHtmlHelper htmlHelper, ISwitch<TKey, TValue> @switch, TKey currentValue)
+        {
+            return htmlHelper.Raw(@switch.Case(currentValue));
         }
     }
 }
