@@ -6,6 +6,14 @@ namespace DNI.Shared.Shared.Extensions
 {
     public static class HtmlHelperExtensions
     {
+        /// <summary>
+        /// Represents an if with an optional else block.
+        /// </summary>
+        /// <param name="htmlHelper"></param>
+        /// <param name="condition"></param>
+        /// <param name="displayOnConditionTrue"></param>
+        /// <param name="displayOnConditionFalse"></param>
+        /// <returns></returns>
         public static IHtmlContent DisplayIf(this IHtmlHelper htmlHelper, 
             bool condition, IHtmlContent displayOnConditionTrue, 
             IHtmlContent displayOnConditionFalse = default)
@@ -19,6 +27,14 @@ namespace DNI.Shared.Shared.Extensions
             return htmlHelper.Raw(string.Empty);
         }
 
+        /// <summary>
+        /// Represents an if with an optional else block.
+        /// </summary>
+        /// <param name="htmlHelper"></param>
+        /// <param name="condition"></param>
+        /// <param name="displayOnConditionTrue"></param>
+        /// <param name="displayOnConditionFalse"></param>
+        /// <returns></returns>
         public static async Task<IHtmlContent> DisplayIfAsync(this IHtmlHelper htmlHelper, 
             Task<bool> condition, Task<IHtmlContent> displayOnConditionTrue,
             Task<IHtmlContent> displayOnConditionFalse = default)
@@ -35,6 +51,31 @@ namespace DNI.Shared.Shared.Extensions
             return htmlHelper.Raw(string.Empty);
         }
 
+        /// <summary>
+        /// Represents an if with an optional else block.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="htmlHelper"></param>
+        /// <param name="condition"></param>
+        /// <param name="displayOnConditionTrue"></param>
+        /// <param name="displayOnConditionFalse"></param>
+        /// <returns></returns>
+        public static async Task<IHtmlContent> DisplayIfAsync<T>(this IHtmlHelper htmlHelper, Task<bool> condition, Task<T> displayOnConditionTrue, 
+            Task<T> displayOnConditionFalse = default)
+        {
+            return await DisplayIfAsync(htmlHelper, condition, 
+                htmlHelper.HtmlRawAsync(displayOnConditionTrue), 
+                htmlHelper.HtmlRawAsync(displayOnConditionFalse));
+        }
+
+        /// <summary>
+        /// Represents an if with an optional else block.
+        /// </summary>
+        /// <param name="htmlHelper"></param>
+        /// <param name="condition"></param>
+        /// <param name="displayonConditionTrue"></param>
+        /// <param name="displayonConditionFalse"></param>
+        /// <returns></returns>
         public static async Task<IHtmlContent> DisplayIfAsync(this IHtmlHelper htmlHelper,
             Task<bool> condition, Task<string> displayonConditionTrue, 
             Task<string> displayonConditionFalse = default)
@@ -51,6 +92,21 @@ namespace DNI.Shared.Shared.Extensions
             return htmlHelper.Raw(content);
         }
 
+        public static async Task<IHtmlContent> HtmlRawAsync<T>(this IHtmlHelper htmlHelper, Task<T> contentTask)
+        {
+            var content = await contentTask;
+
+            return htmlHelper.Raw(content);
+        }
+
+        /// <summary>
+        /// Represents an if with an optional else block.
+        /// </summary>
+        /// <param name="htmlHelper"></param>
+        /// <param name="condition"></param>
+        /// <param name="displayOnConditionTrue"></param>
+        /// <param name="displayOnConditionFalse"></param>
+        /// <returns></returns>
         public static IHtmlContent DisplayIf(this IHtmlHelper htmlHelper, 
             bool condition, string displayOnConditionTrue, 
             string displayOnConditionFalse = default)
