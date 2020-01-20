@@ -7,9 +7,9 @@ namespace DNI.Shared.Web.ViewModels
     {
         public DomainProfile()
         {
-            CreateMap<Page, HeaderViewComponentViewModel>();
+            CreateMap<Page, HeaderViewComponentModel>();
             CreateMap<Page, PageViewComponentViewModel>();
-            CreateMap<Section, SectionViewComponentViewModel>();
+            CreateMap<Section, SectionViewComponentModel>();
         }
     }
 }

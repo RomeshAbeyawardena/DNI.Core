@@ -4,6 +4,6 @@ namespace DNI.Shared.Web.ViewModels
 {
     public class PageViewComponentViewModel
     {
-        public IEnumerable<SectionViewComponentViewModel> Sections { get; set; }
+        public IEnumerable<SectionViewComponentModel> Sections { get; set; }
     }
 }

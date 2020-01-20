@@ -1,6 +1,6 @@
 ﻿namespace DNI.Shared.Web.ViewModels
 {
-    public class HeaderViewComponentViewModel
+    public class HeaderViewComponentModel
     {
         public string Title { get; set; }
         public string Description { get; set; }

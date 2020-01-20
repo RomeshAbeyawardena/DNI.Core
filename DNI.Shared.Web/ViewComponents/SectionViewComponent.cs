@@ -9,15 +9,7 @@ namespace DNI.Shared.Web.ViewComponents
     {
         private readonly IPageService _pageService;
 
-        //public async Task<IViewComponentResult> InvokeAsync(SectionViewComponentRequestViewModel request)
-        //{
-        //    var pageSectionTask = _pageService.GetPageSection(request.PageName, request.SectionId, request.ParentPageId);
-
-        //    var sectionViewComponentViewModel = Map<Section, SectionViewComponentViewModel>(await pageSectionTask);
-        //    return Invoke(sectionViewComponentViewModel);
-        //}
-
-        public IViewComponentResult Invoke(SectionViewComponentViewModel sectionViewComponentViewModel)
+        public IViewComponentResult Invoke(SectionViewComponentModel sectionViewComponentViewModel)
         {
             return View(sectionViewComponentViewModel);
         }
