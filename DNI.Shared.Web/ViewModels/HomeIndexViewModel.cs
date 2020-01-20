@@ -13,5 +13,6 @@ namespace DNI.Shared.Web.ViewModels
         public Task<bool> DisplayValue { get; set; }
         public Task<string> Value { get; set; }
         public Task<string> ElseValue { get; set; }
+        public int PageId { get; set; }
     }
 }

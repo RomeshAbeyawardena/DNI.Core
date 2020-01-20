@@ -1,5 +1,9 @@
-﻿@model HomeIndexViewModel;
+﻿@model HomeIndexViewModel
 
+@section headerSection
+{
+    @(Component.InvokeAsync<HeaderViewComponent>(Model.PageId))
+}
 
 @await Html.DisplayIfAsync(Model.DisplayValue, 
     (Component.InvokeAsync<HeroViewComponent>(Model.HeroViewComponentViewModel)), 

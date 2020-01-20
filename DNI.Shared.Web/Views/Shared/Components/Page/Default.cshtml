@@ -1,0 +1,6 @@
+﻿@model PageViewComponentViewModel
+
+@foreach(var section in Model.Sections)
+{
+    @await (Component.InvokeAsync<SectionViewComponent>(section))
+}
