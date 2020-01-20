@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using DNI.Shared.Contracts;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using MediatR;
+using DNI.Shared.Web.Contracts;
+using DNI.Shared.Web.Services;
+
 namespace DNI.Shared.Web
 {
     public class ServiceRegistration : IServiceRegistration
@@ -17,6 +15,7 @@ namespace DNI.Shared.Web
             var currentAssembly = Assembly.GetAssembly(typeof(ServiceRegistration));
 
             services
+                .AddTransient<IPageService, PageService>()
                 .AddAutoMapper(currentAssembly);
 
             services.AddMediatR(currentAssembly);

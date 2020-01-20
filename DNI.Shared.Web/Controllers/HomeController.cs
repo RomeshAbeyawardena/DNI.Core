@@ -2,10 +2,6 @@
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DNI.Shared.Web.Controllers
@@ -16,21 +12,10 @@ namespace DNI.Shared.Web.Controllers
         {
             await Task.FromResult(true);
             return View(new HomeIndexViewModel {
-                HeroViewComponentViewModel = new HeroViewComponentViewModel
+                PageRequest = new PageViewComponentRequestViewModel
                 {
-                    Title = "Home",
-                    Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis eros non lectus pulvinar vehicula. Cras ut molestie ex. Curabitur vulputate dignissim lorem, quis malesuada metus convallis at. Morbi eu mi ante. Nunc aliquet tempor erat ac posuere. Nulla facilisi. Duis nec quam purus. Morbi non ipsum nibh.",
-                    ImageUrl = "https://www.lipsum.com/images/banners/white_970x90.gif"
-                },
-                AlternateHeroViewComponentViewModel = new HeroViewComponentViewModel
-                {
-                    Title = "Alternate Home",
-                    Content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis eros non lectus pulvinar vehicula. Cras ut molestie ex. Curabitur vulputate dignissim lorem, quis malesuada metus convallis at. Morbi eu mi ante. Nunc aliquet tempor erat ac posuere. Nulla facilisi. Duis nec quam purus. Morbi non ipsum nibh.",
-                    ImageUrl = "https://www.lipsum.com/images/banners/black_970x90.gif"
-                },
-                DisplayValue = DisplayValue(homeIndexRequestViewModel.DisplayValue),
-                Value = GetValue(homeIndexRequestViewModel.Value),
-                ElseValue = GetElseValue("Else")
+                    PageName = "Home"
+                }
             });
         }
 

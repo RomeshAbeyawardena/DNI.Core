@@ -2,9 +2,7 @@
 
 @section headerSection
 {
-    @(Component.InvokeAsync<HeaderViewComponent>(Model.PageId))
+    @await (Component.InvokeAsync<HeaderViewComponent>(Model.PageRequest))
 }
 
-@await Html.DisplayIfAsync(Model.DisplayValue, 
-    (Component.InvokeAsync<HeroViewComponent>(Model.HeroViewComponentViewModel)), 
-    (Component.InvokeAsync<HeroViewComponent>(Model.AlternateHeroViewComponentViewModel)))
+@await (Component.InvokeAsync<PageViewComponent>(Model.PageRequest))

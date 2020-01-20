@@ -4,11 +4,6 @@ using DNI.Shared.Contracts.Providers;
 using DNI.Shared.Services.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {

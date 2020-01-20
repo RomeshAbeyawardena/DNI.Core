@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
 using DNI.Shared.Contracts;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Providers
 {

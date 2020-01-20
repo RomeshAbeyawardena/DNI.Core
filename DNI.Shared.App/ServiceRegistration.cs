@@ -1,9 +1,6 @@
 ﻿using DNI.Shared.Contracts;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using DNI.Shared.Shared.Extensions;
 using System.Text;
 using DNI.Shared.Services.Extensions;
 
