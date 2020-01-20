@@ -1,1 +1,41 @@
 ﻿@import 'normalise';
+@import 'variables';
+
+.flex-table,
+.col,
+.row {
+    display: flex;
+}
+
+.flex-table{
+    
+    .head {
+        flex-grow: 1;
+        .col {
+            font-weight: 800;
+        }
+    }
+
+    .foot {
+        .col {
+            font-style: italic;
+            font-weight: 600;
+        }
+    }
+
+    .row {
+        flex-direction: row;
+    }
+
+    .col {
+        flex-grow: 1;
+        flex-direction: column;
+        width:16.6%
+    }
+
+    @media screen and (max-width: $breakpoint-small-phone){
+        .col {
+            flex-direction: row;
+        }
+    }
+}
