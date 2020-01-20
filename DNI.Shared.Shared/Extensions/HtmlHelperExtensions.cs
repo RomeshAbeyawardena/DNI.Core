@@ -21,14 +21,14 @@ namespace DNI.Shared.Shared.Extensions
             if (condition)
                 return displayOnConditionTrue;
             
-            if(displayOnConditionFalse == default)
+            if(displayOnConditionFalse != default)
                 return displayOnConditionFalse;
             
             return htmlHelper.Raw(string.Empty);
         }
 
         /// <summary>
-        /// Represents an if with an optional else block.
+        /// Represents an async if with an optional else block, without blocking the current thread until its needed to be displayed.
         /// </summary>
         /// <param name="htmlHelper"></param>
         /// <param name="condition"></param>
@@ -44,7 +44,7 @@ namespace DNI.Shared.Shared.Extensions
                 return await displayOnConditionTrue
                     .ConfigureAwait(false);
 
-            if(displayOnConditionFalse == default)
+            if(displayOnConditionFalse != default)
                 return await displayOnConditionFalse
                     .ConfigureAwait(false);
 
@@ -52,7 +52,7 @@ namespace DNI.Shared.Shared.Extensions
         }
 
         /// <summary>
-        /// Represents an if with an optional else block.
+        /// Represents an async if with an optional else block, without blocking the current thread until its needed to be displayed.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="htmlHelper"></param>
@@ -69,7 +69,7 @@ namespace DNI.Shared.Shared.Extensions
         }
 
         /// <summary>
-        /// Represents an if with an optional else block.
+        /// Represents an async if with an optional else block, without blocking the current thread until its needed to be displayed.
         /// </summary>
         /// <param name="htmlHelper"></param>
         /// <param name="condition"></param>
@@ -85,6 +85,12 @@ namespace DNI.Shared.Shared.Extensions
                 htmlHelper.HtmlRawAsync(displayonConditionFalse));
         }
 
+        /// <summary>
+        /// Converts a string from an async request to IHTML, without blocking the current thread until its needed to be displayed.
+        /// </summary>
+        /// <param name="htmlHelper"></param>
+        /// <param name="contentTask"></param>
+        /// <returns></returns>
         public static async Task<IHtmlContent> HtmlRawAsync(this IHtmlHelper htmlHelper, Task<string> contentTask)
         {
             var content = await contentTask;

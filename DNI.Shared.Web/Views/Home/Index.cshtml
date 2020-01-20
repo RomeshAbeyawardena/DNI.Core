@@ -1,3 +1,6 @@
 ﻿@model HomeIndexViewModel;
 
-@await Html.DisplayIfAsync(Model.DisplayValue, Model.Value)
+
+@await Html.DisplayIfAsync(Model.DisplayValue, 
+    (Component.InvokeAsync<HeroViewComponent>(Model.HeroViewComponentViewModel)), 
+    (Component.InvokeAsync<HeroViewComponent>(Model.AlternateHeroViewComponentViewModel)))
