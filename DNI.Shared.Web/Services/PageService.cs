@@ -35,7 +35,8 @@ namespace DNI.Shared.Web.Services
         public async Task<IEnumerable<StyleSheet>> GetStyleSheets(Page page)
         {
             return await Task.FromResult(new[] { 
-                new StyleSheet {} 
+                new StyleSheet { Type = "text/css", ReferenceUrl = "/Content/_normalise.css" },
+                new StyleSheet { Type = "text/css", ReferenceUrl = "/Content/site.css" } 
             });
         }
 

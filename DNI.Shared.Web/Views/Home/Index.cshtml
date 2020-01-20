@@ -3,6 +3,7 @@
 @section headerSection
 {
     @await (Component.InvokeAsync<HeaderViewComponent>(Model.PageRequest))
+    @await  (Component.InvokeAsync<StyleSheetViewComponent>(Model.PageRequest))
 }
 
 @await (Component.InvokeAsync<PageViewComponent>(Model.PageRequest))

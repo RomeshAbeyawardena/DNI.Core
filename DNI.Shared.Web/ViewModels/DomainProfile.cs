@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DNI.Shared.Web.Domains;
+using DNI.Shared.Web.ViewModels.Partials;
 
 namespace DNI.Shared.Web.ViewModels
 {
@@ -10,6 +11,7 @@ namespace DNI.Shared.Web.ViewModels
             CreateMap<Page, HeaderViewComponentModel>();
             CreateMap<Page, PageViewComponentViewModel>();
             CreateMap<Section, SectionViewComponentModel>();
+            CreateMap<StyleSheet, StyleSheetViewModel>();
         }
     }
 }

@@ -16,9 +16,9 @@ namespace DNI.Shared.Web.ViewComponents
     {
         private readonly IPageService _pageService;
 
-        public async Task<IViewComponentResult> InvokeAsync(string pageName, int? parentPageId)
+        public async Task<IViewComponentResult> InvokeAsync(PageViewComponentRequestViewModel request)
         {
-            var pageTask =_pageService.GetPage(pageName, parentPageId);
+            var pageTask =_pageService.GetPage(request.PageName, request.ParentPageId);
             var styleSheets = _pageService.GetStyleSheets(await pageTask);
 
             var styleSheetViewModels = Map<StyleSheet, StyleSheetViewModel>(await styleSheets);

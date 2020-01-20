@@ -1,0 +1,52 @@
+﻿a, html, header, body,
+h1, h2, h3, h4, h5, h6,
+p, section, span, ul,
+li, form, table, tr, td, thead, tbody, tfoot {
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    background-color: #fff;
+    color: #000;
+    width: 100%;
+    height: inherit;
+    line-height: 120%;
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, section {
+    display: block;
+}
+
+a, span {
+    display: inline;
+}
+
+html {
+    font-size: 1rem;
+}
+
+h1 {
+    font-size: 200%;
+}
+
+h2 {
+    font-size: 180%;
+}
+
+h3 {
+    font-size: 160%;
+}
+
+h4 {
+    font-size: 140%;
+}
+
+h5 {
+    font-size: 120%;
+}
+
+
+h6 {
+    font-size: 100%;
+}
