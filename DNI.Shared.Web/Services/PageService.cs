@@ -28,8 +28,8 @@ namespace DNI.Shared.Web.Services
         public async Task<IEnumerable<Section>> GetPageSections(int sectionId)
         {
             return await Task.FromResult(new []{ 
-                new Section { Name="bulletPoint1", Container = "list-item", Content = "A bullet point" }, 
-                new Section { Name="bulletPoint2", Container = "list-item", Content = "Another bullet point" } });
+                new Section { SectionTypeId = 3, Name="bulletPoint1", Container = "list-item", Content = "A bullet point" }, 
+                new Section { SectionTypeId = 3, Name="bulletPoint2", Container = "list-item", Content = "Another bullet point" } });
         }
 
         private Section[] GetSections()

@@ -19,21 +19,5 @@ namespace DNI.Shared.Shared.Extensions
             return condition ? value : valueOnConditionFalse;
         }
 
-        public static IHtmlContent Replace(this IHtmlContent value, IHtmlHelper htmlHelper, string findExpression, IHtmlContent replacedHtmlContent)
-        {
-            var textWriter = new StringWriter();
-            value.WriteTo(textWriter, HtmlEncoder.Create(new TextEncoderSettings()));
-            textWriter.ToString()
-            var stringOriginalHtmlContent = replacedHtmlContent.ToString();
-
-            var stringReplacedHtmlContent = value.Replace(findExpression, stringHtmlContent);
-
-            return htmlHelper.Raw(stringReplacedHtmlContent);
-        }
-
-        private static string GetString()
-        {
-            DisposableHelper.Use(var textWriter = new StringWriter())
-        }
     }
 }

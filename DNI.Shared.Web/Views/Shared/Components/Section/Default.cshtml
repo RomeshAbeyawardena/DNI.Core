@@ -2,18 +2,21 @@
 @model SectionViewComponentModel
 
 @{
-    var identifier = Html.Switch(Switch.Create<SectionType, string>()
-        .CaseWhen(SectionType.Section,"section")
-        .CaseWhen(SectionType.Block,"div")
-        .CaseWhen(SectionType.Segment,"li"), Model.Type);
-
     var replacedContent = Html.Raw(Model.Content);
 
     if(Model.Sections != null)
         foreach (var section in Model?.Sections)
-            replacedContent = replacedContent.Replace(Html, $"[!{section.Name}]", await Component.InvokeAsync<SectionViewComponent>());
+        {
+            
+            var htmlContent = await Html.PartialAsync("Partials/_section", new SectionViewModel { 
+                Container = section.Container, 
+                Content = Html.Raw(section.Content), 
+                Type = section.Type });
+            replacedContent = replacedContent.Replace(Html, $"[!{section.Name}]", htmlContent);
+        }
 }
 
-    <@identifier class="@identifier--@Model.Container">
-        @replacedContent
-    </@identifier>
+@await Html.PartialAsync("Partials/_section", new SectionViewModel { 
+                Container = Model.Container, 
+                Content = replacedContent, 
+                Type = Model.Type })
