@@ -8,7 +8,7 @@ namespace DNI.Shared.Web.Contracts
     {
         Task<Page> GetPage(string pageName, int? parentPageId = null);
         Task<Section> GetPageSection(string pageName, int sectionId, int? parentPageId);
-         Task<IEnumerable<Section>> GetPageSections(int sectionId);
-        object GetStyleSheets(Page page);
+        Task<IEnumerable<Section>> GetPageSections(int sectionId);
+        Task<IEnumerable<StyleSheet>> GetStyleSheets(Page page);
     }
 }

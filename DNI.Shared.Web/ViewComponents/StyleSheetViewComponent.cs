@@ -1,5 +1,8 @@
 ﻿using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Web.Contracts;
+using DNI.Shared.Web.Domains;
+using DNI.Shared.Web.ViewModels;
+using DNI.Shared.Web.ViewModels.Partials;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,7 +20,12 @@ namespace DNI.Shared.Web.ViewComponents
         {
             var pageTask =_pageService.GetPage(pageName, parentPageId);
             var styleSheets = _pageService.GetStyleSheets(await pageTask);
-            return View();
+
+            var styleSheetViewModels = Map<StyleSheet, StyleSheetViewModel>(await styleSheets);
+
+            return View(new StyleSheetViewComponentModel {
+                StyleSheetViewModel = styleSheetViewModels
+            });
         }
 
         public StyleSheetViewComponent(IPageService pageService)

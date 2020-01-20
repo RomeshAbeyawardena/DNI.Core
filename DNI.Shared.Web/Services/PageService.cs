@@ -27,14 +27,21 @@ namespace DNI.Shared.Web.Services
 
         public async Task<IEnumerable<Section>> GetPageSections(int sectionId)
         {
-            return await Task.FromResult(new []{ 
-                new Section { SectionTypeId = 3, Name="bulletPoint1", Container = "list-item", Content = "A bullet point" }, 
+            return await Task.FromResult(new[]{
+                new Section { SectionTypeId = 3, Name="bulletPoint1", Container = "list-item", Content = "A bullet point" },
                 new Section { SectionTypeId = 3, Name="bulletPoint2", Container = "list-item", Content = "Another bullet point" } });
+        }
+
+        public async Task<IEnumerable<StyleSheet>> GetStyleSheets(Page page)
+        {
+            return await Task.FromResult(new[] { 
+                new StyleSheet {} 
+            });
         }
 
         private Section[] GetSections()
         {
-            return new []
+            return new[]
             {
                 new Section
                 {
