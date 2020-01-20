@@ -1,0 +1,6 @@
+﻿@model StyleSheetViewComponentModel
+
+@foreach(var styleSheet in Model.StyleSheetViewModel)
+{
+    @await Html.PartialAsync("partials/_stylesheet", styleSheet)
+}
