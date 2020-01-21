@@ -1,2 +1,6 @@
-﻿$breakpoint-small-phone: 375px;
+﻿@import "include";
+
+$breakpoint-small-phone: 414px;
 $breakpoint-tablet: 768px;
+
+$raleWayFont: 'Raleway', sans-serif;

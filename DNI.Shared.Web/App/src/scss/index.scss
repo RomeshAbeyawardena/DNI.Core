@@ -1,33 +1,47 @@
 ﻿@import 'normalise';
 @import 'variables';
-@import 'include';
-
 body {
     font-family: $raleWayFont;
     font-weight:400;
 }
+.page {
+    margin: auto;
+    width: 980px;
 
-.section {
+    .section {
+        a.link {
+            text-decoration: underline;
+            color:cornflowerblue;
 
-    .heading {
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-    }
+            &:active {
+                color: seagreen;
+            }
 
-    p {
-        margin-bottom: 0.5rem;
-    }
+            &:hover {
+                color: cadetblue;
+            }
+        }
 
-    ul {
-        margin-left: 2rem;
-        margin-bottom: 1rem;
+        .heading {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
 
-        li {
-        list-style-type: square;
+        p {
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            margin-left: 2rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+
+            li {
+                list-style-type: square;
+            }
         }
     }
 }
-
 .flex-table,
 .col,
 .row {
@@ -58,7 +72,14 @@ body {
     .col {
         flex-grow: 1;
         flex-direction: column;
-        text-align: justify;
+
+        &.padded {
+            padding: 0.5rem;
+        }
+
+        &.justify {
+            text-align: justify;
+        }
     }
 
     @media screen and (max-width: $breakpoint-small-phone) {
