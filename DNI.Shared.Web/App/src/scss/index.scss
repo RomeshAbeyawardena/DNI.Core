@@ -2,16 +2,20 @@
 @import 'variables';
 body {
     font-family: $raleWayFont;
-    font-weight:400;
+    font-weight:$normal-weight;
 }
 .page {
-    margin: auto;
-    width: 980px;
-
+    @media screen and (min-width: $min-width) {
+        margin: auto;
+        width: $min-width;
+    }
+    @media screen and (max-width: $min-width){
+        padding: 1rem;
+    }
     .section {
         a.link {
             text-decoration: underline;
-            color:cornflowerblue;
+            color: cornflowerblue;
 
             &:active {
                 color: seagreen;
@@ -54,14 +58,14 @@ body {
         flex-grow: 1;
 
         .col {
-            font-weight: 800;
+            font-weight: $bolder-weight;
         }
     }
 
     .foot {
         .col {
             font-style: italic;
-            font-weight: 600;
+            font-weight: $bold-weight;
         }
     }
 
@@ -73,12 +77,16 @@ body {
         flex-grow: 1;
         flex-direction: column;
 
-        &.padded {
-            padding: 0.5rem;
-        }
-
         &.justify {
             text-align: justify;
+        }
+    }
+
+    .col:first-child {
+        &.padded {
+            @media screen and (min-width: $min-width) {
+                padding-right: 1.5rem;
+            }
         }
     }
 
