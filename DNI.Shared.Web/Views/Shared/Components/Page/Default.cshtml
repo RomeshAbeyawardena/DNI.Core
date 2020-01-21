@@ -2,5 +2,8 @@
 
 @foreach(var section in Model.Sections)
 {
-    @await (Component.InvokeAsync<SectionViewComponent>(section))
+    if(section.IsHero)
+        @await (Component.InvokeAsync<HeroViewComponent>(section))
+    else
+        @await (Component.InvokeAsync<SectionViewComponent>(section))
 }

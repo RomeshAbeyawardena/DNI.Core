@@ -9,6 +9,7 @@ namespace DNI.Shared.Web.ViewModels
         public string Container { get; set; }
         public string Content { get; set; }
         public SectionType Type { get; set; }
+        public bool IsHero { get; set; }
         public IEnumerable<SectionViewComponentModel> Sections { get; set; }
     }
 }
