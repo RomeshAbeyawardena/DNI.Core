@@ -10,7 +10,10 @@ namespace DNI.Shared.Shared.Extensions
     {
         public static IEnumerable<T> Append<T>(this IEnumerable<T> items, IEnumerable<T> newItems)
         {
-            var itemList = new List<T>(items);
+            var itemList = items == null 
+                ? new List<T>() 
+                : new List<T>(items);
+
             itemList.AddRange(newItems);
             return itemList.ToArray();
         }
