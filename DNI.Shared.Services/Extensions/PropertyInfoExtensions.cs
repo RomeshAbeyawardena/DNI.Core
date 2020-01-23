@@ -17,7 +17,8 @@ namespace DNI.Shared.Services.Extensions
                 || propertyType == typeof(short) 
                 || propertyType == typeof(int) 
                 || propertyType == typeof(long) 
-                || propertyType == typeof(int))
+                || propertyType == typeof(decimal)
+                || propertyType == typeof(float))
                 return 0;
 
             if(propertyType == typeof(string))
@@ -25,6 +26,9 @@ namespace DNI.Shared.Services.Extensions
 
             if(propertyType == typeof(Guid))
                 return default(Guid);
+
+            if(propertyType == typeof(byte[]))
+                return default (byte[]);
 
             return default;
         }

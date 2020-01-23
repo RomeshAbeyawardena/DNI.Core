@@ -66,7 +66,7 @@ namespace DNI.Shared.Services
                 .GetEntityTypes()
                 .SingleOrDefault(entity => entity.ClrType == entityType);
             
-            if(dbContextEntityType == null) //use internal reflection.
+            if(dbContextEntityType == null) //use internal reflection as fallback.
                 return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                     .Where(property => property.GetCustomAttribute<KeyAttribute>() != null);
 
