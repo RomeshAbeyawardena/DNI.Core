@@ -81,12 +81,32 @@ namespace DNI.Shared.Services.Abstraction
 
         private void SetModifierFlagValues<TEntity>(IEnumerable<PropertyInfo> properties, TEntity entity, object value)
         {
+            var isDateTime = false;
+            var isDateTimeOffset = false;
+            DateTimeOffset dateTimeOffset = default;
+            DateTime dateTimeValue = default;
+
+            if(value is DateTime _dateTimeValue)
+            {
+                isDateTime = true;
+                dateTimeValue = _dateTimeValue;
+            }
+
+            if(value is DateTimeOffset _dateTimeOffset)
+            {
+                isDateTimeOffset = true;
+                dateTimeOffset = _dateTimeOffset;
+            }
+
+            if(!isDateTime && !isDateTimeOffset)
+                throw new InvalidOperationException();
+
             foreach(var property in properties)
             {
-                if(property.PropertyType == typeof(DateTime) && value is DateTimeOffset dateTimeOffset)
+                if(property.PropertyType == typeof(DateTime) && isDateTimeOffset)
                      value = dateTimeOffset.DateTime;
 
-                if(property.PropertyType == typeof(DateTimeOffset) && value is DateTime dateTimeValue)
+                if(property.PropertyType == typeof(DateTimeOffset) && isDateTime)
                      value = new DateTimeOffset(dateTimeValue);
 
                 property.SetValue(entity, value);
