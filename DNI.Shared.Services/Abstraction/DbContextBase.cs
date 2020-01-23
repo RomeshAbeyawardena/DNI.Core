@@ -83,6 +83,12 @@ namespace DNI.Shared.Services.Abstraction
         {
             foreach(var property in properties)
             {
+                if(property.PropertyType == typeof(DateTime) && value is DateTimeOffset dateTimeOffset)
+                     value = dateTimeOffset.DateTime;
+
+                if(property.PropertyType == typeof(DateTimeOffset) && value is DateTime dateTimeValue)
+                     value = new DateTimeOffset(dateTimeValue);
+
                 property.SetValue(entity, value);
             }
         }

@@ -19,5 +19,8 @@ namespace DNI.Shared.App.Domains
         
         [Modifier(ModifierFlag.Created)]
         public DateTime Created { get; set; }
+
+        [Modifier(ModifierFlag.Modified)]
+        public DateTimeOffset Modified { get; set; }
     }
 }
