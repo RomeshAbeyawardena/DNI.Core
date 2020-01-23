@@ -40,7 +40,7 @@ namespace DNI.Shared.Services
         {
             var keyProperties = GetKeyProperties();
             if(keyProperties.All(keyProperty => keyProperty.GetValue(entity) == default))
-                await _dbSet.AddAsync(entity);
+                _dbSet.Add(entity);
             else
                 _dbSet.Update(entity);
                

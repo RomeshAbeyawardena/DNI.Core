@@ -47,10 +47,16 @@ namespace DNI.Shared.Services.Extensions
 
             foreach(var entityType in entityTypes)
             {
+                
                 var genericServiceDefinitionType = serviceDefinitionType.MakeGenericType(entityType);
                 var genericServiceImplementationType = serviceImplementationType.MakeGenericType(new [] { dbContextType, entityType });
-                services.Add(new ServiceDescriptor(genericServiceDefinitionType, genericServiceImplementationType, serviceLifetime));
+                
+                services.Add(new ServiceDescriptor(
+                    genericServiceDefinitionType, 
+                    genericServiceImplementationType, 
+                    serviceLifetime));
             }
+            
             return services;
         }
     }
