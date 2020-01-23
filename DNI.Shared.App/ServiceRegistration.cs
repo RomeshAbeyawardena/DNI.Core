@@ -13,7 +13,7 @@ namespace DNI.Shared.App
         public void RegisterServices(IServiceCollection services)
         {
             services
-                .AddDbContext<TestDbContext>(options => options.UseSqlServer("Server=localhost;Database=TestDb;Trusted_Connection=true"))
+                .AddDbContextPool<TestDbContext>(options => options.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
                 .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 

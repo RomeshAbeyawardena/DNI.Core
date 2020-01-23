@@ -30,7 +30,7 @@ namespace DNI.Shared.App
             //if(password.SequenceEqual(confirmPassword))
             //    Console.WriteLine("Password's match!");
 
-            await _customerRepository.Find(1);
+            await _customerRepository.SaveChanges(new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" }, false);
 
             //var firstRun = true;
             //ConsoleKeyInfo lastConsoleKeyInfo = default;

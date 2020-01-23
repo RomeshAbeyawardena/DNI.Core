@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Services.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,16 +12,18 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class EntityFrameworkRepository<TDbContext, TEntity> : IRepository<TEntity>
+    internal sealed class EntityFrameworkRepository<TDbContext, TEntity> : IImplementedRepository<TDbContext, TEntity>
         where TDbContext : DbContext
         where TEntity : class
     {
-        private readonly TDbContext _dbContext;
+        private readonly IEnumerable<PropertyInfo> _keyProperties;
+        private TDbContext DbContext { get; }
         private readonly DbSet<TEntity> _dbSet;
         public EntityFrameworkRepository(TDbContext dbContext)
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _keyProperties = GetKeyProperties();
         }
 
         public async Task<TEntity> Find(params object[] keys)
@@ -38,24 +41,38 @@ namespace DNI.Shared.Services
 
         public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true)
         {
-            var keyProperties = GetKeyProperties();
-            if(keyProperties.All(keyProperty => keyProperty.GetValue(entity) == default))
+            if(_keyProperties.All(keyProperty => IsValueDefault(keyProperty, entity) ))
                 _dbSet.Add(entity);
             else
                 _dbSet.Update(entity);
                
             if(saveChanges)
-                await _dbContext.SaveChangesAsync();
+                await DbContext.SaveChangesAsync();
             
             return entity;
+        }
+
+        private bool IsValueDefault(PropertyInfo propertyInfo, TEntity entity)
+        {
+            var value = propertyInfo.GetValue(entity);
+            var defaultValue = propertyInfo.GetDefaultValue();
+            return value.Equals(defaultValue);
         }
 
         private IEnumerable<PropertyInfo> GetKeyProperties()
         {
             var entityType = typeof(TEntity);
+            var dbContextEntityType = DbContext.Model
+                .GetEntityTypes()
+                .SingleOrDefault(entity => entity.ClrType == entityType);
+            
+            if(dbContextEntityType == null) //use internal reflection.
+                return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(property => property.GetCustomAttribute<KeyAttribute>() != null);
 
-            return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(property => property.GetCustomAttribute<KeyAttribute>() != null);
+            var key = dbContextEntityType.FindPrimaryKey();
+
+            return key.Properties.Select(property => property.PropertyInfo);
         }
     }
 }

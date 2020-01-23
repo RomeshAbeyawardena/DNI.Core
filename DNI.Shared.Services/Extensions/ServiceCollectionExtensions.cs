@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace DNI.Shared.Services.Extensions
 {
@@ -14,9 +15,11 @@ namespace DNI.Shared.Services.Extensions
         public static IServiceCollection RegisterServiceBroker<TServiceBroker>(this IServiceCollection services)
             where TServiceBroker : IServiceBroker
         {
-            var serviceBrokerInstance = Activator.CreateInstance<TServiceBroker>();
+            var serviceBrokerInstance = Activator
+                .CreateInstance<TServiceBroker>();
 
-            serviceBrokerInstance.RegisterServicesFromAssemblies(services);
+            serviceBrokerInstance
+                .RegisterServicesFromAssemblies(services);
 
             return services;
         }
@@ -27,18 +30,31 @@ namespace DNI.Shared.Services.Extensions
             where TCryptographicCredentials : ICryptographicCredentials
         {
             return services.AddSingleton<ICryptographicCredentials>(serviceProvider => serviceProvider
-            .GetRequiredService<ICryptographyProvider>()
-            .GetCryptographicCredentials<TCryptographicCredentials>(keyDerivationPrf, encoding, password, salt,
-                iterations, totalNumberOfBytes, initialVector));
+                .GetRequiredService<ICryptographyProvider>()
+                .GetCryptographicCredentials<TCryptographicCredentials>(keyDerivationPrf, encoding, password, salt,
+                    iterations, totalNumberOfBytes, initialVector));
         }
 
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, params Type[] entityTypes)
+        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, 
+            ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
+            params Type[] entityTypes)
             where TDbContext : DbContext
         {
             return RegisterDbContentRepositories<TDbContext>(services, typeof(EntityFrameworkRepository<,>), serviceLifetime, entityTypes);
         }
 
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, Type serviceImplementationType, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, params Type[] entityTypes)
+        /// <summary>
+        /// Register all classes inheriting IRepository to a Repository implementation type
+        /// </summary>
+        /// <typeparam name="TDbContext"></typeparam>
+        /// <param name="services"></param>
+        /// <param name="serviceImplementationType"></param>
+        /// <param name="serviceLifetime"></param>
+        /// <param name="entityTypes"></param>
+        /// <returns></returns>
+        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, Type serviceImplementationType, 
+            ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
+            params Type[] entityTypes)
             where TDbContext : DbContext
         {
             var serviceDefinitionType = typeof(IRepository<>);
@@ -46,8 +62,7 @@ namespace DNI.Shared.Services.Extensions
             var dbContextType = typeof(TDbContext);
 
             foreach(var entityType in entityTypes)
-            {
-                
+            {    
                 var genericServiceDefinitionType = serviceDefinitionType.MakeGenericType(entityType);
                 var genericServiceImplementationType = serviceImplementationType.MakeGenericType(new [] { dbContextType, entityType });
                 
