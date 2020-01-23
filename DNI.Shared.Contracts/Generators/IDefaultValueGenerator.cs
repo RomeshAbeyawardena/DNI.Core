@@ -8,6 +8,6 @@ namespace DNI.Shared.Contracts.Generators
 {
     public interface IDefaultValueGenerator
     {
-        
+        object GetDefaultValue(string generatorName);
     }
 }
