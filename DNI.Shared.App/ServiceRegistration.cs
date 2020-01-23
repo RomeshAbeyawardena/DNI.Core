@@ -5,6 +5,7 @@ using System.Text;
 using DNI.Shared.Services.Extensions;
 using DNI.Shared.App.Domains;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DNI.Shared.App
 {
@@ -17,7 +18,9 @@ namespace DNI.Shared.App
                 .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 
-                "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null);;
+                "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
+                .RegisterDefaultValueGenerator<Customer>(customerGenerator => 
+                    customerGenerator.Add(customer => customer.UniqueId, () => Guid.NewGuid()));
         }
     }
 }

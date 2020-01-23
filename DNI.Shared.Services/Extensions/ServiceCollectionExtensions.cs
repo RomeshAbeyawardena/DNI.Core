@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using DNI.Shared.Contracts.Generators;
 
 namespace DNI.Shared.Services.Extensions
 {
@@ -73,6 +74,15 @@ namespace DNI.Shared.Services.Extensions
             }
             
             return services;
+        }
+
+        public static IServiceCollection RegisterDefaultValueGenerator<TEntity>(this IServiceCollection services, Action<IDefaultValueGenerator<TEntity>> action)
+        {
+            return services.AddSingleton(serviceProvider => { 
+                var service = serviceProvider.GetRequiredService<IDefaultValueGenerator<TEntity>>();
+                action(service);
+                return service;
+            });
         }
     }
 }

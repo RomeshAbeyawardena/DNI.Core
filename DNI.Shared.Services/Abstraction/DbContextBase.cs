@@ -11,19 +11,24 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using DNI.Shared.Contracts.Generators;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DNI.Shared.Services.Abstraction
 {
     public abstract class DbContextBase : DbContext
     {
+        private readonly DbContextOptions _dbContextOptions;
         private readonly bool _useSingularTableNames;
         private readonly bool _useModifierFlagAttributes;
-
+        
         protected DbContextBase(DbContextOptions dbContextOptions, 
             bool useSingularTableNames = true, 
             bool useModifierFlagAttributes = true)
             : base(dbContextOptions)
         {
+            _dbContextOptions = dbContextOptions;
             _useSingularTableNames = useSingularTableNames;
             _useModifierFlagAttributes = useModifierFlagAttributes;
         }
@@ -33,12 +38,16 @@ namespace DNI.Shared.Services.Abstraction
             if(!_useModifierFlagAttributes)
                 return base.Add(entity);
 
+            
             var modifierAttributeProperties = GetModifierAttributeProperties<TEntity>();
 
             var createdModifierFlagAttributes = modifierAttributeProperties
                 .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == ModifierFlag.Created);
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
+
+            var defaultValueProperties = GetDefaultValueProperties<TEntity>();
+            SetDefaultValues(defaultValueProperties, entity);
 
             return base.Add(entity);
         }
@@ -54,6 +63,9 @@ namespace DNI.Shared.Services.Abstraction
                 .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == ModifierFlag.Modified);
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
+
+            var defaultValueProperties = GetDefaultValueProperties<TEntity>();
+            SetDefaultValues(defaultValueProperties, entity);
 
             return base.Update(entity);            
         }
@@ -123,6 +135,18 @@ namespace DNI.Shared.Services.Abstraction
 
                 property.SetValue(entity, value);
             }
+        }
+
+        private void SetDefaultValues<TEntity>(IEnumerable<PropertyInfo> properties, TEntity value)
+        {    
+            var service = this.GetInfrastructure().GetRequiredService<IDefaultValueGenerator<TEntity>>();
+
+            if(service == null)
+                return;
+
+            foreach (var property in properties)
+                property.SetValue(value, service.GetDefaultValue(property.Name, property.PropertyType));
+            
         }
 
         private void SetTableName(IMutableEntityType mutableEntityType)

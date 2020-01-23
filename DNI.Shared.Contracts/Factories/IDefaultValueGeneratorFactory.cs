@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Contracts.Factories
 {
-    public interface IDefaultGeneratorFactory
+    public interface IDefaultValueGeneratorFactory
     {
         IDefaultValueGenerator<TEntity> GetDefaultValueGenerator<TEntity>();
     }
