@@ -54,7 +54,7 @@ namespace DNI.Shared.Services.Abstraction
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 
 
-            return base.Add(entity);            
+            return base.Update(entity);            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
