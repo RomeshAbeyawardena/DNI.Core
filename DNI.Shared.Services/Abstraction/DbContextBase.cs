@@ -19,7 +19,9 @@ namespace DNI.Shared.Services.Abstraction
         private readonly bool _useSingularTableNames;
         private readonly bool _useModifierFlagAttributes;
 
-        protected DbContextBase(DbContextOptions dbContextOptions, bool useSingularTableNames = true, bool useModifierFlagAttributes = true)
+        protected DbContextBase(DbContextOptions dbContextOptions, 
+            bool useSingularTableNames = true, 
+            bool useModifierFlagAttributes = true)
             : base(dbContextOptions)
         {
             _useSingularTableNames = useSingularTableNames;

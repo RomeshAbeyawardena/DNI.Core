@@ -1,6 +1,8 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Managers;
 using DNI.Shared.Contracts.Providers;
+using DNI.Shared.Services.Generators;
 using DNI.Shared.Services.Providers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IO;
@@ -17,6 +19,7 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMapperProvider, MapperProvider>()
                 .AddSingleton<IMemoryStreamManager,MemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
+                .AddSingleton(typeof(IDefaultValueGenerator<>), typeof(DefaultValueGenerator<>))
                 .AddTransient<IMediatorService, MediatorService>();
         }
     }
