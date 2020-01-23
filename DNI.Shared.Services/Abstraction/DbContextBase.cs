@@ -53,7 +53,6 @@ namespace DNI.Shared.Services.Abstraction
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 
-
             return base.Update(entity);            
         }
 
@@ -63,13 +62,24 @@ namespace DNI.Shared.Services.Abstraction
             base.OnModelCreating(modelBuilder);
         }
 
+        private IEnumerable<PropertyInfo> GetDefaultValueProperties<TEntity>()
+        {
+            var entityType = typeof(TEntity);
+            return GetCustomAttributeProperties<DefaultValueAttribute>(entityType);
+        }
+
         private IEnumerable<PropertyInfo> GetModifierAttributeProperties<TEntity>()
         {
             var entityType = typeof(TEntity);
-            
+            return GetCustomAttributeProperties<ModifierAttribute>(entityType);
+
+        }
+
+        private IEnumerable<PropertyInfo> GetCustomAttributeProperties<TAttribute>(Type entityType)
+            where TAttribute : Attribute
+        {
             return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(property => property.GetCustomAttribute<ModifierAttribute>() != null);
-
         }
 
         private void SetTableNamesToSingular(IEnumerable<IMutableEntityType> entityTypes, bool useSingularTableNames)
