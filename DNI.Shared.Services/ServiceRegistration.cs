@@ -19,7 +19,6 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMapperProvider, MapperProvider>()
                 .AddSingleton<IMemoryStreamManager,MemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
-                .AddSingleton(typeof(IDefaultValueGenerator<>), typeof(DefaultValueGenerator<>))
                 .AddTransient<IMediatorService, MediatorService>();
         }
     }

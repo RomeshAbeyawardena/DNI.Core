@@ -14,6 +14,7 @@ namespace DNI.Shared.App.Domains
         [Key]
         public int Id { get; set; }
 
+        [DefaultValue]
         public Guid UniqueId { get; set; }
 
         public string FirstName { get; set; }

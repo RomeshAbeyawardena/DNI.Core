@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using DNI.Shared.Contracts.Generators;
 using Microsoft.Extensions.DependencyInjection;
+using DNI.Shared.Domains;
 
 namespace DNI.Shared.Services.Abstraction
 {
@@ -21,22 +22,49 @@ namespace DNI.Shared.Services.Abstraction
     {
         private readonly bool _useSingularTableNames;
         private readonly bool _useModifierFlagAttributes;
-        
+        private readonly bool _useDefaultValueAttributes;
+
         protected DbContextBase(DbContextOptions dbContextOptions, 
             bool useSingularTableNames = true, 
-            bool useModifierFlagAttributes = true)
+            bool useModifierFlagAttributes = true,
+            bool useDefaultValueAttributes = true)
             : base(dbContextOptions)
         {
             _useSingularTableNames = useSingularTableNames;
             _useModifierFlagAttributes = useModifierFlagAttributes;
+            _useDefaultValueAttributes = useDefaultValueAttributes;
         }
 
         public override EntityEntry<TEntity> Add<TEntity>(TEntity entity)
         {
-            if(!_useModifierFlagAttributes)
-                return base.Add(entity);
+            if(_useModifierFlagAttributes)
+                SetModifierFlagValues(entity);
 
-            
+            if(_useDefaultValueAttributes)
+                SetDefaultValues(entity);
+
+            return base.Add(entity);
+        }
+
+        public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        {
+            if(_useModifierFlagAttributes)
+                SetModifierFlagValues(entity);
+
+            if(_useDefaultValueAttributes)
+                SetDefaultValues(entity);
+
+            return base.Update(entity);       
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            SetTableNamesToSingular(modelBuilder.Model.GetEntityTypes(), _useSingularTableNames);
+            base.OnModelCreating(modelBuilder);
+        }
+
+        private void SetModifierFlagValues<TEntity>(TEntity entity)
+        {
             var modifierAttributeProperties = GetModifierAttributeProperties<TEntity>();
 
             var createdModifierFlagAttributes = modifierAttributeProperties
@@ -44,34 +72,12 @@ namespace DNI.Shared.Services.Abstraction
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 
-            var defaultValueProperties = GetDefaultValueProperties<TEntity>();
-            SetDefaultValues(defaultValueProperties, entity);
-
-            return base.Add(entity);
         }
 
-        public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        private void SetDefaultValues<TEntity>(TEntity entity)
         {
-            if(!_useModifierFlagAttributes)
-                return base.Update(entity);
-
-            var modifierAttributeProperties = GetModifierAttributeProperties<TEntity>();
-
-            var createdModifierFlagAttributes = modifierAttributeProperties
-                .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == ModifierFlag.Modified);
-
-            SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
-
             var defaultValueProperties = GetDefaultValueProperties<TEntity>();
             SetDefaultValues(defaultValueProperties, entity);
-
-            return base.Update(entity);            
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            SetTableNamesToSingular(modelBuilder.Model.GetEntityTypes(), _useSingularTableNames);
-            base.OnModelCreating(modelBuilder);
         }
 
         private IEnumerable<PropertyInfo> GetDefaultValueProperties<TEntity>()
@@ -91,7 +97,7 @@ namespace DNI.Shared.Services.Abstraction
             where TAttribute : Attribute
         {
             return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(property => property.GetCustomAttribute<ModifierAttribute>() != null);
+                .Where(property => property.GetCustomAttribute<TAttribute>() != null);
         }
 
         private void SetTableNamesToSingular(IEnumerable<IMutableEntityType> entityTypes, bool useSingularTableNames)
@@ -137,7 +143,7 @@ namespace DNI.Shared.Services.Abstraction
 
         private void SetDefaultValues<TEntity>(IEnumerable<PropertyInfo> properties, TEntity value)
         {    
-            var service = this.GetInfrastructure().GetRequiredService<IDefaultValueGenerator<TEntity>>();
+            var service = this.GetService<IDefaultValueGenerator<TEntity>>();
 
             if(service == null)
                 return;

@@ -12,7 +12,7 @@ namespace DNI.Shared.App
     public class TestDbContext : DbContextBase
     {
         public TestDbContext(DbContextOptions dbContextOptions)
-            : base(dbContextOptions, true)
+            : base(dbContextOptions, true, true)
         {
 
         }

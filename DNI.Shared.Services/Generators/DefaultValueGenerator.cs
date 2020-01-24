@@ -14,9 +14,14 @@ namespace DNI.Shared.Services.Generators
     {
         private ISwitch<string, Func<object>> _defaultValueGeneratorSwitch;
 
-        public DefaultValueGenerator()
+        private DefaultValueGenerator()
         {
             _defaultValueGeneratorSwitch = Switch.Create<string, Func<object>>();
+        }
+
+        public static IDefaultValueGenerator<TEntity> Create()
+        {
+            return new DefaultValueGenerator<TEntity>();
         }
 
         public IDefaultValueGenerator<TEntity> Add<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty, Func<object> createInstance)
