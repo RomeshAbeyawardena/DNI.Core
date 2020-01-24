@@ -19,7 +19,6 @@ namespace DNI.Shared.Services.Abstraction
 {
     public abstract class DbContextBase : DbContext
     {
-        private readonly DbContextOptions _dbContextOptions;
         private readonly bool _useSingularTableNames;
         private readonly bool _useModifierFlagAttributes;
         
@@ -28,7 +27,6 @@ namespace DNI.Shared.Services.Abstraction
             bool useModifierFlagAttributes = true)
             : base(dbContextOptions)
         {
-            _dbContextOptions = dbContextOptions;
             _useSingularTableNames = useSingularTableNames;
             _useModifierFlagAttributes = useModifierFlagAttributes;
         }
