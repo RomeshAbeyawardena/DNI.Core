@@ -6,6 +6,8 @@ using DNI.Shared.Services.Extensions;
 using DNI.Shared.App.Domains;
 using Microsoft.EntityFrameworkCore;
 using System;
+using DNI.Shared.App.Contracts;
+using DNI.Shared.App.Services;
 
 namespace DNI.Shared.App
 {
@@ -15,12 +17,15 @@ namespace DNI.Shared.App
         {
             services
                 .AddDbContextPool<TestDbContext>(options => options.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
+                .AddSingleton<IGuidGeneratorService, GuidGeneratorService>()
                 .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 
                 "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
                 .RegisterDefaultValueGenerator<Customer>(customerGenerator => 
-                    customerGenerator.Add(customer => customer.UniqueId, () => Guid.NewGuid()));
+                    customerGenerator.Add(customer => customer.UniqueId, (serviceProvider) => serviceProvider
+                    .GetRequiredService<IGuidGeneratorService>()
+                    .Generate()));
         }
     }
 }

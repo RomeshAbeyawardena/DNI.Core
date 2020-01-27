@@ -80,7 +80,8 @@ namespace DNI.Shared.Services.Extensions
         public static IServiceCollection RegisterDefaultValueGenerator<TEntity>(this IServiceCollection services, Action<IDefaultValueGenerator<TEntity>> action)
         {
             return services.AddSingleton( (serviceProvider) => { 
-                var defaultValueGenerator = DefaultValueGenerator<TEntity>.Create(); 
+                var defaultValueGenerator = DefaultValueGenerator<TEntity>
+                    .Create(serviceProvider); 
                 action(defaultValueGenerator); 
                 return defaultValueGenerator; });
         }

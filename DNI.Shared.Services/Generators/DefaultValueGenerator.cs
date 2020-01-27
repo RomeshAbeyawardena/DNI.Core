@@ -12,16 +12,20 @@ namespace DNI.Shared.Services.Generators
 {
     internal sealed class DefaultValueGenerator<TEntity> : IDefaultValueGenerator<TEntity>
     {
-        private ISwitch<string, Func<object>> _defaultValueGeneratorSwitch;
+        private readonly ISwitch<string, Func<object>> _defaultValueGeneratorSwitch;
+        private readonly ISwitch<string, Func<IServiceProvider, object>> _defaultValueServiceProviderGeneratorSwitch;
+        private readonly IServiceProvider _serviceProvider;
 
-        private DefaultValueGenerator()
+        private DefaultValueGenerator(IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
             _defaultValueGeneratorSwitch = Switch.Create<string, Func<object>>();
+            _defaultValueServiceProviderGeneratorSwitch = Switch.Create<string, Func<IServiceProvider, object>>();
         }
 
-        public static IDefaultValueGenerator<TEntity> Create()
+        public static IDefaultValueGenerator<TEntity> Create(IServiceProvider serviceProvider)
         {
-            return new DefaultValueGenerator<TEntity>();
+            return new DefaultValueGenerator<TEntity>(serviceProvider);
         }
 
         public IDefaultValueGenerator<TEntity> Add<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty, Func<object> createInstance)
@@ -32,6 +36,19 @@ namespace DNI.Shared.Services.Generators
                 return default;
 
             _defaultValueGeneratorSwitch
+                .CaseWhen(member.Name, createInstance);
+
+            return this;
+        }
+
+        public IDefaultValueGenerator<TEntity> Add<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty, Func<IServiceProvider, object> createInstance)
+        {
+            var member = GetMemberInfo(selectProperty);
+
+            if(string.IsNullOrEmpty(member.Name))
+                return this;
+
+            _defaultValueServiceProviderGeneratorSwitch
                 .CaseWhen(member.Name, createInstance);
 
             return this;
@@ -50,9 +67,13 @@ namespace DNI.Shared.Services.Generators
             if(string.IsNullOrEmpty(propertyName))
                 return default;
 
-            return _defaultValueGeneratorSwitch
-                .Case(propertyName)?
-                .Invoke();
+            var defaultValueGenerator = _defaultValueGeneratorSwitch
+                .Case(propertyName);
+            
+            if(defaultValueGenerator == null)
+                return _defaultValueServiceProviderGeneratorSwitch.Case(propertyName).Invoke(_serviceProvider);
+
+            return defaultValueGenerator.Invoke();
         }
 
         private MemberInfo GetMemberInfo<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty)
