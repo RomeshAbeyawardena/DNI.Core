@@ -2,6 +2,7 @@
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace DNI.Shared.Web.Controllers
@@ -19,13 +20,14 @@ namespace DNI.Shared.Web.Controllers
             });
         }
 
+        
         public async Task<string> GetValue(string value)
         {
             Console.WriteLine("GetValue");
             return await Task.FromResult(value);
         }
 
-        public async Task<bool> DisplayValue(bool displayValue)
+        public async Task<bool> DisplayValue([FromQuery, Required]bool displayValue, [FromQuery, Required] string moo, [FromQuery, Required] string roo)
         {
             return await Task.FromResult(displayValue);
         }
