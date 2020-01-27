@@ -69,7 +69,7 @@ namespace DNI.Shared.Services.Abstraction
             var modifierAttributeProperties = GetModifierAttributeProperties<TEntity>();
 
             var createdModifierFlagAttributes = modifierAttributeProperties
-                .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == modifierFlag);
+                .Where(a => a.GetCustomAttribute<ModifierAttribute>().ModifierFlag.HasFlag(modifierFlag));
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 

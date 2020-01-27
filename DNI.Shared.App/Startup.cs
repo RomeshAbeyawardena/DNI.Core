@@ -40,7 +40,7 @@ namespace DNI.Shared.App
             customer.Id = 1;
             customer.MiddleName = "Mantaz";
 
-            await _customerRepository.SaveChanges(customer, false);
+            customer = await _customerRepository.SaveChanges(customer, false);
 
 
             //var firstRun = true;

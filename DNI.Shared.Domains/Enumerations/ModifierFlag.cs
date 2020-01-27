@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Domains.Enumerations
 {
+    [Flags]
     public enum ModifierFlag
     {
         Created = 1,
