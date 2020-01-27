@@ -125,6 +125,11 @@ namespace DNI.Shared.Shared.Extensions
                 : htmlHelper.Raw(displayOnConditionFalse));
         }
 
+        public static IHtmlContent FormatContent(this IHtmlHelper htmlHelper, string format, params object[] values)
+        {
+            return htmlHelper.Raw(string.Format(format, values));
+        }
+
         public static IHtmlContent Switch<TKey, TValue>(this IHtmlHelper htmlHelper, ISwitch<TKey, TValue> @switch, TKey currentValue)
         {
             return htmlHelper.Raw(@switch.Case(currentValue));
