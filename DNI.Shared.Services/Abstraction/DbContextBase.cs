@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using DNI.Shared.Contracts.Generators;
 using Microsoft.Extensions.DependencyInjection;
 using DNI.Shared.Domains;
+using DNI.Shared.Services.Extensions;
 
 namespace DNI.Shared.Services.Abstraction
 {
@@ -38,7 +39,7 @@ namespace DNI.Shared.Services.Abstraction
         public override EntityEntry<TEntity> Add<TEntity>(TEntity entity)
         {
             if(_useModifierFlagAttributes)
-                SetModifierFlagValues(entity);
+                SetModifierFlagValues(entity, ModifierFlag.Created);
 
             if(_useDefaultValueAttributes)
                 SetDefaultValues(entity);
@@ -49,7 +50,7 @@ namespace DNI.Shared.Services.Abstraction
         public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
         {
             if(_useModifierFlagAttributes)
-                SetModifierFlagValues(entity);
+                SetModifierFlagValues(entity, ModifierFlag.Modified);
 
             if(_useDefaultValueAttributes)
                 SetDefaultValues(entity);
@@ -63,12 +64,12 @@ namespace DNI.Shared.Services.Abstraction
             base.OnModelCreating(modelBuilder);
         }
 
-        private void SetModifierFlagValues<TEntity>(TEntity entity)
+        private void SetModifierFlagValues<TEntity>(TEntity entity, ModifierFlag modifierFlag)
         {
             var modifierAttributeProperties = GetModifierAttributeProperties<TEntity>();
 
             var createdModifierFlagAttributes = modifierAttributeProperties
-                .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == ModifierFlag.Created);
+                .Where(a => a.GetCustomAttribute<ModifierAttribute>()?.ModifierFlag == modifierFlag);
 
             SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 
@@ -149,8 +150,11 @@ namespace DNI.Shared.Services.Abstraction
                 return;
 
             foreach (var property in properties)
+            {
+                var instance = Instance<object>.Create(() => property.GetValue(value));
+                if(instance.Is(val => val == null || val.Equals(property.GetDefaultValue()) ))
                 property.SetValue(value, service.GetDefaultValue(property.Name, property.PropertyType));
-            
+            }
         }
 
         private void SetTableName(IMutableEntityType mutableEntityType)

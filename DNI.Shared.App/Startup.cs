@@ -29,8 +29,17 @@ namespace DNI.Shared.App
 
             //if(password.SequenceEqual(confirmPassword))
             //    Console.WriteLine("Password's match!");
+            // {E23C96F2-30B4-4890-BB5D-E57E7AADA982}
+            
+            var customer = new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" };
 
-            await _customerRepository.SaveChanges(new Customer { Id = 1, FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" }, false);
+            await _customerRepository.SaveChanges(customer, false);
+
+            customer.Id = 1;
+            customer.MiddleName = "Mantaz";
+
+            await _customerRepository.SaveChanges(customer, false);
+
 
             //var firstRun = true;
             //ConsoleKeyInfo lastConsoleKeyInfo = default;

@@ -21,6 +21,12 @@ namespace DNI.Shared.Services.Extensions
                 || propertyType == typeof(float))
                 return 0;
 
+            if(propertyType == typeof(DateTime))
+                return default(DateTime);
+
+            if(propertyType == typeof(DateTimeOffset))
+                return default(DateTimeOffset);
+
             if(propertyType == typeof(string))
                 return default(string);
 
