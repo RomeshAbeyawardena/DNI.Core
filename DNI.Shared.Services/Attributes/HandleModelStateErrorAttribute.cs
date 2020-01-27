@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using DNI.Shared.Services.Exceptions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,8 @@ namespace DNI.Shared.Services.Attributes
 
             if(_throwModelStateException)
                 throw new ModelStateException(context.ModelState);
+
+            context.Result = new BadRequestObjectResult(context.ModelState);
         }
 
         public HandleModelStateErrorAttribute(bool throwModelStateException = true)
