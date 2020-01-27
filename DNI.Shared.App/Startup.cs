@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.App.Domains;
+using Microsoft.Extensions.Logging;
 
 namespace DNI.Shared.App
 {
     public class Startup
     {
+        private readonly ILogger<Startup> _logger;
         private readonly IRepository<Customer> _customerRepository;
         private readonly ICryptographicCredentials _cryptographicCredentials;
         private readonly IHashingProvider _hashingProvider;
@@ -32,7 +34,7 @@ namespace DNI.Shared.App
             // {E23C96F2-30B4-4890-BB5D-E57E7AADA982}
             
             var customer = new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" };
-
+            _logger.LogInformation("{0}", customer);
             await _customerRepository.SaveChanges(customer, false);
 
             customer.Id = 1;
@@ -59,9 +61,10 @@ namespace DNI.Shared.App
             return 0;
         }
 
-        public Startup(IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
+        public Startup(ILogger<Startup> logger, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
             ICryptographyProvider cryptographyProvider)
         {
+            _logger = logger;
             _customerRepository = customerRepository;
             _cryptographicCredentials = cryptographicCredentials;
             _hashingProvider = hashingProvider;
