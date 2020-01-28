@@ -71,14 +71,17 @@ namespace DNI.Shared.Services.Abstraction
             var createdModifierFlagAttributes = modifierAttributeProperties
                 .Where(a => a.GetCustomAttribute<ModifierAttribute>().ModifierFlag.HasFlag(modifierFlag));
 
-            SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
+            if(createdModifierFlagAttributes.Any())
+                SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
 
         }
 
         private void SetDefaultValues<TEntity>(TEntity entity)
         {
             var defaultValueProperties = GetDefaultValueProperties<TEntity>();
-            SetDefaultValues(defaultValueProperties, entity);
+
+            if(defaultValueProperties.Any())
+                SetDefaultValues(defaultValueProperties, entity);
         }
 
         private IEnumerable<PropertyInfo> GetDefaultValueProperties<TEntity>()
