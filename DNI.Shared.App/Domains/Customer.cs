@@ -22,9 +22,9 @@ namespace DNI.Shared.App.Domains
         public string LastName { get; set; }
         
         [Modifier(ModifierFlag.Created)]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [Modifier(ModifierFlag.Created | ModifierFlag.Modified)]
-        public DateTimeOffset Modified { get; set; }
+        public DateTimeOffset? Modified { get; set; }
     }
 }

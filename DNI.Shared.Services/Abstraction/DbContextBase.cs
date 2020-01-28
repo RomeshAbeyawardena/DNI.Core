@@ -140,6 +140,13 @@ namespace DNI.Shared.Services.Abstraction
 
                 if(property.PropertyType == typeof(DateTimeOffset) && isDateTime)
                      value = new DateTimeOffset(dateTimeValue);
+                
+                if(property.PropertyType == typeof(DateTime?) && isDateTimeOffset)
+                     value = dateTimeOffset.DateTime;
+
+                if(property.PropertyType == typeof(DateTimeOffset?) && isDateTime)
+                     value = new DateTimeOffset?(dateTimeValue);
+                
 
                 property.SetValue(entity, value);
             }
