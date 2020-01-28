@@ -14,10 +14,10 @@ namespace DNI.Shared.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterServiceBroker<TServiceBroker>(this IServiceCollection services)
+        public static IServiceCollection RegisterServiceBroker<TServiceBroker>(this IServiceCollection services, out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker
         {
-            var serviceBrokerInstance = Activator
+            serviceBrokerInstance = Activator
                 .CreateInstance<TServiceBroker>();
 
             serviceBrokerInstance
