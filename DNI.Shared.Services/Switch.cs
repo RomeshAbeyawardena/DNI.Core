@@ -8,5 +8,15 @@ namespace DNI.Shared.Services
         {
             return DefaultSwitch<TKey, TValue>.Create();
         }
+
+        public static ISwitch<string, object> CreateObjectDictionary()
+        {
+            return Create<string, object>();
+        }
+
+        public static ISwitch<string, string> CreateStringDictionary()
+        {
+            return Create<string, string>();
+        }
     }
 }
