@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.App.Domains;
 using Microsoft.Extensions.Logging;
+using DNI.Shared.Contracts.Services;
 
 namespace DNI.Shared.App
 {
     public class Startup
     {
+        private readonly IJsonWebTokenService _jsonTokenService;
         private readonly ILogger<Startup> _logger;
         private readonly IRepository<Customer> _customerRepository;
         private readonly ICryptographicCredentials _cryptographicCredentials;
@@ -33,15 +35,23 @@ namespace DNI.Shared.App
             //    Console.WriteLine("Password's match!");
             // {E23C96F2-30B4-4890-BB5D-E57E7AADA982}
             
-            var customer = new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" };
-            _logger.LogInformation("{0}", customer);
-            await _customerRepository.SaveChanges(customer, false);
+            //var customer = new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" };
+            //_logger.LogInformation("{0}", customer);
+            //await _customerRepository.SaveChanges(customer, false);
 
-            customer.Id = 1;
-            customer.MiddleName = "Mantaz";
+            //customer.Id = 1;
+            //customer.MiddleName = "Mantaz";
 
-            customer = await _customerRepository.SaveChanges(customer, false);
+            //customer = await _customerRepository.SaveChanges(customer, false);
+            var claim = _jsonTokenService.GetClaimsIdentity(new UserSession
+            {
+                RoleId = 123,
+                SessionId = Guid.NewGuid(),
+                Username = "John Doe"
+            });
 
+            var userSession = _jsonTokenService
+                .ParseClaims<UserSession>(claim.Claims);
 
             //var firstRun = true;
             //ConsoleKeyInfo lastConsoleKeyInfo = default;
@@ -61,9 +71,10 @@ namespace DNI.Shared.App
             return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
+        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
             ICryptographyProvider cryptographyProvider)
         {
+            _jsonTokenService = jsonTokenService;
             _logger = logger;
             _customerRepository = customerRepository;
             _cryptographicCredentials = cryptographicCredentials;

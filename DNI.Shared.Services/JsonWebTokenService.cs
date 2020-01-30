@@ -1,4 +1,5 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services.Attributes;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -14,6 +15,8 @@ namespace DNI.Shared.Services
 {
     public class JsonWebTokenService : IJsonWebTokenService
     {
+        private readonly ISwitch<Type, string> _valueTypeDictionary;
+        private readonly ISwitch<string, Func<string, object>> _valueTypeConvertor;
         private SecurityTokenDescriptor GetSecurityTokenDescriptor(SigningCredentials signingCredentials, 
             DateTime expiry, IDictionary<string, string> claimsDictionary)
         {
@@ -36,6 +39,37 @@ namespace DNI.Shared.Services
         {
             var securityKey = new SymmetricSecurityKey(encoding.GetBytes(secret));
             return new SigningCredentials(securityKey, securityAlgorithm);
+        }
+
+        private Claim CreateClaim<T>(string claimType, T value)
+        {
+            var type = typeof(T);
+
+            return new Claim(claimType, value.ToString(), _valueTypeDictionary.Case(type));
+        }
+
+       
+        public JsonWebTokenService()
+        {
+               _valueTypeDictionary = Switch.Create<Type, string>()
+                    .CaseWhen(typeof(short), ClaimValueTypes.Integer)
+                    .CaseWhen(typeof(int), ClaimValueTypes.Integer32)
+                    .CaseWhen(typeof(long), ClaimValueTypes.Integer64)
+                    .CaseWhen(typeof(byte), ClaimValueTypes.UInteger32)
+                    .CaseWhen(typeof(string), ClaimValueTypes.String)
+                    .CaseWhen(typeof(Guid), ClaimValueTypes.Base64Binary)
+                    .CaseWhen(typeof(decimal), ClaimValueTypes.Double)
+                    .CaseWhen(typeof(DateTime), ClaimValueTypes.DateTime)
+                    .CaseWhen(typeof(DateTimeOffset), ClaimValueTypes.DaytimeDuration);
+
+            _valueTypeConvertor = Switch.Create<string, Func<string, object>>()
+                .CaseWhen(ClaimValueTypes.Integer, value => short.TryParse(value, out var val) ? val : default)
+                .CaseWhen(ClaimValueTypes.Integer32, value => int.TryParse(value, out var val) ? val : default)
+                .CaseWhen(ClaimValueTypes.Integer64, value => long.TryParse(value, out var val) ? val : default)
+                .CaseWhen(ClaimValueTypes.Boolean, value => bool.TryParse(value, out var val) ? val : default)
+                .CaseWhen(ClaimValueTypes.Double, value => decimal.TryParse(value, out var val) ? val : default)
+                .CaseWhen(ClaimValueTypes.DateTime, value => DateTime.TryParse(value, out var val) ? val : default);
+
         }
 
         public string CreateToken(DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
@@ -70,7 +104,7 @@ namespace DNI.Shared.Services
                 .Select(claimProperty => { 
                     var claimAttribute = claimProperty.GetCustomAttribute<ClaimAttribute>();
                     var propertyValue = claimProperty.GetValue(value); 
-                    return new Claim(claimAttribute?.ClaimType ?? claimProperty.Name, propertyValue.ToString());  
+                    return CreateClaim(claimAttribute?.ClaimType ?? claimProperty.Name, propertyValue);  
                 }));
         }
 
@@ -90,7 +124,7 @@ namespace DNI.Shared.Services
                 if(property == null)
                     continue;
 
-                property.SetValue(instance, claim.Value);
+                property.SetValue(instance, Convert.ChangeType(claim.Value, property.PropertyType));
             }
 
             return (T)instance;

@@ -13,5 +13,6 @@ namespace DNI.Shared.Contracts.Services
         string CreateToken(DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding);
         string CreateToken<T>(DateTime expiry, T claims, string secret, Encoding encoding);
         IDictionary<string,string> ParseToken(string token, string secret, Encoding encoding);
+        T ParseClaims<T>(IEnumerable<Claim> claims, params object[] tArgs);
     }
 }
