@@ -9,8 +9,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens;
+
 
 namespace DNI.Shared.Services
 {
@@ -18,28 +21,37 @@ namespace DNI.Shared.Services
     {
         private readonly IClaimTypeValueConvertor _claimTypeValueConvertor;
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor(SigningCredentials signingCredentials, 
+        private SecurityTokenDescriptor GetSecurityTokenDescriptor(string issuer, string audience, SigningCredentials signingCredentials, 
             DateTime expiry, IDictionary<string, string> claimsDictionary)
         {
             var claims = claimsDictionary.Select((keyValuePair) => new Claim(keyValuePair.Key, keyValuePair.Value));
-            return GetSecurityTokenDescriptor(signingCredentials, expiry, new ClaimsIdentity(claims));
+            return GetSecurityTokenDescriptor(issuer, audience, signingCredentials, expiry, new ClaimsIdentity(claims));
         }
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor(SigningCredentials signingCredentials, 
+        private SecurityTokenDescriptor GetSecurityTokenDescriptor(string issuer, string audience, SigningCredentials signingCredentials, 
             DateTime expiry, ClaimsIdentity claimsIdentity)
         {
+            
             return new SecurityTokenDescriptor
             {
+                Issuer = issuer, //"app.test.branch.local",
+                Audience = audience, //"test.branch.local",
                 Subject = claimsIdentity,
                 Expires = expiry,
-                SigningCredentials = signingCredentials
+                SigningCredentials = signingCredentials,
             };
         }
 
         private SigningCredentials GetSigningCredentials(string secret, string securityAlgorithm, Encoding encoding)
         {
             var securityKey = new SymmetricSecurityKey(encoding.GetBytes(secret));
-            return new SigningCredentials(securityKey, securityAlgorithm);
+            var signinCredentials = new SigningCredentials(securityKey, securityAlgorithm, SecurityAlgorithms.Sha512Digest);   
+            
+            Console.WriteLine(signinCredentials.Digest);
+            Console.WriteLine(signinCredentials.Kid);
+            Console.WriteLine(signinCredentials.Key);
+
+            return signinCredentials;
         }
 
         private Claim CreateClaim(string claimType, object value, Type type)
@@ -53,26 +65,54 @@ namespace DNI.Shared.Services
                _claimTypeValueConvertor = claimTypeValueConvertor;
         }
 
-        public string CreateToken(DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
+        public string CreateToken(string issuer, string audience, DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
         {
             if(encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
-            var token = tokenHandler.CreateToken(GetSecurityTokenDescriptor(signingCredentials, expiry, claimsDictionary));
+            var token = tokenHandler.CreateToken(GetSecurityTokenDescriptor(issuer, audience, signingCredentials, expiry, claimsDictionary));
             return tokenHandler.WriteToken(token);
         }
 
-        public IDictionary<string, string> ParseToken(string token, string secret, Encoding encoding)
+        public bool TryParseToken(string token, string secret, Encoding encoding, TokenValidationParameters tokenValidationParameters, out IDictionary<string, string> claims)
         {
-            if (encoding == null)
+            var handledExceptions = new [] { 
+                typeof(SecurityTokenInvalidAudienceException), 
+                typeof(SecurityTokenInvalidSigningKeyException),
+                typeof(SecurityTokenInvalidSignatureException),
+                typeof(ArgumentException)
+            };
+
+            try
+            { 
+                if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
-            var securityToken = tokenHandler.ReadJwtToken(token);
-            return securityToken.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
+                var tokenHandler = new JwtSecurityTokenHandler();
+
+                var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
+
+                tokenValidationParameters.IssuerSigningKey = signingCredentials.Key;
+                
+                var securityClaimPrinciple = tokenHandler.ValidateToken(token, tokenValidationParameters, out var m);
+            
+                var securityToken = tokenHandler.ReadJwtToken(token);
+                    claims = securityToken.Claims.ToDictionary(claim => claim.Type, claim => claim.Value);
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if(!handledExceptions.Contains(ex.GetType()))
+                    throw;
+
+                Console.WriteLine(ex);
+
+                claims = null;
+                return false;
+            }
         }
 
         public ClaimsIdentity GetClaimsIdentity<T>(T value)
@@ -114,18 +154,6 @@ namespace DNI.Shared.Services
         private IEnumerable<PropertyInfo> GetClaimProperties(IEnumerable<PropertyInfo> properties)
         {
             return properties.Where(property => property.GetCustomAttribute<ClaimAttribute>() != null);
-        }
-
-        public string CreateToken<T>(DateTime expiry, T claims, string secret, Encoding encoding)
-        {
-            
-            if(encoding == null)
-                throw new ArgumentNullException(nameof(encoding));
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
-            var token = tokenHandler.CreateToken(GetSecurityTokenDescriptor(signingCredentials, expiry, GetClaimsIdentity(claims)));
-            return tokenHandler.WriteToken(token);
         }
     }
 }
