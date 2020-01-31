@@ -19,6 +19,7 @@ namespace DNI.Shared.Services
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IClockProvider, DefaultClockProvider>()
                 .AddSingleton(new RecyclableMemoryStreamManager())
+                .AddSingleton<IMessagePackService, MessagePackService>()
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IMapperProvider, MapperProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()
