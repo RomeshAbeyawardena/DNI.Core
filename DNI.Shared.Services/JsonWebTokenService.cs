@@ -36,6 +36,7 @@ namespace DNI.Shared.Services
                 Subject = claimsIdentity,
                 Expires = expiry,
                 SigningCredentials = signingCredentials,
+                IssuedAt = DateTime.Now
             };
 
             populateSecurityTokenDescriptor(securityTokenDescriptor);
