@@ -34,19 +34,20 @@ namespace DNI.Shared.App
             var issuer = "http://master.test.branch.local";
             var audience = "http://app.test.branch.local";
             var audience2 = "http://app1.test.branch.local";
-            var userSession = _jsonTokenService.CreateToken(issuer, audience, 
-                DateTime.Now.AddSeconds(1), DictionaryBuilder
-                .Create<string, string>(builder => builder.Add("RoleId", "1234"))
+            var userSession = _jsonTokenService.CreateToken(parameters => {
+                parameters.Issuer = issuer;
+                parameters.Audience = audience;
+            }, DateTime.Now.AddSeconds(1), DictionaryBuilder
+                .Create<string, string>(builder => builder
+                    .Add("BusinessUnitId", "23829")
+                    .Add("RoleId", "1234"))
                 .ToDictionary(), mySecret2, Encoding.UTF8);
 
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidIssuer = issuer, 
-                ValidAudience = audience,
-                RequireExpirationTime = true
-            };
 
-            if (_jsonTokenService.TryParseToken(userSession, mySecret2, Encoding.UTF8, tokenValidationParameters,  out var claimsDictionary))
+            if (_jsonTokenService.TryParseToken(userSession, mySecret2, parameters => { 
+                parameters.ValidIssuer = issuer; 
+                parameters.ValidAudience = audience; }, 
+                Encoding.UTF8, out var claimsDictionary))
             {
                 Console.WriteLine(claimsDictionary.Count());
             }

@@ -21,25 +21,26 @@ namespace DNI.Shared.Services
     {
         private readonly IClaimTypeValueConvertor _claimTypeValueConvertor;
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor(string issuer, string audience, SigningCredentials signingCredentials, 
+        private SecurityTokenDescriptor GetSecurityTokenDescriptor(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, SigningCredentials signingCredentials, 
             DateTime expiry, IDictionary<string, string> claimsDictionary)
         {
             var claims = claimsDictionary.Select((keyValuePair) => new Claim(keyValuePair.Key, keyValuePair.Value));
-            return GetSecurityTokenDescriptor(issuer, audience, signingCredentials, expiry, new ClaimsIdentity(claims));
+            return GetSecurityTokenDescriptor(populateSecurityTokenDescriptor, signingCredentials, expiry, new ClaimsIdentity(claims));
         }
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor(string issuer, string audience, SigningCredentials signingCredentials, 
+        private SecurityTokenDescriptor GetSecurityTokenDescriptor(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, SigningCredentials signingCredentials, 
             DateTime expiry, ClaimsIdentity claimsIdentity)
         {
-            
-            return new SecurityTokenDescriptor
+            var securityTokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = issuer, //"app.test.branch.local",
-                Audience = audience, //"test.branch.local",
                 Subject = claimsIdentity,
                 Expires = expiry,
                 SigningCredentials = signingCredentials,
             };
+
+            populateSecurityTokenDescriptor(securityTokenDescriptor);
+
+            return securityTokenDescriptor;
         }
 
         private SigningCredentials GetSigningCredentials(string secret, string securityAlgorithm, Encoding encoding)
@@ -47,10 +48,6 @@ namespace DNI.Shared.Services
             var securityKey = new SymmetricSecurityKey(encoding.GetBytes(secret));
             var signinCredentials = new SigningCredentials(securityKey, securityAlgorithm, SecurityAlgorithms.Sha512Digest);   
             
-            Console.WriteLine(signinCredentials.Digest);
-            Console.WriteLine(signinCredentials.Kid);
-            Console.WriteLine(signinCredentials.Key);
-
             return signinCredentials;
         }
 
@@ -65,18 +62,18 @@ namespace DNI.Shared.Services
                _claimTypeValueConvertor = claimTypeValueConvertor;
         }
 
-        public string CreateToken(string issuer, string audience, DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
+        public string CreateToken(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
         {
             if(encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
-            var token = tokenHandler.CreateToken(GetSecurityTokenDescriptor(issuer, audience, signingCredentials, expiry, claimsDictionary));
+            var token = tokenHandler.CreateToken(GetSecurityTokenDescriptor(populateSecurityTokenDescriptor, signingCredentials, expiry, claimsDictionary));
             return tokenHandler.WriteToken(token);
         }
 
-        public bool TryParseToken(string token, string secret, Encoding encoding, TokenValidationParameters tokenValidationParameters, out IDictionary<string, string> claims)
+        public bool TryParseToken(string token, string secret, Action<TokenValidationParameters> populateTokenValidationParameters, Encoding encoding, out IDictionary<string, string> claims)
         {
             var handledExceptions = new [] { 
                 typeof(SecurityTokenInvalidAudienceException), 
@@ -91,9 +88,10 @@ namespace DNI.Shared.Services
                 throw new ArgumentNullException(nameof(encoding));
 
                 var tokenHandler = new JwtSecurityTokenHandler();
-
+                var tokenValidationParameters = new TokenValidationParameters();
                 var signingCredentials = GetSigningCredentials(secret, SecurityAlgorithms.HmacSha512Signature, encoding);
 
+                populateTokenValidationParameters(tokenValidationParameters);
                 tokenValidationParameters.IssuerSigningKey = signingCredentials.Key;
                 
                 var securityClaimPrinciple = tokenHandler.ValidateToken(token, tokenValidationParameters, out var m);
@@ -108,52 +106,9 @@ namespace DNI.Shared.Services
                 if(!handledExceptions.Contains(ex.GetType()))
                     throw;
 
-                Console.WriteLine(ex);
-
                 claims = null;
                 return false;
             }
-        }
-
-        public ClaimsIdentity GetClaimsIdentity<T>(T value)
-        {
-            var type = typeof(T);
-            var claimProperties = GetClaimProperties(type
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance));
-
-            return new ClaimsIdentity(claimProperties
-                .Select(claimProperty => { 
-                    var claimAttribute = claimProperty.GetCustomAttribute<ClaimAttribute>();
-                    var propertyValue = claimProperty.GetValue(value); 
-                    return CreateClaim(claimAttribute?.ClaimType ?? claimProperty.Name, propertyValue, claimProperty.PropertyType);  
-                }));
-        }
-
-        public T ParseClaims<T>(IEnumerable<Claim> claims, params object[] tArgs)
-        {
-            var type = typeof(T);
-            var claimProperties = GetClaimProperties(type
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance));
-            var instance = Activator.CreateInstance(typeof(T), tArgs);
-            foreach(var claim in claims)
-            {
-                var property = claimProperties.FirstOrDefault(property => { 
-                    var claimAttribute = property.GetCustomAttribute<ClaimAttribute>(); 
-                    return claimAttribute.ClaimType == claim.Type || property.Name == claim.Type; 
-                });
-                
-                if(property == null)
-                    continue;
-
-                property.SetValue(instance, _claimTypeValueConvertor.Convert(claim.Value, claim.ValueType));
-            }
-
-            return (T)instance;
-        }
-
-        private IEnumerable<PropertyInfo> GetClaimProperties(IEnumerable<PropertyInfo> properties)
-        {
-            return properties.Where(property => property.GetCustomAttribute<ClaimAttribute>() != null);
         }
     }
 }
