@@ -64,6 +64,10 @@ namespace DNI.Shared.Services
         {
             _distributedCache = distributedCache;
             _messagePackService = messagePackService;
+            _messagePackOptions = MessagePackSerializerOptions
+                .Standard
+                .WithCompression(MessagePackCompression.Lz4Block)
+                .WithSecurity(MessagePackSecurity.TrustedData);
         }
     }
 }
