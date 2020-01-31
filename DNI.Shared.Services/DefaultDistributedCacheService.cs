@@ -26,12 +26,17 @@ namespace DNI.Shared.Services
             return await _messagePackService.Deserialise<T>(result, _messagePackOptions);
         }
 
-        public async Task Set<T>(T value, CancellationToken cancellationToken = default)
+        public async Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default)
         {
             if(value == null)
+                return;
+
+            var serialisedValue = await _messagePackService.Serialise(value, _messagePackOptions);
+
+            await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken);
         }
 
-        public Task Set<T>(Func<T> getValue, CancellationToken cancellationToken = default)
+        public Task Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
