@@ -19,6 +19,8 @@ namespace DNI.Shared.Services
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IMapperProvider, MapperProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()
+                .AddSingleton<IModifierFlagPropertyService, ModifierFlagPropertyService>()
+                .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
                 .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
                 .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
