@@ -36,9 +36,9 @@ namespace DNI.Shared.Services
             await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken);
         }
 
-        public Task Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
+        public async Task Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await Set(cacheKeyName, getValue(), cancellationToken);
         }
 
         public DefaultDistributedCacheService(IDistributedCache distributedCache, IMessagePackService messagePackService)
