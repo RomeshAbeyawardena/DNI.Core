@@ -28,15 +28,15 @@ namespace DNI.Shared.Services
             return GetSecurityTokenDescriptor(populateSecurityTokenDescriptor, signingCredentials, expiry, new ClaimsIdentity(claims));
         }
 
-        private SecurityTokenDescriptor GetSecurityTokenDescriptor(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, SigningCredentials signingCredentials, 
-            DateTime expiry, ClaimsIdentity claimsIdentity)
+        public static SecurityTokenDescriptor GetSecurityTokenDescriptor(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, SigningCredentials signingCredentials, 
+            DateTime expiry, ClaimsIdentity claimsIdentity, DateTime? issuedAt = null)
         {
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
                 Expires = expiry,
                 SigningCredentials = signingCredentials,
-                IssuedAt = DateTime.Now
+                IssuedAt = issuedAt.HasValue ? issuedAt : DateTime.Now
             };
 
             populateSecurityTokenDescriptor(securityTokenDescriptor);

@@ -46,7 +46,8 @@ namespace DNI.Shared.App
 
             if (_jsonTokenService.TryParseToken(userSession, mySecret2, parameters => { 
                 parameters.ValidIssuer = issuer; 
-                parameters.ValidAudience = audience; }, 
+                parameters.ValidAudience = audience;
+                parameters.RequireExpirationTime = true; }, 
                 Encoding.UTF8, out var claimsDictionary))
             {
                 Console.WriteLine(claimsDictionary.Count());
