@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts.Enumerations;
+using DNI.Shared.Contracts.Providers;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services.Attributes;
 using DNI.Shared.Services.Extensions;
@@ -11,6 +12,12 @@ namespace DNI.Shared.Services
 {
     public class ModifierFlagPropertyService : IModifierFlagPropertyService
     {
+        private readonly IClockProvider _clockProvider;
+
+        public ModifierFlagPropertyService(IClockProvider clockProvider)
+        {
+            _clockProvider = clockProvider;
+        }
 
         public void SetModifierFlagValues<TEntity>(TEntity entity, ModifierFlag modifierFlag)
         {
@@ -20,7 +27,7 @@ namespace DNI.Shared.Services
                 .Where(a => a.GetCustomAttribute<ModifierAttribute>().ModifierFlag.HasFlag(modifierFlag));
 
             if (createdModifierFlagAttributes.Any())
-                SetModifierFlagValues(createdModifierFlagAttributes, entity, DateTime.Now);
+                SetModifierFlagValues(createdModifierFlagAttributes, entity, _clockProvider.DateTimeOffset);
 
         }
 
