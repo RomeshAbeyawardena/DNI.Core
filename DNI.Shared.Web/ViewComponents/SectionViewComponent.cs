@@ -3,7 +3,6 @@ using DNI.Shared.Web.Contracts;
 using DNI.Shared.Web.Domains;
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DNI.Shared.Web.ViewComponents

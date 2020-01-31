@@ -1,18 +1,12 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Convertors;
+﻿using DNI.Shared.Contracts.Convertors;
 using DNI.Shared.Contracts.Services;
-using DNI.Shared.Services.Attributes;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Reflection;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.IdentityModel.Tokens;
 
 
 namespace DNI.Shared.Services

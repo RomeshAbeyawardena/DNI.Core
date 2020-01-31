@@ -1,5 +1,4 @@
 ﻿using DNI.Shared.Contracts;
-using DNI.Shared.Services.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;

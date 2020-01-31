@@ -1,8 +1,6 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Domains;
 using System;
-using DNI.Shared.Shared.Extensions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +8,6 @@ using DNI.Shared.App.Domains;
 using Microsoft.Extensions.Logging;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.IdentityModel.Logging;
 
 namespace DNI.Shared.App

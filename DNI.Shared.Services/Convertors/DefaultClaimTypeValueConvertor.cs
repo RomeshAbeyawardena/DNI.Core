@@ -1,11 +1,7 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Convertors;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Convertors
 {

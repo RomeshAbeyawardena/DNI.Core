@@ -4,10 +4,6 @@ using DNI.Shared.Web.Domains;
 using DNI.Shared.Web.ViewModels;
 using DNI.Shared.Web.ViewModels.Partials;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DNI.Shared.Web.ViewComponents
