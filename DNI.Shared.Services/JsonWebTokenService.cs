@@ -51,12 +51,6 @@ namespace DNI.Shared.Services
             return signinCredentials;
         }
 
-        private Claim CreateClaim(string claimType, object value, Type type)
-        {
-            return new Claim(claimType, value.ToString(), _claimTypeValueConvertor.GetClaimTypeValue(type));
-        }
-
-       
         public JsonWebTokenService(IClaimTypeValueConvertor claimTypeValueConvertor)
         {
                _claimTypeValueConvertor = claimTypeValueConvertor;
