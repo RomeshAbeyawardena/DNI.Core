@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Text.Encodings.Web;
 
 namespace DNI.Shared.Shared.Extensions
 {

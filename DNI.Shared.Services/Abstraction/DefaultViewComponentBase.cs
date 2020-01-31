@@ -19,6 +19,7 @@ namespace DNI.Shared.Services.Abstraction
         }
 
         protected IMapperProvider MapperProvider => GetService<IMapperProvider>();
+        protected IMediatorService MediatorService => GetService<IMediatorService>();
 
         protected TService GetService<TService>()
         {

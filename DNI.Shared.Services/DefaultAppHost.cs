@@ -1,5 +1,6 @@
 ﻿using DNI.Shared.Contracts;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,7 +63,10 @@ namespace DNI.Shared.Services
         public DefaultAppHost()
         {
             _serviceCollection = new ServiceCollection();
-            _serviceCollection.AddTransient<TStartup>();
+            _serviceCollection
+                .AddSingleton(typeof(ILoggerFactory), typeof(LoggerFactory))
+                .AddSingleton(typeof(ILogger<>), typeof(Logger<>))
+                .AddTransient<TStartup>();
         }
     }
 }

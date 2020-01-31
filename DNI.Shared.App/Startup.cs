@@ -1,17 +1,21 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Domains;
 using System;
-using DNI.Shared.Shared.Extensions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.App.Domains;
+using Microsoft.Extensions.Logging;
+using DNI.Shared.Contracts.Services;
+using DNI.Shared.Services;
+using Microsoft.IdentityModel.Logging;
 
 namespace DNI.Shared.App
 {
     public class Startup
     {
+        private readonly IJsonWebTokenService _jsonTokenService;
+        private readonly ILogger<Startup> _logger;
         private readonly IRepository<Customer> _customerRepository;
         private readonly ICryptographicCredentials _cryptographicCredentials;
         private readonly IHashingProvider _hashingProvider;
@@ -19,49 +23,41 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            //Console.Write("Enter Password:");
-            //var password = _hashingProvider.HashBytes(Constants.SHA512, Console.ReadLine()
-            //    .GetBytes(Encoding.ASCII));
+            IdentityModelEventSource.ShowPII = true;
 
-            //Console.Write("Confirm Password:");
-            //var confirmPassword = _hashingProvider.HashBytes(Constants.SHA512, Console.ReadLine()
-            //    .GetBytes(Encoding.ASCII));
+            var mySecret = "cc7830e8cb754617a00eb1f068733f0cb85b12cb-e09f-455a-b4c2";
+            var mySecret2 = "cc7830e8cb754617a00eb1f068733f0cb85b12cb-e09f-455a-b4c2-68ad24f4";
 
-            //if(password.SequenceEqual(confirmPassword))
-            //    Console.WriteLine("Password's match!");
-            // {E23C96F2-30B4-4890-BB5D-E57E7AADA982}
-            
-            var customer = new Customer { FirstName = "Sam", MiddleName = "Smith", LastName = "McDonald" };
-
-            await _customerRepository.SaveChanges(customer, false);
-
-            customer.Id = 1;
-            customer.MiddleName = "Mantaz";
-
-            await _customerRepository.SaveChanges(customer, false);
+            var issuer = "http://master.test.branch.local";
+            var audience = "http://app.test.branch.local";
+            var audience2 = "http://app1.test.branch.local";
+            var userSession = _jsonTokenService.CreateToken(parameters => {
+                parameters.Issuer = issuer;
+                parameters.Audience = audience;
+            }, DateTime.Now.AddSeconds(1), DictionaryBuilder
+                .Create<string, string>(builder => builder
+                    .Add("BusinessUnitId", "23829")
+                    .Add("RoleId", "1234"))
+                .ToDictionary(), mySecret2, Encoding.UTF8);
 
 
-            //var firstRun = true;
-            //ConsoleKeyInfo lastConsoleKeyInfo = default;
-            //while (firstRun || (lastConsoleKeyInfo = Console.ReadKey()).Key != ConsoleKey.Escape)
-            //{
-            //    if (lastConsoleKeyInfo != default)
-            //        Console.Write(lastConsoleKeyInfo.KeyChar);
-
-            //    firstRun = false;
-            //    Console.Write("\r\nValue to encrypt: ");
-            //    var encryptedValue = _cryptographyProvider.Encrypt(_cryptographicCredentials, Console.ReadLine());
-            //    var decryptedValue = _cryptographyProvider.Decrypt(_cryptographicCredentials, await encryptedValue);
-            //    Console.WriteLine("You entered: {0}", await decryptedValue);
-            //    Console.WriteLine("Press any key to continue, press Escape to quit.");
-            //}
+            if (_jsonTokenService.TryParseToken(userSession, mySecret2, parameters => { 
+                parameters.ValidIssuer = issuer; 
+                parameters.ValidAudience = audience;
+                parameters.RequireExpirationTime = true; }, 
+                Encoding.UTF8, out var claimsDictionary))
+            {
+                Console.WriteLine(claimsDictionary.Count());
+            }
 
             return 0;
         }
 
-        public Startup(IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
+        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
             ICryptographyProvider cryptographyProvider)
         {
+            _jsonTokenService = jsonTokenService;
+            _logger = logger;
             _customerRepository = customerRepository;
             _cryptographicCredentials = cryptographicCredentials;
             _hashingProvider = hashingProvider;

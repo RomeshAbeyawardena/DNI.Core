@@ -1,5 +1,4 @@
 ﻿using DNI.Shared.Contracts;
-using DNI.Shared.Services.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,7 +8,6 @@ using System.Collections.Generic;
 namespace DNI.Shared.Services.Abstraction
 {
     [Route("{controller}/{action}")]
-    [HandleModelStateError]
     public abstract class DefaultControllerBase : Controller
     {
         public virtual TDestination Map<TSource, TDestination>(TSource source)
@@ -21,6 +19,8 @@ namespace DNI.Shared.Services.Abstraction
         {
             return MapperProvider.Map<TSource, TDestination>(source);
         }
+
+        protected IMediatorService MediatorService => GetService<IMediatorService>();
 
         protected IMapperProvider MapperProvider => GetService<IMapperProvider>();
 
