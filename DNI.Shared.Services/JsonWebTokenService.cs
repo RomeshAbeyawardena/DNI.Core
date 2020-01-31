@@ -72,8 +72,7 @@ namespace DNI.Shared.Services
             var handledExceptions = new [] { 
                 typeof(SecurityTokenInvalidAudienceException), 
                 typeof(SecurityTokenInvalidSigningKeyException),
-                typeof(SecurityTokenInvalidSignatureException),
-                typeof(ArgumentException)
+                typeof(SecurityTokenInvalidSignatureException)
             };
 
             try
