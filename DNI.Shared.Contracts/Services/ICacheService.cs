@@ -11,6 +11,7 @@ namespace DNI.Shared.Contracts.Services
     {
         Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default);
         Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default);
-        Task Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default);
+        Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default);
+        Task<T> Set<T>(string cacheKeyName, Func<Task<T>> getValue, CancellationToken cancellationToken = default);
     }
 }

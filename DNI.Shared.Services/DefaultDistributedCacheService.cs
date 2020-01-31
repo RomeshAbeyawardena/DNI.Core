@@ -36,9 +36,28 @@ namespace DNI.Shared.Services
             await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken);
         }
 
-        public async Task Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
+        public async Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
         {
-            await Set(cacheKeyName, getValue(), cancellationToken);
+            var value = getValue();
+
+            if(value == null)
+                return default;
+
+            await Set(cacheKeyName, value, cancellationToken);
+
+            return value;
+        }
+
+        public async Task<T> Set<T>(string cacheKeyName, Func<Task<T>> getValue, CancellationToken cancellationToken = default)
+        {
+            var value = await getValue();
+
+            if(value == null)
+                return default;
+
+            await Set(cacheKeyName, value, cancellationToken);
+
+            return value;
         }
 
         public DefaultDistributedCacheService(IDistributedCache distributedCache, IMessagePackService messagePackService)
