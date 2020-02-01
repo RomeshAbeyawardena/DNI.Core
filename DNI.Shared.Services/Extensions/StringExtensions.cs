@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.IO;
+using System.Text;
 using System.Text.Encodings.Web;
 
 namespace DNI.Shared.Services.Extensions
@@ -17,6 +19,16 @@ namespace DNI.Shared.Services.Extensions
                     htmlContent.WriteTo(stringWriter, htmlEncoder); 
                     return stringWriter.ToString();
                 });
+        }
+
+        
+        public static IHtmlContent Base64Encode(this IHtmlHelper htmlHelper, IHtmlContent parameter, Encoding encoding)
+        {
+            var originalString = parameter.GetString();
+            return htmlHelper
+                .Raw(Convert
+                    .ToBase64String(encoding
+                        .GetBytes(originalString)));
         }
 
         
