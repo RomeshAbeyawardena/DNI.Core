@@ -10,7 +10,7 @@ namespace DNI.Shared.Web
 {
     public class ServiceRegistration : IServiceRegistration
     {
-        public void RegisterServices(IServiceCollection services)
+        public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             var currentAssembly = Assembly.GetAssembly(typeof(ServiceRegistration));
 

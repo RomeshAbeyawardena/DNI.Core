@@ -13,7 +13,11 @@ namespace DNI.Shared.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .RegisterServiceBroker<ServiceBroker>(out var serviceBroker)
+                .RegisterServiceBroker<ServiceBroker>(options => { 
+                    options.RegisterAutoMappingProviders = true; 
+                    options.RegisterMessagePackSerialisers = true;
+                    options.RegisterCacheProviders = true; }, 
+                out var serviceBroker)
                 .AddMvc();
         }
 

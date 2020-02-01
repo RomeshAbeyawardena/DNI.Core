@@ -15,7 +15,7 @@ namespace DNI.Shared.App
         {
             var value = await AppHost.Build<Startup>()
                 
-                .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>(out var serviceBroker))
+                .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>(options => { options.RegisterAutoMappingProviders = true; options.RegisterMessagePackSerialisers = true; }, out var serviceBroker))
                 .ConfigureStartupDelegate((startup, arguments) => startup.Begin(arguments.ToArray()))
                 .Start<int>(args).ConfigureAwait(false);
 
