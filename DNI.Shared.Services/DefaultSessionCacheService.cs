@@ -1,6 +1,7 @@
 ﻿using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services.Abstraction;
 using MessagePack;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
@@ -11,19 +12,21 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultDistributedCacheService : DefaultCacheServiceBase
+    public class DefaultSessionCacheService : DefaultCacheServiceBase
     {
+        private readonly ISession _session;
         private readonly IDistributedCache _distributedCache;
+        private readonly IMessagePackService _messagePackService;
         private MessagePackSerializerOptions _messagePackOptions;
 
-        public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
+        public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default)
         {
-            var result = await _distributedCache.GetAsync(cacheKeyName, cancellationToken);
+            var value = _session.Get(cacheKeyName);
 
-            if(result == null)
+            if(value == null)
                 return default;
 
-            return await Deserialise<T>(result);
+            return await Deserialise<T>(value);
         }
 
         public override async Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default)
@@ -33,7 +36,7 @@ namespace DNI.Shared.Services
 
             var serialisedValue = await Serialise(value);
 
-            await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken);
+            _session.Set(cacheKeyName, serialisedValue.ToArray());
         }
 
         public override async Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
@@ -44,7 +47,6 @@ namespace DNI.Shared.Services
                 return default;
 
             await Set(cacheKeyName, value, cancellationToken);
-
             return value;
         }
 
@@ -56,15 +58,13 @@ namespace DNI.Shared.Services
                 return default;
 
             await Set(cacheKeyName, value, cancellationToken);
-
             return value;
         }
 
-        public DefaultDistributedCacheService(IDistributedCache distributedCache, 
-            IMessagePackService messagePackService)
+        public DefaultSessionCacheService(ISession session, IMessagePackService messagePackService)
             : base(messagePackService)
         {
-            _distributedCache = distributedCache;
+            _session = session;
         }
     }
 }
