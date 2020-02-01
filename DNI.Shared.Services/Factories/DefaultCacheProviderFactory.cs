@@ -17,7 +17,7 @@ namespace DNI.Shared.Services.Factories
         public DefaultCacheProviderFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _cacheServiceType
+            _cacheServiceType = Switch.Create<CacheType, Type>()
                 .CaseWhen(CacheType.DistributedMemoryCache, 
                     typeof(DefaultDistributedCacheService))
                 .CaseWhen(CacheType.SessionCache,
