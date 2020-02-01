@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Options;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
@@ -12,7 +13,7 @@ namespace DNI.Shared.App
 {
     public class ServiceRegistration : IServiceRegistration
     {
-        public void RegisterServices(IServiceCollection services)
+        public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
                 .AddDbContextPool<TestDbContext>(options => options.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))

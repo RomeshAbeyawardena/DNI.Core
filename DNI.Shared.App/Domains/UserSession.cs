@@ -3,6 +3,7 @@ using System;
 
 namespace DNI.Shared.App.Domains
 {
+    [MessagePack.MessagePackObject(true)]
     public class UserSession
     {
         [Claim]

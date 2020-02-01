@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DNI.Shared.Contracts.Options;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -7,6 +8,6 @@ namespace DNI.Shared.Contracts
     public interface IServiceBroker
     {
         IEnumerable<Assembly> Assemblies { get; }
-        void RegisterServicesFromAssemblies(IServiceCollection services);
+        void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions);
     }
 }

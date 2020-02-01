@@ -1,5 +1,7 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Options;
 using DNI.Shared.Services.Extensions;
+using DNI.Shared.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
@@ -18,6 +21,8 @@ namespace DNI.Shared.Services
         private readonly IEnumerable<PropertyInfo> _keyProperties;
         private TDbContext DbContext { get; }
         private readonly DbSet<TEntity> _dbSet;
+
+
         public EntityFrameworkRepository(TDbContext dbContext)
         {
             DbContext = dbContext;
@@ -25,9 +30,9 @@ namespace DNI.Shared.Services
             _keyProperties = GetKeyProperties();
         }
 
-        public async Task<TEntity> Find(params object[] keys)
+        public async Task<TEntity> Find(CancellationToken cancellationToken = default, params object[] keys)
         {
-            return await _dbSet.FindAsync(keys);
+            return await _dbSet.FindAsync(keys, cancellationToken);
         }
 
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> whereExpression = null)
@@ -38,7 +43,7 @@ namespace DNI.Shared.Services
             return _dbSet.Where(whereExpression);
         }
 
-        public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true)
+        public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)
         {
             if(_keyProperties.All(keyProperty => IsValueDefault(keyProperty, entity) ))
                 _dbSet.Add(entity);
@@ -72,6 +77,12 @@ namespace DNI.Shared.Services
             var key = dbContextEntityType.FindPrimaryKey();
 
             return key.Properties.Select(property => property.PropertyInfo);
+        }
+
+        public IPagerResult<TEntity> GetPager(IQueryable<TEntity> query)
+        {
+            return DefaultPagerResult
+                .Create(query);
         }
     }
 }

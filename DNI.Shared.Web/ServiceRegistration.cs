@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DNI.Shared.Contracts.Options;
 using DNI.Shared.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace DNI.Shared.Web
 {
     public class ServiceRegistration : IServiceRegistration
     {
-        public void RegisterServices(IServiceCollection services)
+        public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             var currentAssembly = Assembly.GetAssembly(typeof(ServiceRegistration));
 

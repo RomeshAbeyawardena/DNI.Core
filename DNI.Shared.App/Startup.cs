@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services;
 using Microsoft.IdentityModel.Logging;
+using MessagePack;
+using DNI.Shared.Services.Options;
 
 namespace DNI.Shared.App
 {
@@ -20,40 +22,31 @@ namespace DNI.Shared.App
         private readonly ICryptographicCredentials _cryptographicCredentials;
         private readonly IHashingProvider _hashingProvider;
         private readonly ICryptographyProvider _cryptographyProvider;
+        private readonly IMessagePackService _messagePackService;
 
         public async Task<int> Begin(params object[] args)
         {
-            IdentityModelEventSource.ShowPII = true;
+            var queryableList = ListBuilder.Create<Customer>();
 
-            var mySecret = "cc7830e8cb754617a00eb1f068733f0cb85b12cb-e09f-455a-b4c2";
-            var mySecret2 = "cc7830e8cb754617a00eb1f068733f0cb85b12cb-e09f-455a-b4c2-68ad24f4";
+            for(var index = 0; index < 142; index++)
+                queryableList.Add(new Customer { Id = index + 1 });
 
-            var issuer = "http://master.test.branch.local";
-            var audience = "http://app.test.branch.local";
-            var audience2 = "http://app1.test.branch.local";
-            var userSession = _jsonTokenService.CreateToken(parameters => {
-                parameters.Issuer = issuer;
-                parameters.Audience = audience;
-            }, DateTime.Now.AddSeconds(1), DictionaryBuilder
-                .Create<string, string>(builder => builder
-                    .Add("BusinessUnitId", "23829")
-                    .Add("RoleId", "1234"))
-                .ToDictionary(), mySecret2, Encoding.UTF8);
+            var query = queryableList.ToList().AsQueryable();
 
-
-            if (_jsonTokenService.TryParseToken(userSession, mySecret2, parameters => { 
-                parameters.ValidIssuer = issuer; 
-                parameters.ValidAudience = audience;
-                parameters.RequireExpirationTime = true; }, 
-                Encoding.UTF8, out var claimsDictionary))
-            {
-                Console.WriteLine(claimsDictionary.Count());
-            }
-
+            var pager = DefaultPagerResult.Create(query);
+            
+            
+            var list = await pager.GetItems(1, 10, false);
+            var list2 = await pager.GetItems(2, 10, false);
+            var lis3 = await pager.GetItems(3, 10, false);
+            var lis12 = await pager.GetItems(12, 10, false);
+            var lis13 = await pager.GetItems(13, 10, false);
+            var lis14 = await pager.GetItems(14, 10, false);
+            var lis15 = await pager.GetItems(15, 10, false);
             return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, 
+        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, IMessagePackService messagePackService,
             ICryptographyProvider cryptographyProvider)
         {
             _jsonTokenService = jsonTokenService;
@@ -62,6 +55,7 @@ namespace DNI.Shared.App
             _cryptographicCredentials = cryptographicCredentials;
             _hashingProvider = hashingProvider;
             _cryptographyProvider = cryptographyProvider;
+            _messagePackService = messagePackService;
         }
     }
 }
