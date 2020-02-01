@@ -28,17 +28,21 @@ namespace DNI.Shared.Services.Options
         {
             var query = _query;
 
-            var totalRows = useAsync ? await query.CountAsync(cancellationToken) : query.Count();
+            var rowsToSkip = (pageNumber - 1) * MaximumRowsPerPage;
+            
+            if(rowsToSkip > 0)
+                query = query.Skip(rowsToSkip);
 
-            var rowsToSkip = Convert.ToDecimal(totalRows) / Convert.ToDecimal(pageNumber);
+            var totalRows = useAsync 
+                ? await query.CountAsync(cancellationToken) 
+                : query.Count();
 
-            if(rowsToSkip > MaximumRowsPerPage)
-                query = query.Skip(Convert.ToInt32(Math.Truncate(rowsToSkip)));
-
-            if((useAsync ? await query.CountAsync(cancellationToken) : query.Count()) > MaximumRowsPerPage)
+            if(totalRows > MaximumRowsPerPage)
                 query = query.Take(MaximumRowsPerPage);
 
-            return useAsync ? await query.ToArrayAsync(cancellationToken) : await Task.FromResult(query.ToArray());
+            return useAsync 
+                ? await query.ToArrayAsync(cancellationToken) 
+                : await Task.FromResult(query.ToArray());
         }
 
         public static IPagerResult<T> Create(IQueryable<T> query)

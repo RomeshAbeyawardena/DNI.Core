@@ -28,7 +28,7 @@ namespace DNI.Shared.App
         {
             var queryableList = ListBuilder.Create<Customer>();
 
-            for(var index = 0; index < 100; index++)
+            for(var index = 0; index < 142; index++)
                 queryableList.Add(new Customer { Id = index + 1 });
 
             var query = queryableList.ToList().AsQueryable();
@@ -37,6 +37,12 @@ namespace DNI.Shared.App
             pager.MaximumRowsPerPage = 10;
             
             var list = await pager.GetItems(1, false);
+            var list2 = await pager.GetItems(2, false);
+            var lis3 = await pager.GetItems(3, false);
+            var lis12 = await pager.GetItems(12, false);
+            var lis13 = await pager.GetItems(13, false);
+            var lis14 = await pager.GetItems(14, false);
+            var lis15 = await pager.GetItems(15, false);
             return 0;
         }
 
