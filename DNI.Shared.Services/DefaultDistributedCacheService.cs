@@ -14,7 +14,6 @@ namespace DNI.Shared.Services
     public class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
-        private MessagePackSerializerOptions _messagePackOptions;
 
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
         {

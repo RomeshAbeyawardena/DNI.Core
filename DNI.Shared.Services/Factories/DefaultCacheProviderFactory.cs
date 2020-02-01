@@ -19,7 +19,9 @@ namespace DNI.Shared.Services.Factories
             _serviceProvider = serviceProvider;
             _cacheServiceType
                 .CaseWhen(CacheType.DistributedMemoryCache, 
-                    typeof(DefaultDistributedCacheService));
+                    typeof(DefaultDistributedCacheService))
+                .CaseWhen(CacheType.SessionCache,
+                    typeof(DefaultSessionCacheService));
         }
 
         public ICacheService GetCache(CacheType cacheType)
