@@ -28,6 +28,22 @@ namespace DNI.Shared.Services.Extensions
             return services;
         }
 
+        public static IServiceCollection RegisterServiceBroker<TServiceBroker, TServiceRegistrationOptions>(this IServiceCollection services, 
+            Action<IServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
+            where TServiceBroker : IServiceBroker
+            where TServiceRegistrationOptions : IServiceRegistrationOptions
+        {
+            var serviceRegistrationOptions = Activator
+                .CreateInstance<TServiceRegistrationOptions>();
+            serviceBrokerInstance = Activator
+                .CreateInstance<TServiceBroker>();
+            configureOptions(serviceRegistrationOptions);
+            serviceBrokerInstance
+                .RegisterServicesFromAssemblies(services, serviceRegistrationOptions);
+
+            return services;
+        }
+
         public static IServiceCollection RegisterCryptographicCredentials<TCryptographicCredentials>(this IServiceCollection services, 
             KeyDerivationPrf keyDerivationPrf, Encoding encoding, string password, 
             string salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector)
