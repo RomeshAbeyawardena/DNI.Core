@@ -34,15 +34,15 @@ namespace DNI.Shared.App
             var query = queryableList.ToList().AsQueryable();
 
             var pager = DefaultPagerResult.Create(query);
-            pager.MaximumRowsPerPage = 10;
             
-            var list = await pager.GetItems(1, false);
-            var list2 = await pager.GetItems(2, false);
-            var lis3 = await pager.GetItems(3, false);
-            var lis12 = await pager.GetItems(12, false);
-            var lis13 = await pager.GetItems(13, false);
-            var lis14 = await pager.GetItems(14, false);
-            var lis15 = await pager.GetItems(15, false);
+            
+            var list = await pager.GetItems(1, 10, false);
+            var list2 = await pager.GetItems(2, 10, false);
+            var lis3 = await pager.GetItems(3, 10, false);
+            var lis12 = await pager.GetItems(12, 10, false);
+            var lis13 = await pager.GetItems(13, 10, false);
+            var lis14 = await pager.GetItems(14, 10, false);
+            var lis15 = await pager.GetItems(15, 10, false);
             return 0;
         }
 

@@ -22,13 +22,11 @@ namespace DNI.Shared.Services.Options
     {
         private readonly IQueryable<T> _query;
 
-        public int MaximumRowsPerPage { get; set; }
-
-        public async Task<IEnumerable<T>> GetItems(int pageNumber, bool useAsync = true, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, bool useAsync = true, CancellationToken cancellationToken = default)
         {
             var query = _query;
 
-            var rowsToSkip = (pageNumber - 1) * MaximumRowsPerPage;
+            var rowsToSkip = (pageNumber - 1) * maximumRowsPerPage;
             
             if(rowsToSkip > 0)
                 query = query.Skip(rowsToSkip);
@@ -37,8 +35,8 @@ namespace DNI.Shared.Services.Options
                 ? await query.CountAsync(cancellationToken) 
                 : query.Count();
 
-            if(totalRows > MaximumRowsPerPage)
-                query = query.Take(MaximumRowsPerPage);
+            if(totalRows > maximumRowsPerPage)
+                query = query.Take(maximumRowsPerPage);
 
             return useAsync 
                 ? await query.ToArrayAsync(cancellationToken) 

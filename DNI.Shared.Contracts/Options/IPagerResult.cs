@@ -9,7 +9,7 @@ namespace DNI.Shared.Contracts.Options
 {
     public interface IPagerResult<T>
     { 
-        int MaximumRowsPerPage { get; set; }
-        Task<IEnumerable<T>> GetItems(int pageNumber, bool useAsync = true, CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, 
+            bool useAsync = true, CancellationToken cancellationToken = default);
     }
 }
