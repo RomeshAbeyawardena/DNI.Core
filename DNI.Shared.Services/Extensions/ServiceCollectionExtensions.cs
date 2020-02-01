@@ -8,19 +8,22 @@ using System.Collections.Generic;
 using System.Text;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Services.Generators;
+using DNI.Shared.Services.Options;
 
 namespace DNI.Shared.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterServiceBroker<TServiceBroker>(this IServiceCollection services, out TServiceBroker serviceBrokerInstance)
+        public static IServiceCollection RegisterServiceBroker<TServiceBroker>(this IServiceCollection services, 
+            Action<IServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker
         {
+            var serviceRegistrationOptions = new DefaultServiceRegistrationOptions();
             serviceBrokerInstance = Activator
                 .CreateInstance<TServiceBroker>();
-
+            configureOptions(serviceRegistrationOptions);
             serviceBrokerInstance
-                .RegisterServicesFromAssemblies(services);
+                .RegisterServicesFromAssemblies(services, serviceRegistrationOptions);
 
             return services;
         }

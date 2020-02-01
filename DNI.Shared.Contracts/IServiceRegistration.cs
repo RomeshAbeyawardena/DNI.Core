@@ -4,6 +4,6 @@ namespace DNI.Shared.Contracts
 {
     public interface IServiceRegistration
     {
-        void RegisterServices(IServiceCollection serviceCollection);
+        void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options);
     }
 }

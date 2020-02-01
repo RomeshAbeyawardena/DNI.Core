@@ -7,6 +7,6 @@ namespace DNI.Shared.Contracts
     public interface IServiceBroker
     {
         IEnumerable<Assembly> Assemblies { get; }
-        void RegisterServicesFromAssemblies(IServiceCollection services);
+        void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions);
     }
 }

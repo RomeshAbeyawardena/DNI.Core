@@ -18,7 +18,7 @@ namespace DNI.Shared.Services.Abstraction
             return Assembly.GetAssembly(typeof(T));
         }
 
-        public virtual void RegisterServicesFromAssemblies(IServiceCollection services)
+        public virtual void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {
             foreach (var assembly in Assemblies)
             {
@@ -27,14 +27,14 @@ namespace DNI.Shared.Services.Abstraction
                     .Where(type => IsOfType<IServiceRegistration>(type));
 
                 foreach(var serviceRegistrationType in serviceRegistrationTypes)
-                    RegisterServices(serviceRegistrationType, services);
+                    RegisterServices(serviceRegistrationType, services, serviceRegistrationOptions);
             }
         }
 
-        private void RegisterServices(Type serviceRegistrationType, IServiceCollection services)
+        private void RegisterServices(Type serviceRegistrationType, IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {
             var serviceRegistration = (IServiceRegistration)Activator.CreateInstance(serviceRegistrationType);
-            serviceRegistration.RegisterServices(services);
+            serviceRegistration.RegisterServices(services, serviceRegistrationOptions);
         }
 
         private bool IsOfType<T>(Type type)
