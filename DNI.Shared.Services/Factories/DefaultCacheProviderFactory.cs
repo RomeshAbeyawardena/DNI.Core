@@ -17,12 +17,15 @@ namespace DNI.Shared.Services.Factories
         public DefaultCacheProviderFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _cacheServiceType.CaseWhen(CacheType.DistributedMemoryCache, typeof(DefaultDistributedCacheService));
+            _cacheServiceType
+                .CaseWhen(CacheType.DistributedMemoryCache, 
+                    typeof(DefaultDistributedCacheService));
         }
 
         public ICacheService GetCache(CacheType cacheType)
         {
-            throw new NotImplementedException();
+            return (ICacheService)_serviceProvider
+                .GetService(_cacheServiceType.Case(cacheType));
         }
     }
 }
