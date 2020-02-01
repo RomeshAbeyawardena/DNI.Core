@@ -9,6 +9,8 @@ namespace DNI.Shared.Contracts.Options
 {
     public interface IPagerResult<T>
     { 
+        int Length { get; }
+        Task<int> LengthAsync { get; }
         Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, 
             bool useAsync = true, CancellationToken cancellationToken = default);
     }

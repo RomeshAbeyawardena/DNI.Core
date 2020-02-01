@@ -21,7 +21,10 @@ namespace DNI.Shared.Services.Options
     public class DefaultPagerResult<T> : IPagerResult<T>
     {
         private readonly IQueryable<T> _query;
-
+        
+        public int Length => _query.Count();
+        public Task<int> LengthAsync => _query.CountAsync();
+        
         public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, bool useAsync = true, CancellationToken cancellationToken = default)
         {
             var query = _query;
