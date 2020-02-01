@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DNI.Shared.Contracts.Options;
 using DNI.Shared.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;

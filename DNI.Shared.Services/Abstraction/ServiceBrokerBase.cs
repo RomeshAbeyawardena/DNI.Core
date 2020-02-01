@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

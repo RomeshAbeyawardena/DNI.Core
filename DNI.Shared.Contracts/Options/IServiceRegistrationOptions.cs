@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Shared.Contracts.Options
 {
     public interface IServiceRegistrationOptions
     {

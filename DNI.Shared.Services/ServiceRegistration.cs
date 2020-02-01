@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Options;
 using DNI.Shared.Contracts.Convertors;
 using DNI.Shared.Contracts.Factories;
 using DNI.Shared.Contracts.Managers;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.IO;
+using DNI.Shared.Services.Options;
 
 namespace DNI.Shared.Services
 {
@@ -28,7 +30,8 @@ namespace DNI.Shared.Services
                 .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
                 .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
                 .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
-                .AddSingleton<ICryptographyProvider, CryptographyProvider>();;
+                .AddSingleton<ICryptographyProvider, CryptographyProvider>()
+                .AddSingleton(typeof(IPagerResult<>), typeof(DefaultPagerResult<>));
 
             if (options.RegisterMessagePackSerialisers)
                 services
