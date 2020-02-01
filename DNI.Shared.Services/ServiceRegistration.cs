@@ -31,6 +31,7 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
                 .AddSingleton<ICacheProviderFactory, DefaultCacheProviderFactory>()
+                .AddSingleton<ICacheProvider, DefaultCacheProvider>()
                 .AddTransient<IMediatorService, MediatorService>();
         }
     }
