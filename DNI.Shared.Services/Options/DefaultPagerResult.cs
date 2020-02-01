@@ -24,7 +24,20 @@ namespace DNI.Shared.Services.Options
         
         public int Length => _query.Count();
         public Task<int> LengthAsync => _query.CountAsync();
-        
+        public async Task<int> GetTotalNumberOfPages(int maximumRowsPerPage, bool useAsync = true)
+        {
+            var length = useAsync 
+                ? await LengthAsync 
+                : await Task.FromResult(Length);
+
+            if(maximumRowsPerPage == 0 || length == 0)
+                return 0;
+
+            var totalPageNumbersinDecimal = Convert.ToDecimal(length) / Convert.ToDecimal(maximumRowsPerPage);
+
+            return Convert.ToInt32(
+                Math.Ceiling(totalPageNumbersinDecimal));
+        }
         public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, bool useAsync = true, CancellationToken cancellationToken = default)
         {
             var query = _query;

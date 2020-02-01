@@ -28,21 +28,13 @@ namespace DNI.Shared.App
         {
             var queryableList = ListBuilder.Create<Customer>();
 
-            for(var index = 0; index < 142; index++)
+            for(var index = 0; index < 250; index++)
                 queryableList.Add(new Customer { Id = index + 1 });
 
             var query = queryableList.ToList().AsQueryable();
 
-            var pager = DefaultPagerResult.Create(query);
-            
-            
-            var list = await pager.GetItems(1, 10, false);
-            var list2 = await pager.GetItems(2, 10, false);
-            var lis3 = await pager.GetItems(3, 10, false);
-            var lis12 = await pager.GetItems(12, 10, false);
-            var lis13 = await pager.GetItems(13, 10, false);
-            var lis14 = await pager.GetItems(14, 10, false);
-            var lis15 = await pager.GetItems(15, 10, false);
+            Console.WriteLine(await DefaultPagerResult.Create(query).GetTotalNumberOfPages(10, false));
+
             return 0;
         }
 

@@ -11,6 +11,7 @@ namespace DNI.Shared.Contracts.Options
     { 
         int Length { get; }
         Task<int> LengthAsync { get; }
+        Task<int> GetTotalNumberOfPages(int maximumRowsPerPage, bool useAsync = true);
         Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, 
             bool useAsync = true, CancellationToken cancellationToken = default);
     }
