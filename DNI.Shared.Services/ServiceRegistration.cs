@@ -30,10 +30,10 @@ namespace DNI.Shared.Services
                 .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
                 .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
-                .AddSingleton<DefaultDistributedCacheService>()
-                .AddSingleton<DefaultSessionCacheService>()
-                .AddSingleton<ICacheProviderFactory, DefaultCacheProviderFactory>()
-                .AddSingleton<ICacheProvider, DefaultCacheProvider>()
+                .AddScoped<DefaultDistributedCacheService>()
+                .AddScoped<DefaultSessionCacheService>()
+                .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
+                .AddScoped<ICacheProvider, DefaultCacheProvider>()
                 .AddTransient<IMediatorService, MediatorService>();
         }
     }
