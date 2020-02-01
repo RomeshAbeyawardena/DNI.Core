@@ -29,7 +29,7 @@ namespace DNI.Shared.Services.Extensions
         }
 
         public static IServiceCollection RegisterServiceBroker<TServiceBroker, TServiceRegistrationOptions>(this IServiceCollection services, 
-            Action<IServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
+            Action<TServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker
             where TServiceRegistrationOptions : IServiceRegistrationOptions
         {
