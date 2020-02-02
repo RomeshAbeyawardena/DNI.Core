@@ -105,14 +105,14 @@ namespace DNI.Shared.Services.Extensions
                 return defaultValueGenerator; });
         }
 
-        public static IServiceCollection RegisterCryptographicCredentialsFactory<TCryptographicCredentials>(this IServiceCollection services, Action<ISwitch<string, ICryptographicCredentials>, ICryptographyProvider> factoryBuilder)
+        public static IServiceCollection RegisterCryptographicCredentialsFactory<TCryptographicCredentials>(this IServiceCollection services, Action<ISwitch<string, ICryptographicCredentials>, ICryptographyProvider, IServiceProvider> factoryBuilder)
             where TCryptographicCredentials : ICryptographicCredentials
         {
             return services.AddSingleton(services =>
             {
                 var factory = Switch.Create<string, ICryptographicCredentials>();
                 var cryptographyProvider = services.GetRequiredService<ICryptographyProvider>();
-                factoryBuilder(factory, cryptographyProvider);
+                factoryBuilder(factory, cryptographyProvider, services);
                 return factory;
             });
         }
