@@ -30,7 +30,8 @@ namespace DNI.Shared.Services
                 .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
                 .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
                 .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
-                .AddSingleton<ICryptographyProvider, CryptographyProvider>();
+                .AddSingleton<ICryptographyProvider, CryptographyProvider>()
+                .AddSingleton<IEncryptionProvider,EncryptionProvider>();
 
             if (options.RegisterMessagePackSerialisers)
                 services
