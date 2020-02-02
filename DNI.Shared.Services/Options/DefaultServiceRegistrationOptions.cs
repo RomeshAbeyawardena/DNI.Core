@@ -18,5 +18,6 @@ namespace DNI.Shared.Services.Options
         public bool RegisterCacheProviders { get; set; }
         public bool RegisterMessagePackSerialisers { get; set; }
         public bool RegisterAutoMappingProviders { get; set; }
+        public bool RegisterMediatorServices { get; set; }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.IO;
 using DNI.Shared.Services.Options;
+using MediatR;
 
 namespace DNI.Shared.Services
 {
@@ -33,6 +34,11 @@ namespace DNI.Shared.Services
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
                 .AddSingleton<IEncryptionProvider,EncryptionProvider>();
 
+            if(options.RegisterMediatorServices)
+                services
+                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
+                    .AddTransient<IMediatorService, MediatorService>();
+
             if (options.RegisterMessagePackSerialisers)
                 services
                     .AddSingleton<IMessagePackService, MessagePackService>();
@@ -47,8 +53,8 @@ namespace DNI.Shared.Services
                     .AddScoped<DefaultDistributedCacheService>()
                     .AddScoped<DefaultSessionCacheService>()
                     .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
-                    .AddScoped<ICacheProvider, DefaultCacheProvider>()
-                    .AddTransient<IMediatorService, MediatorService>();
+                    .AddScoped<ICacheProvider, DefaultCacheProvider>();
+                    
         }
     }
 }
