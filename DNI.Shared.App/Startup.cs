@@ -33,7 +33,8 @@ namespace DNI.Shared.App
                 Id = 1
             };
 
-            _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
+            var encrypted = await _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
+            var decrypted = await _encryptionProvider.Decrypt<Customer, CustomerDto>(encrypted);
             return 0;
         }
 

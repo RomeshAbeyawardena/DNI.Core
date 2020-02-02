@@ -15,7 +15,7 @@ namespace DNI.Shared.Contracts.Providers
         /// <typeparam name="TResult"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        TResult Encrypt<T, TResult>(T value);
+        Task<TResult> Encrypt<T, TResult>(T value);
 
         /// <summary>
         /// Decrypts all encryptable keys
@@ -24,6 +24,6 @@ namespace DNI.Shared.Contracts.Providers
         /// <typeparam name="TResult"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        TResult Decrypt<T, TResult>(T value);
+        Task<TResult> Decrypt<T, TResult>(T value);
     }
 }

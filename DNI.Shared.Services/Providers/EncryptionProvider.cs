@@ -22,7 +22,7 @@ namespace DNI.Shared.Services.Providers
                 .Where(property => property.GetCustomAttribute<EncryptAttribute>() != null);
         }
 
-        public TResult Decrypt<T, TResult>(T value)
+        public async Task<TResult> Decrypt<T, TResult>(T value)
         {
             var tResultProperties = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var resultInstance = _mapperProvider.Map<T, TResult>(value);
@@ -40,17 +40,18 @@ namespace DNI.Shared.Services.Providers
                 if(val == null)
                     continue;
 
-                resultProperty.SetValue(resultInstance, _cryptographyProvider.Decrypt(cryptographicCredentials, val));
+                resultProperty.SetValue(resultInstance, await _cryptographyProvider.Decrypt(cryptographicCredentials, val));
             }
 
             return resultInstance;
         }
 
-        public TResult Encrypt<T, TResult>(T value)
+        public async Task <TResult> Encrypt<T, TResult>(T value)
         {
+            var encryptableProperties = GetEncryptableProperties(typeof(T));
             var tResultProperties = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var resultInstance = _mapperProvider.Map<T, TResult>(value);
-            foreach(var property in GetEncryptableProperties(typeof(T)))
+            foreach(var property in encryptableProperties)
             {
                 var encryptCustomAttribute = property.GetCustomAttribute<EncryptAttribute>();
                 var cryptographicCredentials = _cryptographicCredentialsSwitch
@@ -64,7 +65,7 @@ namespace DNI.Shared.Services.Providers
                 if(val == null)
                     continue;
 
-                resultProperty.SetValue(resultInstance, _cryptographyProvider.Encrypt(cryptographicCredentials, val));
+                resultProperty.SetValue(resultInstance, await _cryptographyProvider.Encrypt(cryptographicCredentials, val));
             }
 
             return resultInstance;
