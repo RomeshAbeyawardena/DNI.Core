@@ -16,38 +16,31 @@ namespace DNI.Shared.App
 {
     public class Startup
     {
-        private readonly IJsonWebTokenService _jsonTokenService;
         private readonly ILogger<Startup> _logger;
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly ICryptographicCredentials _cryptographicCredentials;
-        private readonly IHashingProvider _hashingProvider;
-        private readonly ICryptographyProvider _cryptographyProvider;
-        private readonly IMessagePackService _messagePackService;
+        private readonly IEncryptionProvider _encryptionProvider;
 
         public async Task<int> Begin(params object[] args)
         {
-            var queryableList = ListBuilder.Create<Customer>();
+            var customer = new CustomerDto
+            {
+                Created = DateTime.Now,
+                Modified = DateTime.Now,
+                EmailAddress = "jane.doe@hotmail.com",
+                FirstName = "Jane",
+                MiddleName = "Middleton",
+                LastName = "Doe",
+                UniqueId = Guid.NewGuid(),
+                Id = 1
+            };
 
-            for(var index = 0; index < 250; index++)
-                queryableList.Add(new Customer { Id = index + 1 });
-
-            var query = queryableList.ToList().AsQueryable();
-
-            Console.WriteLine(await DefaultPagerResult.Create(query).GetTotalNumberOfPages(10, false));
-
+            _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
             return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, IMessagePackService messagePackService,
-            ICryptographyProvider cryptographyProvider)
+        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider)
         {
-            _jsonTokenService = jsonTokenService;
             _logger = logger;
-            _customerRepository = customerRepository;
-            _cryptographicCredentials = cryptographicCredentials;
-            _hashingProvider = hashingProvider;
-            _cryptographyProvider = cryptographyProvider;
-            _messagePackService = messagePackService;
+            _encryptionProvider = encryptionProvider;
         }
     }
 }

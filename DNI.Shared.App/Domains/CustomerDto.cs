@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DNI.Shared.App.Domains
 {
-    public class Customer
+    public class CustomerDto
     {
         [Key]
         public int Id { get; set; }
@@ -14,16 +14,16 @@ namespace DNI.Shared.App.Domains
         public Guid UniqueId { get; set; }
 
         [Encrypt(Constants.IdentifierDataEncryption)]
-        public byte[] EmailAddress { get; set; }
-        
+        public string EmailAddress { get; set; }
+
         [Encrypt(Constants.PersonalDataEncryption)]
-        public byte[] FirstName { get; set; }
-        
+        public string FirstName { get; set; }
+
         [Encrypt(Constants.PersonalDataEncryption)]
-        public byte[] MiddleName { get; set; }
-        
+        public string MiddleName { get; set; }
+
         [Encrypt(Constants.PersonalDataEncryption)]
-        public byte[] LastName { get; set; }
+        public string LastName { get; set; }
         
         [Modifier(ModifierFlag.Created)]
         public DateTime? Created { get; set; }
