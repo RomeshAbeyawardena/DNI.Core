@@ -3,7 +3,7 @@
 namespace DNI.Shared.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public class ClaimAttribute : Attribute
+    public sealed class ClaimAttribute : Attribute
     {
         public ClaimAttribute(string claimType = null)
         {

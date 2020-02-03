@@ -102,13 +102,20 @@ namespace DNI.Shared.Services.Providers
         public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(KeyDerivationPrf keyDerivationPrf, string password, IEnumerable<byte> salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
         {
             var key = _hashingProvider.PasswordDerivedBytes(password, salt, keyDerivationPrf, iterations, totalNumberOfBytes);
-            return GetCryptographicCredentials<TCryptographicCredentials>(Constants.AES, key, initialVector);
+            var credentials = GetCryptographicCredentials<TCryptographicCredentials>(Constants.AES, key, initialVector);
+            credentials.KeyDerivationPrf = keyDerivationPrf;
+            credentials.Iterations = iterations;
+            credentials.TotalNumberOfBytes = totalNumberOfBytes;
+            return credentials;
         }
 
         public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(KeyDerivationPrf keyDerivationPrf, Encoding encoding, string password, string salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
         {
             var saltByteArray = salt.GetBytes(encoding);
-            return GetCryptographicCredentials<TCryptographicCredentials>(keyDerivationPrf, password, saltByteArray, iterations, totalNumberOfBytes, initialVector);
+            var credentials = GetCryptographicCredentials<TCryptographicCredentials>(keyDerivationPrf, password, saltByteArray, iterations, totalNumberOfBytes, initialVector);
+            credentials.Encoding = encoding;
+
+            return credentials;
         }
 
         public CryptographyProvider(IMemoryStreamManager memoryStreamManager, IHashingProvider hashingProvider)

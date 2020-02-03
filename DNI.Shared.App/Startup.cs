@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.App.Domains;
 using Microsoft.Extensions.Logging;
+using DNI.Shared.Shared.Extensions;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services;
 using Microsoft.IdentityModel.Logging;
@@ -30,6 +31,7 @@ namespace DNI.Shared.App
                 MiddleName = "Middleton",
                 LastName = "Doe",
                 UniqueId = Guid.NewGuid(),
+                Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8),
                 Id = 1
             };
 
