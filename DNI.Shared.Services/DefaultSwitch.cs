@@ -29,6 +29,13 @@ namespace DNI.Shared.Services
                 new ConcurrentDictionary<TKey, TKey>());
         }
 
+        public static ISwitch<TKey, TValue> Create(IDictionary<TKey, TValue> dictionary)
+        {
+            return new DefaultSwitch<TKey, TValue>(
+                new ConcurrentDictionary<TKey, TValue>(dictionary),
+                new ConcurrentDictionary<TKey, TKey>());
+        }
+
         public bool ContainsKey(TKey key)
         {
             return _dictionary.ContainsKey(key);
