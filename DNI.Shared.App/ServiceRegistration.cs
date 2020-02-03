@@ -15,6 +15,7 @@ using System;
 using DNI.Shared.Contracts.Providers;
 using System.Security.Cryptography;
 using DNI.Shared.Shared.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace DNI.Shared.App
 {
@@ -23,6 +24,7 @@ namespace DNI.Shared.App
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddLogging(options => options.AddConsole())
                 .RegisterCryptographicCredentialsFactory<MCryptographicCredentials>((factory, cryptographyProvider, services) => factory.CaseWhen(Constants.PersonalDataEncryption, cryptographyProvider.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, 
                     Encoding.UTF8, "3d21cecb-189d-4e6b-bea1-91b68de3a37b", "851a5944-115f-4e79-b468-82b67f00e349", 1000000, 32, "851a5944-115f-4e".GetBytes(Encoding.UTF8)))
                 .CaseWhen(Constants.IdentifierDataEncryption, cryptographyProvider

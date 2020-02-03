@@ -3,6 +3,7 @@ using DNI.Shared.Contracts.Enumerations;
 using DNI.Shared.Contracts.Providers;
 using DNI.Shared.Services.Attributes;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace DNI.Shared.Services.Providers
 {
     public class EncryptionProvider : IEncryptionProvider
     {
+        private readonly ILogger<EncryptionProvider> _logger;
         private readonly IMapperProvider _mapperProvider;
         private readonly ISwitch<string, ICryptographicCredentials> _cryptographicCredentialsSwitch;
         private readonly ICryptographyProvider _cryptographyProvider;
@@ -29,6 +31,7 @@ namespace DNI.Shared.Services.Providers
         private async Task<IEnumerable<byte>> Encrypt(EncryptionMethod encryptionMethod,
             ICryptographicCredentials cryptographicCredentials, string value)
         {
+            
             switch (encryptionMethod)
             {
                 case EncryptionMethod.Encryption:
@@ -97,10 +100,11 @@ namespace DNI.Shared.Services.Providers
             return resultInstance;
         }
 
-        public EncryptionProvider(IMapperProvider mapperProvider,
+        public EncryptionProvider(ILogger<EncryptionProvider> logger, IMapperProvider mapperProvider,
             ISwitch<string, ICryptographicCredentials> cryptographicCredentialsSwitch,
             ICryptographyProvider cryptographyProvider, IHashingProvider hashingProvider)
         {
+            _logger = logger;
             _mapperProvider = mapperProvider;
             _cryptographicCredentialsSwitch = cryptographicCredentialsSwitch;
             _cryptographyProvider = cryptographyProvider;

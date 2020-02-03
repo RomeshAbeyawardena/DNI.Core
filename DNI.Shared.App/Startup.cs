@@ -34,7 +34,7 @@ namespace DNI.Shared.App
                 Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8),
                 Id = 1
             };
-
+            _logger.LogInformation("test");
             var encrypted = await _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
             var decrypted = await _encryptionProvider.Decrypt<Customer, CustomerDto>(encrypted);
             return 0;
