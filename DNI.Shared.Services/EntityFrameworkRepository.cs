@@ -35,12 +35,17 @@ namespace DNI.Shared.Services
             return await _dbSet.FindAsync(keys, cancellationToken);
         }
 
-        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> whereExpression = null)
+        public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> whereExpression = null, bool enableTracking = true)
         {
             if(whereExpression == null)
                 return _dbSet;
 
-            return _dbSet.Where(whereExpression);
+            var query = _dbSet.Where(whereExpression);
+            
+            if(!enableTracking)
+                return query.AsNoTracking();
+
+            return query;
         }
 
         public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)
@@ -83,6 +88,11 @@ namespace DNI.Shared.Services
         {
             return DefaultPagerResult
                 .Create(query);
+        }
+
+        public IQueryable<TEntity> AsNoTracking(IQueryable<TEntity> query)
+        {
+            return query.AsNoTracking();
         }
     }
 }
