@@ -28,7 +28,7 @@ namespace DNI.Shared.Services.Attributes
 
             var matchingMemberValue = property.GetValue(validationContext.ObjectInstance);
 
-            if(value.Equals(matchingMemberValue))
+            if((value == null && matchingMemberValue == null) || (value != null && value.Equals(matchingMemberValue)))
                 return ValidationResult.Success;
 
             return new ValidationResult($"'{DisplayMatchingMember}' does not match '{ validationContext.DisplayName }'"); ;

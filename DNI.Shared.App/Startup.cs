@@ -28,7 +28,7 @@ namespace DNI.Shared.App
         {
             var registerUser = new RegisterUser 
             { 
-                Password = "myP@ssw0rd11!",
+                //Password = "myP@ssw0rd11!",
                 ConfirmPassword = "myP@ssw0rd1!"
             };
 
