@@ -86,13 +86,20 @@ namespace DNI.Shared.Services.Providers
                 var resultProperty = tResultProperties
                     .FirstOrDefault(prop => property.Name == prop.Name);
 
-                var val = property.GetValue(value)?.ToString();
+                var val = property.GetValue(value);
+
+                if(property.PropertyType.IsArray)
+                    val = cryptographicCredentials.Encoding.GetString((byte[])val);
+
+                if (val is IEnumerable<byte> enumerableValue)
+                    val = cryptographicCredentials.Encoding.GetString(enumerableValue.ToArray());
+
 
                 if (val == null)
                     continue;
 
                 var encryptedValue = await Encrypt(encryptCustomAttribute.EncryptionMethod,
-                    cryptographicCredentials, val);
+                    cryptographicCredentials, val.ToString());
 
                 resultProperty.SetValue(resultInstance, encryptedValue);
             }

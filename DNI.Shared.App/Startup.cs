@@ -19,6 +19,8 @@ namespace DNI.Shared.App
     {
         private readonly ILogger<Startup> _logger;
         private readonly IEncryptionProvider _encryptionProvider;
+        private readonly IHashingProvider _hashingProvider;
+        private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
 
         public async Task<int> Begin(params object[] args)
         {
@@ -31,19 +33,36 @@ namespace DNI.Shared.App
                 MiddleName = "Middleton",
                 LastName = "Doe",
                 UniqueId = Guid.NewGuid(),
-                Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8),
+                Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8).ToArray(),
                 Id = 1
             };
             _logger.LogInformation("test");
             var encrypted = await _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
+
+            if(!_credentialsDictionary.TryGetValue(Constants.PersonalDataEncryption, out var defaultCredentials))
+                throw new NullReferenceException();
+
+            var passwordHash = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
+            var passwordHash2 = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
+
+            if (!passwordHash2.SequenceEqual(passwordHash.ToArray()))
+                throw new UnauthorizedAccessException();
+
+            if (!encrypted.Password.SequenceEqual(passwordHash.ToArray()))
+                throw new UnauthorizedAccessException();
+
             var decrypted = await _encryptionProvider.Decrypt<Customer, CustomerDto>(encrypted);
             return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider)
+        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider, 
+            ISwitch<string, ICryptographicCredentials> credentialsDictionary, 
+            IHashingProvider hashingProvider)
         {
             _logger = logger;
             _encryptionProvider = encryptionProvider;
+            _hashingProvider = hashingProvider;
+            _credentialsDictionary = credentialsDictionary;
         }
     }
 }

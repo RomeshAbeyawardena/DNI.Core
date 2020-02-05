@@ -27,7 +27,7 @@ namespace DNI.Shared.App.Domains
         public string LastName { get; set; }
         
         [Encrypt(Constants.PersonalDataEncryption, EncryptionMethod.Hashing)]
-        public IEnumerable<byte> Password { get; set; }
+        public byte[] Password { get; set; }
 
         [Modifier(ModifierFlag.Created)]
         public DateTime? Created { get; set; }
