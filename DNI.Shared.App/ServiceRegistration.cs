@@ -24,14 +24,16 @@ namespace DNI.Shared.App
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
-                .AddLogging(options => options.AddConsole())
-                .RegisterCryptographicCredentialsFactory<MCryptographicCredentials>((factory, cryptographyProvider, services) => factory.CaseWhen(Constants.PersonalDataEncryption, cryptographyProvider.GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, 
+                .AddLogging(logginOptions => logginOptions.AddConsole())
+                .RegisterCryptographicCredentialsFactory<MCryptographicCredentials>((factory, cryptographyProvider, s) => factory
+                .CaseWhen(Constants.PersonalDataEncryption, cryptographyProvider
+                .GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, 
                     Encoding.UTF8, "3d21cecb-189d-4e6b-bea1-91b68de3a37b", "851a5944-115f-4e79-b468-82b67f00e349", 1000000, 32, "851a5944-115f-4e".GetBytes(Encoding.UTF8)))
                 .CaseWhen(Constants.IdentifierDataEncryption, cryptographyProvider
                     .GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, 
                     Encoding.UTF8, "42e6f1f0-7cd2-4ce3-a06c-f86c1c82fd24", "eeaf5b47-636c-4997-ae41-d979e3b04094", 1000000, 32, "bceac9fa-70a3-4b".GetBytes(Encoding.UTF8))))
                 .AddAutoMapper(Assembly.GetAssembly(typeof(ServiceRegistration)))
-                .AddDbContextPool<TestDbContext>(options => options.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
+                .AddDbContextPool<TestDbContext>(dbContextOptions => dbContextOptions.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
                 .AddSingleton<IGuidGeneratorService, GuidGeneratorService>()
                 .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
