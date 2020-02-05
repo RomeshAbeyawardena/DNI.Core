@@ -22,6 +22,7 @@ namespace DNI.Shared.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IClockProvider, DefaultClockProvider>()
                 .AddSingleton(new RecyclableMemoryStreamManager())
