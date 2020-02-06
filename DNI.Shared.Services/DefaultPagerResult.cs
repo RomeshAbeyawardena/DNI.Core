@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services.Options
+namespace DNI.Shared.Services
 {
     public static class DefaultPagerResult
     {
@@ -18,7 +18,7 @@ namespace DNI.Shared.Services.Options
         }
     }
 
-    public class DefaultPagerResult<T> : IPagerResult<T>
+    internal sealed class DefaultPagerResult<T> : IPagerResult<T>
     {
         private readonly IQueryable<T> _query;
         
@@ -38,6 +38,7 @@ namespace DNI.Shared.Services.Options
             return Convert.ToInt32(
                 Math.Ceiling(totalPageNumbersinDecimal));
         }
+
         public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, bool useAsync = true, CancellationToken cancellationToken = default)
         {
             var query = _query;
