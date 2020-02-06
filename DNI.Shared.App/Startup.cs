@@ -31,8 +31,8 @@ namespace DNI.Shared.App
                 request.Headers.Add("bot-id", long.MaxValue.ToString());
             });
 
-            var response = await httpClient.GetAsync("/maps");
-            var content = await response.Content.ReadAsStringAsync();
+            var response = await httpClient.GetAsync("/calendar/feeds/developer-calendar@google.com/public/full?alt=json");
+            var content = await response.Content.ToObject<Customer>(options => { });
 
             Console.WriteLine(content);
 
@@ -41,7 +41,7 @@ namespace DNI.Shared.App
             });
 
             response = await httpClient.GetAsync("/maps");
-            var customer = await response.Content.ToObject<CustomerDto>();
+            //var customer = await response.Content.ToObject<CustomerDto>();
 
             Console.WriteLine(content);
 
