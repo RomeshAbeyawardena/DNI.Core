@@ -1,4 +1,6 @@
-﻿using DNI.Shared.Contracts.Options;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Options;
+using DNI.Shared.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,30 +41,44 @@ namespace DNI.Shared.Services
                 Math.Ceiling(totalPageNumbersinDecimal));
         }
 
-        public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, bool useAsync = true, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, 
+            bool useAsync = true, CancellationToken cancellationToken = default)
         {
-            var query = _query;
-
-            var rowsToSkip = (pageNumber - 1) * maximumRowsPerPage;
-            
-            if(rowsToSkip > 0)
-                query = query.Skip(rowsToSkip);
-
-            var totalRows = useAsync 
-                ? await query.CountAsync(cancellationToken) 
-                : query.Count();
-
-            if(totalRows > maximumRowsPerPage)
-                query = query.Take(maximumRowsPerPage);
-
-            return useAsync 
-                ? await query.ToArrayAsync(cancellationToken) 
-                : await Task.FromResult(query.ToArray());
+            return await GetPagedItems(pagerResultOptions => {
+                pagerResultOptions.PageNumber = pageNumber; 
+                pagerResultOptions.MaximumRowsPerPage = 
+                maximumRowsPerPage; pagerResultOptions.UseAsync = useAsync; 
+            }, cancellationToken);
         }
 
         public static IPagerResult<T> Create(IQueryable<T> query)
         {
             return new DefaultPagerResult<T>(query);
+        }
+
+        public async Task<IEnumerable<T>> GetPagedItems(Action<IPagerResultOptions> pagerResultOptionsBuilder, CancellationToken cancellationToken = default)
+        {
+            var pagerResultOptions = new PagerResultOptions();
+
+            pagerResultOptionsBuilder(pagerResultOptions);
+
+            var query = _query;
+
+            var rowsToSkip = (pagerResultOptions.PageNumber - 1) * pagerResultOptions.MaximumRowsPerPage;
+
+            if (rowsToSkip > 0)
+                query = query.Skip(rowsToSkip);
+
+            var totalRows = pagerResultOptions.UseAsync
+                ? await query.CountAsync(cancellationToken)
+                : query.Count();
+
+            if (totalRows > pagerResultOptions.MaximumRowsPerPage)
+                query = query.Take(pagerResultOptions.MaximumRowsPerPage);
+
+            return pagerResultOptions.UseAsync
+                ? await query.ToArrayAsync(cancellationToken)
+                : await Task.FromResult(query.ToArray());
         }
 
         private DefaultPagerResult(IQueryable<T> query)
