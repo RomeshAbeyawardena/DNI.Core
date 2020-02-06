@@ -7,7 +7,6 @@ using DNI.Shared.Services.Extensions;
 using DNI.Shared.App.Domains;
 using Microsoft.EntityFrameworkCore;
 using DNI.Shared.App.Contracts;
-using DNI.Shared.App.Services;
 using AutoMapper;
 using System.Reflection;
 using DNI.Shared.Services;
@@ -34,7 +33,6 @@ namespace DNI.Shared.App
                     Encoding.UTF8, "42e6f1f0-7cd2-4ce3-a06c-f86c1c82fd24", "eeaf5b47-636c-4997-ae41-d979e3b04094", 1000000, 32, "bceac9fa-70a3-4b".GetBytes(Encoding.UTF8))))
                 .AddAutoMapper(Assembly.GetAssembly(typeof(ServiceRegistration)))
                 .AddDbContextPool<TestDbContext>(dbContextOptions => dbContextOptions.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
-                .AddSingleton<IGuidGeneratorService, GuidGeneratorService>()
                 .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 
