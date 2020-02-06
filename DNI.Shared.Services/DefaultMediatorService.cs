@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class MediatorService : IMediatorService
+    public class DefaultMediatorService : IMediatorService
     {
         private readonly IMediator _mediator;
 
@@ -20,7 +20,7 @@ namespace DNI.Shared.Services
             return await _mediator.Send(request, cancellationToken).ConfigureAwait(false);;
         }
 
-        public MediatorService(IMediator mediator)
+        public DefaultMediatorService(IMediator mediator)
         {
             _mediator = mediator;
         }

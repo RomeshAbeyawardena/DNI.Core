@@ -61,7 +61,7 @@ namespace DNI.Shared.Services.Extensions
             params Type[] entityTypes)
             where TDbContext : DbContext
         {
-            return RegisterDbContentRepositories<TDbContext>(services, typeof(EntityFrameworkRepository<,>), serviceLifetime, entityTypes);
+            return RegisterDbContentRepositories<TDbContext>(services, typeof(DefaultEntityFrameworkRepository<,>), serviceLifetime, entityTypes);
         }
 
         /// <summary>

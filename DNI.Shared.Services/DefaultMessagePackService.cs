@@ -1,4 +1,5 @@
-﻿using DNI.Shared.Contracts.Managers;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Managers;
 using MessagePack;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class MessagePackService : IMessagePackService
+    public class DefaultMessagePackService : IMessagePackService
     {
         private readonly IMemoryStreamManager _memoryStreamManager;
 
@@ -28,7 +29,7 @@ namespace DNI.Shared.Services
             }
         }
 
-        public MessagePackService(IMemoryStreamManager memoryStreamManager)
+        public DefaultMessagePackService(IMemoryStreamManager memoryStreamManager)
         {
             _memoryStreamManager = memoryStreamManager;
         }

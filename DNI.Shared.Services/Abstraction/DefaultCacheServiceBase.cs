@@ -1,4 +1,5 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Services;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
 using System;

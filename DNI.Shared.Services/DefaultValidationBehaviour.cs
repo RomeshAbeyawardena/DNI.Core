@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class DefaultValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TResponse : ResponseBase
     {
         private readonly IValidator<TRequest> _validator;
@@ -33,7 +33,7 @@ namespace DNI.Shared.Services
             return response;
         }
 
-        public ValidationBehaviour(IValidator<TRequest> validator)
+        public DefaultValidationBehaviour(IValidator<TRequest> validator)
         {
             _validator = validator;
         }

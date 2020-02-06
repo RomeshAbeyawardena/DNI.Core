@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DefaultModifierFlagPropertyService.cs~RF8adcdf0c.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="FluentValidation" Version="8.6.1" />
     <PackageReference Include="Humanizer.Core" Version="2.7.9" />

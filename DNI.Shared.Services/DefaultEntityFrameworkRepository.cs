@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    internal sealed class EntityFrameworkRepository<TDbContext, TEntity> : IImplementedRepository<TDbContext, TEntity>
+    internal sealed class DefaultEntityFrameworkRepository<TDbContext, TEntity> : IImplementedRepository<TDbContext, TEntity>
         where TDbContext : DbContext
         where TEntity : class
     {
@@ -23,7 +23,7 @@ namespace DNI.Shared.Services
         private readonly DbSet<TEntity> _dbSet;
 
 
-        public EntityFrameworkRepository(TDbContext dbContext)
+        public DefaultEntityFrameworkRepository(TDbContext dbContext)
         {
             DbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();

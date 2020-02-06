@@ -28,21 +28,21 @@ namespace DNI.Shared.Services
                 .AddSingleton(new RecyclableMemoryStreamManager())
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()
-                .AddSingleton<IModifierFlagPropertyService, ModifierFlagPropertyService>()
+                .AddSingleton<IModifierFlagPropertyService, DefaultModifierFlagPropertyService>()
                 .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
-                .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
-                .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
+                .AddSingleton<IJsonWebTokenService, DefaultJsonWebTokenService>()
+                .AddSingleton<IMemoryStreamManager, DefaultMemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>()
                 .AddSingleton<IEncryptionProvider,EncryptionProvider>();
 
             if(options.RegisterMediatorServices)
                 services
-                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
-                    .AddTransient<IMediatorService, MediatorService>();
+                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(DefaultValidationBehaviour<,>))
+                    .AddTransient<IMediatorService, DefaultMediatorService>();
 
             if (options.RegisterMessagePackSerialisers)
                 services
-                    .AddSingleton<IMessagePackService, MessagePackService>();
+                    .AddSingleton<IMessagePackService, DefaultMessagePackService>();
 
             if(options.RegisterAutoMappingProviders)
                 services
@@ -55,7 +55,6 @@ namespace DNI.Shared.Services
                     .AddScoped<DefaultSessionCacheService>()
                     .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
                     .AddScoped<ICacheProvider, DefaultCacheProvider>();
-                    
         }
     }
 }
