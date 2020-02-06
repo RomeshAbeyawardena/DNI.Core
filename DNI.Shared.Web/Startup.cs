@@ -16,7 +16,8 @@ namespace DNI.Shared.Web
                 .RegisterServiceBroker<ServiceBroker>(options => { 
                     options.RegisterAutoMappingProviders = true; 
                     options.RegisterMessagePackSerialisers = true;
-                    options.RegisterCacheProviders = true; }, 
+                    options.RegisterCacheProviders = true;
+                    options.RegisterMediatorServices = true; }, 
                 out var serviceBroker)
                 .AddMvc();
         }
