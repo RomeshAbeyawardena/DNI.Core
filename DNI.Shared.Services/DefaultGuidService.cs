@@ -21,5 +21,10 @@ namespace DNI.Shared.Services
 
             return default;
         }
+
+        public Guid Parse(IEnumerable<byte> guidBytes)
+        {
+            return new Guid(guidBytes.ToArray());
+        }
     }
 }
