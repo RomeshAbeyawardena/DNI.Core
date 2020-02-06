@@ -22,14 +22,23 @@ namespace DNI.Shared.Services.Attributes
 
         public void OnException(ExceptionContext context)
         {
-            if (!ExceptionTypes.Any(exception => context.Exception.GetType() == exception)) { 
-                context.ExceptionHandled = false;
+            if (!ExceptionTypes.Any(exception => context.Exception.GetType() == exception))
                 return;
-            }
             
             var service = context.HttpContext.RequestServices.GetService(ServiceType);
 
+            if(service == null)
+                return;
+
             var exceptionHandlingMethod = ServiceType.GetMethod(HandleMethod);
+
+            if(exceptionHandlingMethod == null)
+                return;
+
+            var methodParameters = exceptionHandlingMethod.GetParameters();
+            if (methodParameters.Length != 1 
+                || methodParameters.All(p => p.ParameterType != typeof(ExceptionContext)))
+                return;
 
             exceptionHandlingMethod.Invoke(service, new [] { context });
             context.ExceptionHandled = true;

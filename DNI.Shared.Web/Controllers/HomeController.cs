@@ -22,7 +22,7 @@ namespace DNI.Shared.Web.Controllers
             });
         }
 
-        [HandleError(typeof(ExceptionHandler), nameof(ExceptionHandler.HandleException), typeof(UnauthorizedAccessException))]
+        [HandleError(typeof(ExceptionHandler), nameof(ExceptionHandler.HandleException2), typeof(UnauthorizedAccessException))]
         public async Task<string> GetValue(string value)
         {
             Console.WriteLine("GetValue");
