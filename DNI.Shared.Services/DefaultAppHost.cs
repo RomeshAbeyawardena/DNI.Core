@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    internal class DefaultAppHost<TStartup> : IAppHost<TStartup>
+    internal sealed class DefaultAppHost<TStartup> : IAppHost<TStartup>
         where TStartup : class
     {
         private readonly IServiceCollection _serviceCollection;

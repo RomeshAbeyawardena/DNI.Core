@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class DefaultClockProvider : IClockProvider
+    internal sealed class DefaultClockProvider : IClockProvider
     {
         private readonly ISystemClock _systemClock;
 

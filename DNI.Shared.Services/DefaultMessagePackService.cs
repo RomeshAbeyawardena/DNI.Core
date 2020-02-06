@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultMessagePackService : IMessagePackService
+    internal sealed class DefaultMessagePackService : IMessagePackService
     {
         private readonly IMemoryStreamManager _memoryStreamManager;
 

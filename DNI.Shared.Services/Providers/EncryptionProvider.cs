@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class EncryptionProvider : IEncryptionProvider
+    internal sealed class EncryptionProvider : IEncryptionProvider
     {
         private readonly ILogger<EncryptionProvider> _logger;
         private readonly IMapperProvider _mapperProvider;

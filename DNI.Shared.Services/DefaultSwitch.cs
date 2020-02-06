@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace DNI.Shared.Services
 {
-    internal class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
+    internal sealed class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
     {
         public TValue this[TKey key] => TryGetValue(key, out var value) 
             ? value 

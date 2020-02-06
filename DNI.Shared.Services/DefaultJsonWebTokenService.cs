@@ -11,7 +11,7 @@ using System.Text;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultJsonWebTokenService : IJsonWebTokenService
+    internal sealed class DefaultJsonWebTokenService : IJsonWebTokenService
     {
         private readonly IClaimTypeValueConvertor _claimTypeValueConvertor;
 

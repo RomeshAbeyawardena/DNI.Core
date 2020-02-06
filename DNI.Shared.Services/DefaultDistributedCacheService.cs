@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultDistributedCacheService : DefaultCacheServiceBase
+    internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
 

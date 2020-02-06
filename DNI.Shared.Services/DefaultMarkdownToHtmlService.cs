@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultMarkdownToHtmlService : IMarkdownToHtmlService
+    internal sealed class DefaultMarkdownToHtmlService : IMarkdownToHtmlService
     {
         public string ToHtml(string markdown, Action<MarkdownPipelineBuilder> builder)
         {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultMediatorService : IMediatorService
+    internal sealed class DefaultMediatorService : IMediatorService
     {
         private readonly IMediator _mediator;
 

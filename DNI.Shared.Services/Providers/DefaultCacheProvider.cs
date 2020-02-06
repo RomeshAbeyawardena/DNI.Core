@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class DefaultCacheProvider : ICacheProvider
+    internal sealed class DefaultCacheProvider : ICacheProvider
     {
         private readonly ICacheProviderFactory _cacheProviderFactory;
 

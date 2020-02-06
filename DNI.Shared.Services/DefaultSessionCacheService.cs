@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultSessionCacheService : DefaultCacheServiceBase
+    internal sealed class DefaultSessionCacheService : DefaultCacheServiceBase
     {
         private readonly ISession _session;
 

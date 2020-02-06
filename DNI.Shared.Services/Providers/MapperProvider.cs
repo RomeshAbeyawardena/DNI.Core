@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class MapperProvider : IMapperProvider
+    internal sealed class MapperProvider : IMapperProvider
     {
         private readonly IMapper _mapper;
 

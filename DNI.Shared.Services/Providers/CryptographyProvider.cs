@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class CryptographyProvider : ICryptographyProvider
+    internal sealed class CryptographyProvider : ICryptographyProvider
     {
         private readonly IMemoryStreamManager _memoryStreamManager;
         private readonly IHashingProvider _hashingProvider;
