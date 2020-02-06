@@ -61,7 +61,7 @@ namespace DNI.Shared.Services.Extensions
             params Type[] entityTypes)
             where TDbContext : DbContext
         {
-            return RegisterDbContentRepositories<TDbContext>(services, typeof(EntityFrameworkRepository<,>), serviceLifetime, entityTypes);
+            return RegisterDbContentRepositories<TDbContext>(services, typeof(DefaultEntityFrameworkRepository<,>), serviceLifetime, entityTypes);
         }
 
         /// <summary>
@@ -103,6 +103,18 @@ namespace DNI.Shared.Services.Extensions
                     .Create(serviceProvider); 
                 action(defaultValueGenerator); 
                 return defaultValueGenerator; });
+        }
+
+        public static IServiceCollection RegisterCryptographicCredentialsFactory<TCryptographicCredentials>(this IServiceCollection services, Action<ISwitch<string, ICryptographicCredentials>, ICryptographyProvider, IServiceProvider> factoryBuilder)
+            where TCryptographicCredentials : ICryptographicCredentials
+        {
+            return services.AddSingleton(services =>
+            {
+                var factory = Switch.Create<string, ICryptographicCredentials>();
+                var cryptographyProvider = services.GetRequiredService<ICryptographyProvider>();
+                factoryBuilder(factory, cryptographyProvider, services);
+                return factory;
+            });
         }
     }
 }

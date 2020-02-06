@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="DefaultModifierFlagPropertyService.cs~RF8adcdf0c.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="FluentValidation" Version="8.6.1" />
     <PackageReference Include="Humanizer.Core" Version="2.7.9" />
+    <PackageReference Include="Markdig" Version="0.18.1" />
     <PackageReference Include="MediatR" Version="8.0.0" />
     <PackageReference Include="MessagePack" Version="2.1.80" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="3.1.1" />

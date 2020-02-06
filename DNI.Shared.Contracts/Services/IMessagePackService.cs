@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Shared.Contracts
 {
     public interface IMessagePackService
     {

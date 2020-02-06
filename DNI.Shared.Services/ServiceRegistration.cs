@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.IO;
 using DNI.Shared.Services.Options;
+using MediatR;
 
 namespace DNI.Shared.Services
 {
@@ -21,20 +22,28 @@ namespace DNI.Shared.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton<IGuidService, DefaultGuidService>()
+                .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IClockProvider, DefaultClockProvider>()
                 .AddSingleton(new RecyclableMemoryStreamManager())
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()
-                .AddSingleton<IModifierFlagPropertyService, ModifierFlagPropertyService>()
+                .AddSingleton<IModifierFlagPropertyService, DefaultModifierFlagPropertyService>()
                 .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
-                .AddSingleton<IJsonWebTokenService, JsonWebTokenService>()
-                .AddSingleton<IMemoryStreamManager, MemoryStreamManager>()
-                .AddSingleton<ICryptographyProvider, CryptographyProvider>();
+                .AddSingleton<IJsonWebTokenService, DefaultJsonWebTokenService>()
+                .AddSingleton<IMemoryStreamManager, DefaultMemoryStreamManager>()
+                .AddSingleton<ICryptographyProvider, CryptographyProvider>()
+                .AddSingleton<IEncryptionProvider,EncryptionProvider>();
+
+            if(options.RegisterMediatorServices)
+                services
+                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(DefaultValidationBehaviour<,>))
+                    .AddTransient<IMediatorService, DefaultMediatorService>();
 
             if (options.RegisterMessagePackSerialisers)
                 services
-                    .AddSingleton<IMessagePackService, MessagePackService>();
+                    .AddSingleton<IMessagePackService, DefaultMessagePackService>();
 
             if(options.RegisterAutoMappingProviders)
                 services
@@ -46,8 +55,7 @@ namespace DNI.Shared.Services
                     .AddScoped<DefaultDistributedCacheService>()
                     .AddScoped<DefaultSessionCacheService>()
                     .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
-                    .AddScoped<ICacheProvider, DefaultCacheProvider>()
-                    .AddTransient<IMediatorService, MediatorService>();
+                    .AddScoped<ICacheProvider, DefaultCacheProvider>();
         }
     }
 }

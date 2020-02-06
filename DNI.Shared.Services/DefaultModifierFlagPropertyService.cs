@@ -10,11 +10,11 @@ using System.Reflection;
 
 namespace DNI.Shared.Services
 {
-    public class ModifierFlagPropertyService : IModifierFlagPropertyService
+    internal sealed class DefaultModifierFlagPropertyService : IModifierFlagPropertyService
     {
         private readonly IClockProvider _clockProvider;
 
-        public ModifierFlagPropertyService(IClockProvider clockProvider)
+        public DefaultModifierFlagPropertyService(IClockProvider clockProvider)
         {
             _clockProvider = clockProvider;
         }

@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace DNI.Shared.Services
 {
-    internal class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
+    internal sealed class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
     {
         public TValue this[TKey key] => TryGetValue(key, out var value) 
             ? value 
@@ -26,6 +26,13 @@ namespace DNI.Shared.Services
         {
             return new DefaultSwitch<TKey, TValue>(
                 new ConcurrentDictionary<TKey, TValue>(),
+                new ConcurrentDictionary<TKey, TKey>());
+        }
+
+        public static ISwitch<TKey, TValue> Create(IDictionary<TKey, TValue> dictionary)
+        {
+            return new DefaultSwitch<TKey, TValue>(
+                new ConcurrentDictionary<TKey, TValue>(dictionary),
                 new ConcurrentDictionary<TKey, TKey>());
         }
 

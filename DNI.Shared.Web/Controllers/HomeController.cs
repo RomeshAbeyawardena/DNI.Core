@@ -1,4 +1,6 @@
 ﻿using DNI.Shared.Services.Abstraction;
+using DNI.Shared.Services.Attributes;
+using DNI.Shared.Web.Services;
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,10 +22,11 @@ namespace DNI.Shared.Web.Controllers
             });
         }
 
-         
+        [HandleError(typeof(ExceptionHandler), nameof(ExceptionHandler.HandleException2), typeof(UnauthorizedAccessException))]
         public async Task<string> GetValue(string value)
         {
             Console.WriteLine("GetValue");
+                throw new UnauthorizedAccessException();
             return await Task.FromResult(value);
         }
 

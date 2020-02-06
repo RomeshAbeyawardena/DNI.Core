@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Factories
 {
-    public class DefaultCacheProviderFactory : ICacheProviderFactory
+    internal sealed class DefaultCacheProviderFactory : ICacheProviderFactory
     {
         private readonly IServiceProvider _serviceProvider;
-        protected ISwitch<CacheType, Type> _cacheServiceType;
+        private ISwitch<CacheType, Type> _cacheServiceType;
         public DefaultCacheProviderFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;

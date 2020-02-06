@@ -11,5 +11,6 @@ namespace DNI.Shared.Contracts.Options
         bool RegisterCacheProviders { get; set; }
         bool RegisterMessagePackSerialisers { get; set; }
         bool RegisterAutoMappingProviders { get; set; }
+        bool RegisterMediatorServices { get; set; }
     }
 }

@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultValueSetterService : IDefaultValueSetterService
+    internal sealed class DefaultValueSetterService : IDefaultValueSetterService
     {
         private readonly IServiceProvider _serviceProvider;
 

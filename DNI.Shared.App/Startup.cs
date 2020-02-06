@@ -6,56 +6,76 @@ using System.Text;
 using System.Threading.Tasks;
 using DNI.Shared.App.Domains;
 using Microsoft.Extensions.Logging;
+using DNI.Shared.Shared.Extensions;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services;
 using Microsoft.IdentityModel.Logging;
 using MessagePack;
 using DNI.Shared.Services.Options;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 namespace DNI.Shared.App
 {
     public class Startup
     {
-        private readonly IJsonWebTokenService _jsonTokenService;
         private readonly ILogger<Startup> _logger;
-        private readonly IRepository<Customer> _customerRepository;
-        private readonly ICryptographicCredentials _cryptographicCredentials;
+        private readonly IEncryptionProvider _encryptionProvider;
         private readonly IHashingProvider _hashingProvider;
-        private readonly ICryptographyProvider _cryptographyProvider;
-        private readonly IMessagePackService _messagePackService;
+        private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
 
         public async Task<int> Begin(params object[] args)
         {
-            var queryableList = ListBuilder.Create<Customer>();
+            var registerUser = new RegisterUser 
+            { 
+                Password = "myP@ssw0rd11!",
+                ConfirmPassword = "myP@ssw0rd1!"
+            };
 
-            for(var index = 0; index < 142; index++)
-                queryableList.Add(new Customer { Id = index + 1 });
+            var validationContext = new ValidationContext(registerUser);
+            var validationResults = new List<ValidationResult>();
+            if(!Validator.TryValidateObject(registerUser, validationContext, validationResults, true))
+                throw new ValidationException("Validation errors");
+            return validationResults.Count();
+            //var customer = new CustomerDto
+            //{
+            //    Created = DateTime.Now,
+            //    Modified = DateTime.Now,
+            //    EmailAddress = "jane.doe@hotmail.com",
+            //    FirstName = "Jane",
+            //    MiddleName = "Middleton",
+            //    LastName = "Doe",
+            //    UniqueId = Guid.NewGuid(),
+            //    Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8).ToArray(),
+            //    Id = 1
+            //};
+            //_logger.LogInformation("test");
+            //var encrypted = await _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
 
-            var query = queryableList.ToList().AsQueryable();
+            //if(!_credentialsDictionary.TryGetValue(Constants.PersonalDataEncryption, out var defaultCredentials))
+            //    throw new NullReferenceException();
 
-            var pager = DefaultPagerResult.Create(query);
-            
-            
-            var list = await pager.GetItems(1, 10, false);
-            var list2 = await pager.GetItems(2, 10, false);
-            var lis3 = await pager.GetItems(3, 10, false);
-            var lis12 = await pager.GetItems(12, 10, false);
-            var lis13 = await pager.GetItems(13, 10, false);
-            var lis14 = await pager.GetItems(14, 10, false);
-            var lis15 = await pager.GetItems(15, 10, false);
-            return 0;
+            //var passwordHash = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
+            //var passwordHash2 = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
+
+            //if (!passwordHash2.SequenceEqual(passwordHash.ToArray()))
+            //    throw new UnauthorizedAccessException();
+
+            //if (!encrypted.Password.SequenceEqual(passwordHash.ToArray()))
+            //    throw new UnauthorizedAccessException();
+
+            //var decrypted = await _encryptionProvider.Decrypt<Customer, CustomerDto>(encrypted);
+            //return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IJsonWebTokenService jsonTokenService, IRepository<Customer> customerRepository, ICryptographicCredentials cryptographicCredentials, IHashingProvider hashingProvider, IMessagePackService messagePackService,
-            ICryptographyProvider cryptographyProvider)
+        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider, 
+            ISwitch<string, ICryptographicCredentials> credentialsDictionary, 
+            IHashingProvider hashingProvider)
         {
-            _jsonTokenService = jsonTokenService;
             _logger = logger;
-            _customerRepository = customerRepository;
-            _cryptographicCredentials = cryptographicCredentials;
+            _encryptionProvider = encryptionProvider;
             _hashingProvider = hashingProvider;
-            _cryptographyProvider = cryptographyProvider;
-            _messagePackService = messagePackService;
+            _credentialsDictionary = credentialsDictionary;
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DNI.Shared.Services
 {
-    public class MemoryStreamManager : IMemoryStreamManager
+    internal sealed class DefaultMemoryStreamManager : IMemoryStreamManager
     {
         private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
 
@@ -28,7 +28,7 @@ namespace DNI.Shared.Services
             return memoryStream;
         }
 
-        public MemoryStreamManager(RecyclableMemoryStreamManager recyclableMemoryStreamManager)
+        public DefaultMemoryStreamManager(RecyclableMemoryStreamManager recyclableMemoryStreamManager)
         {
             _recyclableMemoryStreamManager = recyclableMemoryStreamManager;
         }

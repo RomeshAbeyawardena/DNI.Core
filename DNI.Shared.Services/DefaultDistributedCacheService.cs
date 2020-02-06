@@ -1,4 +1,5 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services.Abstraction;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultDistributedCacheService : DefaultCacheServiceBase
+    internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
 

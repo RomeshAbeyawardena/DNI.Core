@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace DNI.Shared.Services.Providers
 {
-    public class HashingProvider : IHashingProvider
+    internal sealed class HashingProvider : IHashingProvider
     {
         public IEnumerable<byte> GetRandomNumberGeneratorBytes(int length)
         {

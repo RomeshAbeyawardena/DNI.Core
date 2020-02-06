@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using DNI.Shared.Domains;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -18,6 +19,12 @@ namespace DNI.Shared.Services.Abstraction
         public virtual IEnumerable<TDestination> Map<TSource, TDestination>(IEnumerable<TSource> source)
         {
             return MapperProvider.Map<TSource, TDestination>(source);
+        }
+
+        protected void AddErrorsToModelState(ResponseBase response)
+        {
+            foreach(var error in response.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
         }
 
         protected IMediatorService MediatorService => GetService<IMediatorService>();

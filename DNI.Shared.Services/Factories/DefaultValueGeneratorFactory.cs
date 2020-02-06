@@ -5,7 +5,7 @@ using System;
 
 namespace DNI.Shared.Services.Factories
 {
-    public sealed class DefaultValueGeneratorFactory : IDefaultValueGeneratorFactory
+    internal sealed class DefaultValueGeneratorFactory : IDefaultValueGeneratorFactory
     {
         private readonly IServiceProvider _serviceProvider;
 

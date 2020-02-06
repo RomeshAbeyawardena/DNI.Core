@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace DNI.Shared.Services
 {
-    internal class DefaultDictionaryBuilder<TKey, TValue> : IDictionaryBuilder<TKey, TValue>
+    internal sealed class DefaultDictionaryBuilder<TKey, TValue> : IDictionaryBuilder<TKey, TValue>
     {
         public static IDictionaryBuilder<TKey, TValue> Create()
         {

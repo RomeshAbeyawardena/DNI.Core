@@ -1,4 +1,5 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Shared.Contracts;
+using DNI.Shared.Contracts.Services;
 using DNI.Shared.Services.Abstraction;
 using MessagePack;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
-    public class DefaultSessionCacheService : DefaultCacheServiceBase
+    internal sealed class DefaultSessionCacheService : DefaultCacheServiceBase
     {
         private readonly ISession _session;
 
