@@ -58,7 +58,7 @@ namespace DNI.Shared.Services
 
         public async Task<IEnumerable<T>> GetPagedItems(Action<IPagerResultOptions> pagerResultOptionsBuilder, CancellationToken cancellationToken = default)
         {
-            var pagerResultOptions = new PagerResultOptions();
+            var pagerResultOptions = new DefaultPagerResultOptions();
 
             pagerResultOptionsBuilder(pagerResultOptions);
 

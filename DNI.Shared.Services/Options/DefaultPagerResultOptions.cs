@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Options
 {
-    public class PagerResultOptions : IPagerResultOptions
+    internal sealed class DefaultPagerResultOptions : IPagerResultOptions
     {
         public int PageNumber { get; set; }
         public int MaximumRowsPerPage { get; set; }
