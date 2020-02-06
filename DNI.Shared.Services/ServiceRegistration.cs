@@ -22,7 +22,7 @@ namespace DNI.Shared.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
-                .AddSingleton<IHttpClientService, DefaultHttpClientService>()
+                .AddSingleton<IHttpClientFactory, DefaultHttpClientFactory>()
                 .AddSingleton<IGuidService, DefaultGuidService>()
                 .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
                 .AddSingleton<ISystemClock, SystemClock>()

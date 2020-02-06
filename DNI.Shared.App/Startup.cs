@@ -20,59 +20,40 @@ namespace DNI.Shared.App
     public class Startup
     {
         private readonly ILogger<Startup> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly IEncryptionProvider _encryptionProvider;
         private readonly IHashingProvider _hashingProvider;
         private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
 
         public async Task<int> Begin(params object[] args)
         {
-            var registerUser = new RegisterUser 
-            { 
-                Password = "myP@ssw0rd11!",
-                ConfirmPassword = "myP@ssw0rd1!"
-            };
+            var httpClient = _httpClientFactory.GetHttpClient("myEndPoint", "http://www.google.com", (request) => {
+                request.Headers.Add("bot-id", long.MaxValue.ToString());
+            });
 
-            var validationContext = new ValidationContext(registerUser);
-            var validationResults = new List<ValidationResult>();
-            if(!Validator.TryValidateObject(registerUser, validationContext, validationResults, true))
-                throw new ValidationException("Validation errors");
-            return validationResults.Count();
-            //var customer = new CustomerDto
-            //{
-            //    Created = DateTime.Now,
-            //    Modified = DateTime.Now,
-            //    EmailAddress = "jane.doe@hotmail.com",
-            //    FirstName = "Jane",
-            //    MiddleName = "Middleton",
-            //    LastName = "Doe",
-            //    UniqueId = Guid.NewGuid(),
-            //    Password = "myP@ssw0rd1!".GetBytes(Encoding.UTF8).ToArray(),
-            //    Id = 1
-            //};
-            //_logger.LogInformation("test");
-            //var encrypted = await _encryptionProvider.Encrypt<CustomerDto, Customer>(customer);
+            var response = await httpClient.GetAsync("/maps");
+            var content = await response.Content.ReadAsStringAsync();
 
-            //if(!_credentialsDictionary.TryGetValue(Constants.PersonalDataEncryption, out var defaultCredentials))
-            //    throw new NullReferenceException();
+            Console.WriteLine(content);
 
-            //var passwordHash = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
-            //var passwordHash2 = _hashingProvider.PasswordDerivedBytes("myP@ssw0rd1!", defaultCredentials.Key, defaultCredentials.KeyDerivationPrf, defaultCredentials.Iterations, defaultCredentials.TotalNumberOfBytes);
+            httpClient = _httpClientFactory.GetHttpClient("myEndPoint2", "http://www.bing.com", (request) => {
+                request.Headers.Add("bot-id", long.MaxValue.ToString());
+            });
 
-            //if (!passwordHash2.SequenceEqual(passwordHash.ToArray()))
-            //    throw new UnauthorizedAccessException();
+            response = await httpClient.GetAsync("/maps");
+            var customer = await response.Content.ToObject<CustomerDto>();
 
-            //if (!encrypted.Password.SequenceEqual(passwordHash.ToArray()))
-            //    throw new UnauthorizedAccessException();
+            Console.WriteLine(content);
 
-            //var decrypted = await _encryptionProvider.Decrypt<Customer, CustomerDto>(encrypted);
-            //return 0;
+            return 0;
         }
 
         public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider, 
             ISwitch<string, ICryptographicCredentials> credentialsDictionary, 
-            IHashingProvider hashingProvider)
+            IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory)
         {
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
             _encryptionProvider = encryptionProvider;
             _hashingProvider = hashingProvider;
             _credentialsDictionary = credentialsDictionary;
