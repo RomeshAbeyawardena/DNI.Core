@@ -42,7 +42,7 @@ namespace DNI.Shared.Shared.Extensions
                     val = decimalValue;
 
                 if(bool.TryParse(value, out var booleanValue))
-                    val = decimalValue;
+                    val = booleanValue;
 
                 if(Guid.TryParse(value, out var guidValue))
                     val = guidValue;
