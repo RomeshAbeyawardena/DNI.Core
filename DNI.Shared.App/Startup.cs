@@ -27,24 +27,29 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            var httpClient = _httpClientFactory.GetHttpClient("myEndPoint", "http://www.google.com", (request) => {
-                request.Headers.Add("bot-id", long.MaxValue.ToString());
-            });
+            var dictionary = new Dictionary<string, string>();
 
-            var response = await httpClient.GetAsync("/calendar/feeds/developer-calendar@google.com/public/full?alt=json");
-            var content = await response.Content.ToObject<Customer>(options => { });
+            dictionary.Add("UniqueReference", "5e8de8d4-4da2-457f-8ef2-10bb962f5939");
+            dictionary.Add("Name", "John");
+            dictionary.Add("Code", "JD00001");
+            dictionary.Add("Age", "33");
+            dictionary.Add("Height", "1.524");
+            dictionary.Add("Weight", "333.43");
+            dictionary.Add("DateOfBirth", "11/01/1986 13:00");
+            dictionary.Add("IsActive", "1");
+            dictionary.Add("Reference", "42DJ13948211");
 
-            Console.WriteLine(content);
+            var data = dictionary.ToClaimObject<Data>();
 
-            httpClient = _httpClientFactory.GetHttpClient("myEndPoint2", "http://www.bing.com", (request) => {
-                request.Headers.Add("bot-id", long.MaxValue.ToString());
-            });
-
-            response = await httpClient.GetAsync("/maps");
-            //var customer = await response.Content.ToObject<CustomerDto>();
-
-            Console.WriteLine(content);
-
+            Console.WriteLine(data.UniqueReference);
+            Console.WriteLine(data.Name);
+            Console.WriteLine(data.Code);
+            Console.WriteLine(data.Height);
+            Console.WriteLine(data.Age);
+            Console.WriteLine(data.Weight);
+            Console.WriteLine(data.DateOfBirth);
+            Console.WriteLine(data.IsActive);
+            Console.WriteLine(data.CustomerReference);
             return 0;
         }
 

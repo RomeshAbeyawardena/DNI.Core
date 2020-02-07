@@ -1,6 +1,8 @@
-﻿using System;
+﻿using DNI.Shared.Shared.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,15 +10,27 @@ namespace DNI.Shared.Shared.Extensions
 {
     public static class DictionaryExtensions
     {
-        public static T ToObject<T>(this IDictionary<string, object> dictionary, params object[] constructorArguments)
+        public static TClaim ToClaimObject<TClaim>(this IDictionary<string, object> dictionary, params object[] constructorArguments)
+        {
+            return ToObject<TClaim>(dictionary, typeof(ClaimAttribute), nameof(ClaimAttribute.ClaimType), constructorArguments);
+        }
+
+        public static TClaim ToClaimObject<TClaim>(this IDictionary<string, string> dictionary, params object[] constructorArguments)
+        {
+            return ToObject<TClaim>(dictionary, typeof(ClaimAttribute), nameof(ClaimAttribute.ClaimType), constructorArguments);
+        }
+
+        public static T ToObject<T>(this IDictionary<string, object> dictionary, Type customAttributeType = null, 
+            string attributePropertyOrField = null, params object[] constructorArguments)
         {
             var objectType = typeof(T);
             var properties = objectType.GetProperties();
             var instance = Activator.CreateInstance(objectType, constructorArguments);
-
+            
             foreach (var (key, value) in dictionary)
             {
-                var property = properties.FirstOrDefault(property => property.Name == key);
+                var property = properties.FirstOrDefault(prop => prop.Name == key 
+                || MatchesCustomAttributeField(prop, customAttributeType, attributePropertyOrField, key));
 
                 if (property == null)
                     continue;
@@ -27,7 +41,8 @@ namespace DNI.Shared.Shared.Extensions
             return (T)instance;
         }
 
-        public static T ToObject<T>(this IDictionary<string, string> dictionary, params object[] constructorArguments)
+        public static T ToObject<T>(this IDictionary<string, string> dictionary, Type customAttributeType = null,
+            string attributePropertyOrField = null, params object[] constructorArguments)
         {
             var objectDictionary = new Dictionary<string, object>();
             
@@ -50,7 +65,28 @@ namespace DNI.Shared.Shared.Extensions
                 objectDictionary.Add(key, val);
             }
 
-            return ToObject<T>(objectDictionary, constructorArguments);
+            return ToObject<T>(objectDictionary, customAttributeType, attributePropertyOrField, constructorArguments);
+        }
+
+        public static bool MatchesCustomAttributeField(PropertyInfo property, Type customAttributeType, string propertyOrFieldName, string value)
+        {
+            var propertyCustomAttribute = (customAttributeType == null
+                    ? default
+                    : property.GetCustomAttributes(customAttributeType, true))?.SingleOrDefault();
+
+
+            if (propertyCustomAttribute == null)
+                return false;
+
+            var attributeProperty = customAttributeType.GetProperty(propertyOrFieldName);
+            
+
+            if(attributeProperty == null)
+                return false;
+
+            var propertyName = attributeProperty.GetValue(propertyCustomAttribute);
+
+            return propertyName.Equals(value);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace DNI.Shared.Services
             return _dictionary.TryGetValue(key, out value);
         }
 
-        protected DefaultSwitch(IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TKey> alternateKeysDictionary)
+        private DefaultSwitch(IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TKey> alternateKeysDictionary)
         {
             _dictionary = dictionary;
             _alternateKeysDictionary = alternateKeysDictionary;
