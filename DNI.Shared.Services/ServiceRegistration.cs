@@ -14,6 +14,9 @@ using Microsoft.Extensions.Internal;
 using Microsoft.IO;
 using DNI.Shared.Services.Options;
 using MediatR;
+using DNI.Shared.Services.Generators;
+using DNI.Shared.Contracts.Generators;
+using System.Security.Cryptography;
 
 namespace DNI.Shared.Services
 {
@@ -22,6 +25,8 @@ namespace DNI.Shared.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton(RandomNumberGenerator.Create())
+                .AddSingleton<IRandomStringGenerator, DefaultRandomStringGenerator>()
                 .AddSingleton<IHttpClientFactory, DefaultHttpClientFactory>()
                 .AddSingleton<IGuidService, DefaultGuidService>()
                 .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
