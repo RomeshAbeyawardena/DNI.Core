@@ -42,7 +42,7 @@ namespace DNI.Shared.Shared.Extensions
             {
                 var property = properties.FirstOrDefault(prop => prop.Name == key 
                 || MatchesCustomAttributeField(prop, customAttributeType, attributePropertyOrField, key)
-                || MatchesInheritedInterfacesCustomAttributeField(interfaceTypes, objectType, customAttributeType, attributePropertyOrField, key));
+                || MatchesInheritedInterfacesCustomAttributeField(prop, interfaceTypes, customAttributeType, attributePropertyOrField, key));
 
                 if (property == null)
                     continue;
@@ -80,13 +80,14 @@ namespace DNI.Shared.Shared.Extensions
             return ToObject<T>(objectDictionary, customAttributeType, attributePropertyOrField, constructorArguments);
         }
 
-        public static bool MatchesInheritedInterfacesCustomAttributeField(IEnumerable<Type> interfaceTypes, Type type, Type customAttributeType, string propertyOrFieldName, string value)
+        public static bool MatchesInheritedInterfacesCustomAttributeField(PropertyInfo property, IEnumerable<Type> interfaceTypes, Type customAttributeType, string propertyOrFieldName, string value)
         {
             foreach (var interfaceType in interfaceTypes)
             {
-                var properties = interfaceType.GetProperties();
+                var interfaceProperty = interfaceType.GetProperty(property.Name);
 
-                if(properties.Any(property => MatchesCustomAttributeField(property, customAttributeType, propertyOrFieldName, value)))
+                if(interfaceProperty != null 
+                    && MatchesCustomAttributeField(interfaceProperty, customAttributeType, propertyOrFieldName, value))
                     return true;
             }
 
