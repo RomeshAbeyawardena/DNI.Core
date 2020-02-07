@@ -15,7 +15,7 @@ namespace DNI.Shared.Services
             await _mediator.Publish(notification, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken)
+        public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default)
         {
             return await _mediator.Send(request, cancellationToken).ConfigureAwait(false);
         }
