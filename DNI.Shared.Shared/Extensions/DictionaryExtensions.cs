@@ -20,6 +20,16 @@ namespace DNI.Shared.Shared.Extensions
             return ToObject<TClaim>(dictionary, typeof(ClaimAttribute), nameof(ClaimAttribute.ClaimType), constructorArguments);
         }
 
+        public static T ToObject<T>(this IDictionary<string, object> dictionary, params object[] constructorArguments)
+        {
+            return ToObject<T>(dictionary, null, null, constructorArguments);
+        }
+
+        public static T ToObject<T>(this IDictionary<string, string> dictionary, params object[] constructorArguments)
+        {
+            return ToObject<T>(dictionary, null, null, constructorArguments);
+        }
+
         public static T ToObject<T>(this IDictionary<string, object> dictionary, Type customAttributeType = null, 
             string attributePropertyOrField = null, params object[] constructorArguments)
         {
