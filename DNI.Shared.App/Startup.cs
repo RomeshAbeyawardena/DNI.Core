@@ -13,7 +13,10 @@ using Microsoft.IdentityModel.Logging;
 using MessagePack;
 using DNI.Shared.Services.Options;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+using System.Collections.Generic;   
+using DNI.Shared.Contracts.Generators;
+using DNI.Shared.Contracts.Enumerations;
+using System.Diagnostics;
 
 namespace DNI.Shared.App
 {
@@ -24,39 +27,37 @@ namespace DNI.Shared.App
         private readonly IEncryptionProvider _encryptionProvider;
         private readonly IHashingProvider _hashingProvider;
         private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
+        private readonly IRandomStringGenerator _randomStringGenerator;
 
         public async Task<int> Begin(params object[] args)
         {
-            var httpClient = _httpClientFactory.GetHttpClient("myEndPoint", "http://www.google.com", (request) => {
-                request.Headers.Add("bot-id", long.MaxValue.ToString());
-            });
+            var stopWatch = Stopwatch.StartNew();
+            Console.WriteLine(_randomStringGenerator.GenerateString(
+                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 32));
+            stopWatch.Stop();
 
-            var response = await httpClient.GetAsync("/calendar/feeds/developer-calendar@google.com/public/full?alt=json");
-            var content = await response.Content.ToObject<Customer>(options => { });
+            Console.WriteLine(stopWatch.Elapsed);
 
-            Console.WriteLine(content);
+            var stopWatch2 = Stopwatch.StartNew();
+            Console.WriteLine(_randomStringGenerator.GenerateString(
+                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 64));
+            stopWatch2.Stop();
 
-            httpClient = _httpClientFactory.GetHttpClient("myEndPoint2", "http://www.bing.com", (request) => {
-                request.Headers.Add("bot-id", long.MaxValue.ToString());
-            });
-
-            response = await httpClient.GetAsync("/maps");
-            //var customer = await response.Content.ToObject<CustomerDto>();
-
-            Console.WriteLine(content);
-
+            Console.WriteLine(stopWatch.Elapsed);
             return 0;
         }
 
         public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider, 
             ISwitch<string, ICryptographicCredentials> credentialsDictionary, 
-            IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory)
+            IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory,
+            IRandomStringGenerator randomStringGenerator)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _encryptionProvider = encryptionProvider;
             _hashingProvider = hashingProvider;
             _credentialsDictionary = credentialsDictionary;
+            _randomStringGenerator = randomStringGenerator;
         }
     }
 }

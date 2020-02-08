@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Shared.Shared.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class ClaimAttribute : Attribute
