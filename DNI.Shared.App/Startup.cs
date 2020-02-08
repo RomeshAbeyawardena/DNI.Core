@@ -35,7 +35,13 @@ namespace DNI.Shared.App
             {
                 var stopWatch = Stopwatch.StartNew();
                 var generatedString = _randomStringGenerator.GenerateString(
-                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 32);
+                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics | CharacterType.Symbols, 16);
+                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
+                stopWatch.Stop();
+
+                stopWatch = Stopwatch.StartNew();
+                generatedString = _randomStringGenerator.GenerateString(
+                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics | CharacterType.Symbols, 32);
                 Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
                 stopWatch.Stop();
 

@@ -45,6 +45,7 @@ namespace DNI.Shared.Services.Generators
             return GetNumberSequence(ranges.Length)
                 .Where(index => rangeSequence
                 .Any(rangeIndex => rangeIndex.Equals(index)))
+                .Reverse()
                 .Take(length)
                 .Select(b => (char)b);
         }
