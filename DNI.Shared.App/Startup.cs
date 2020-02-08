@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Logging;
 using MessagePack;
 using DNI.Shared.Services.Options;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;   
+using System.Collections.Generic;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Enumerations;
 using System.Diagnostics;
@@ -31,24 +31,29 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            var stopWatch = Stopwatch.StartNew();
-            Console.WriteLine(_randomStringGenerator.GenerateString(
-                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 32));
-            stopWatch.Stop();
+            while (Console.ReadKey().Key != ConsoleKey.Escape)
+            {
+                var stopWatch = Stopwatch.StartNew();
+                var generatedString = _randomStringGenerator.GenerateString(
+                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 32);
+                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
+                stopWatch.Stop();
 
-            Console.WriteLine(stopWatch.Elapsed);
+                Console.WriteLine(stopWatch.Elapsed);
 
-            var stopWatch2 = Stopwatch.StartNew();
-            Console.WriteLine(_randomStringGenerator.GenerateString(
-                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 64));
-            stopWatch2.Stop();
+                var stopWatch2 = Stopwatch.StartNew();
+                generatedString = _randomStringGenerator.GenerateString(
+                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 64);
+                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
+                stopWatch2.Stop();
 
-            Console.WriteLine(stopWatch.Elapsed);
+                Console.WriteLine(stopWatch.Elapsed);
+            }
             return 0;
         }
 
-        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider, 
-            ISwitch<string, ICryptographicCredentials> credentialsDictionary, 
+        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider,
+            ISwitch<string, ICryptographicCredentials> credentialsDictionary,
             IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory,
             IRandomStringGenerator randomStringGenerator)
         {

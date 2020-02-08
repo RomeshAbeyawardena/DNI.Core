@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using DNI.Shared.Domains;
 using System.Security.Cryptography;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Enumerations;
@@ -13,8 +13,8 @@ namespace DNI.Shared.Services.Generators
     internal sealed class DefaultRandomStringGenerator : IRandomStringGenerator
     {
         private readonly RandomNumberGenerator _randomNumberGenerator;
-        private readonly ISwitch<CharacterType, Range> _rangeSwitch;
-        public DefaultRandomStringGenerator(RandomNumberGenerator randomNumberGenerator, ISwitch<CharacterType, Range> rangeSwitch)
+        private readonly ISwitch<CharacterType, Domains.Range> _rangeSwitch;
+        public DefaultRandomStringGenerator(RandomNumberGenerator randomNumberGenerator, ISwitch<CharacterType, Domains.Range> rangeSwitch)
         {
             _randomNumberGenerator = randomNumberGenerator;
             _rangeSwitch = rangeSwitch;
@@ -25,35 +25,33 @@ namespace DNI.Shared.Services.Generators
             return string.Concat(GetCharacters(characterType, length));
         }
 
-        private IEnumerable<char> GetCharacters(CharacterType characterType, int length)
+        private IEnumerable<byte> GetNumberSequence(int length)
         {
-            var ranges = GetCharacterRanges(characterType).ToArray();
-            IEnumerable<int> rangeSequence = Array.Empty<int>();
-
-            foreach(Range range in ranges)
-                rangeSequence = rangeSequence.Concat(GetSequence(range));
-            
-            var buffer = new byte[256 * ranges.Length];
+            var buffer = new byte[256 * length];
 
             _randomNumberGenerator.GetBytes(buffer); 
 
-            return buffer.ToArray()
-                .Where(index => rangeSequence.Any(rangeIndex => rangeIndex.Equals(index)))
-                .Take(length).Select(b => (char)b);
+            return buffer;
         }
 
-        private IEnumerable<int> GetSequence(Range range)
+        private IEnumerable<char> GetCharacters(CharacterType characterType, int length)
         {
-            IEnumerable<int> rangeList = Array.Empty<int>();
-            for (var index = range.Start.Value; index <= range.End.Value; index++)
-                rangeList = rangeList.Append(index);
+            var ranges = GetCharacterRanges(characterType).ToArray();
+            IEnumerable<byte> rangeSequence = Array.Empty<byte>();
 
-            return rangeList;
+            foreach(Range<byte> range in ranges)
+                rangeSequence = rangeSequence.Concat(range.ToSequence());
+            
+            return GetNumberSequence(ranges.Length)
+                .Where(index => rangeSequence
+                .Any(rangeIndex => rangeIndex.Equals(index)))
+                .Take(length)
+                .Select(b => (char)b);
         }
 
-        private IEnumerable<Range> GetCharacterRanges(CharacterType characterType)
+        private IEnumerable<Range<byte>> GetCharacterRanges(CharacterType characterType)
         {
-            IEnumerable<Range> characterRangeList = Array.Empty<Range>();
+            IEnumerable<Range<byte>> characterRangeList = Array.Empty<Range<byte>>();
             if (characterType.HasFlag(CharacterType.Lowercase))
                 characterRangeList = characterRangeList.Append(_rangeSwitch.Case(CharacterType.Lowercase));
 
