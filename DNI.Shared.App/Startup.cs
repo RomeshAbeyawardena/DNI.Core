@@ -37,6 +37,13 @@ namespace DNI.Shared.App
             stopWatch.Stop();
 
             Console.WriteLine(stopWatch.Elapsed);
+
+            var stopWatch2 = Stopwatch.StartNew();
+            Console.WriteLine(_randomStringGenerator.GenerateString(
+                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 64));
+            stopWatch2.Stop();
+
+            Console.WriteLine(stopWatch.Elapsed);
             return 0;
         }
 

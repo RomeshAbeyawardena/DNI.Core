@@ -14,14 +14,10 @@ namespace DNI.Shared.Services.Generators
     {
         private readonly RandomNumberGenerator _randomNumberGenerator;
         private readonly ISwitch<CharacterType, Range> _rangeSwitch;
-        public DefaultRandomStringGenerator(RandomNumberGenerator randomNumberGenerator)
+        public DefaultRandomStringGenerator(RandomNumberGenerator randomNumberGenerator, ISwitch<CharacterType, Range> rangeSwitch)
         {
             _randomNumberGenerator = randomNumberGenerator;
-            _rangeSwitch = Switch.Create<CharacterType, Range>()
-                .CaseWhen(CharacterType.Lowercase, new Range(97, 122))
-                .CaseWhen(CharacterType.Uppercase, new Range(65, 90))
-                .CaseWhen(CharacterType.Numerics, new Range(48, 57))
-                .CaseWhen(CharacterType.Symbols, new Range(33, 47));
+            _rangeSwitch = rangeSwitch;
         }
 
         public string GenerateString(CharacterType characterType, int length)
@@ -48,29 +44,29 @@ namespace DNI.Shared.Services.Generators
 
         private IEnumerable<int> GetSequence(Range range)
         {
-            var rangeList = new List<int>();
+            IEnumerable<int> rangeList = Array.Empty<int>();
             for (var index = range.Start.Value; index <= range.End.Value; index++)
-                rangeList.Add(index);
+                rangeList = rangeList.Append(index);
 
-            return rangeList.ToArray();
+            return rangeList;
         }
 
         private IEnumerable<Range> GetCharacterRanges(CharacterType characterType)
         {
-            var characterRangeList = new List<Range>();
+            IEnumerable<Range> characterRangeList = Array.Empty<Range>();
             if (characterType.HasFlag(CharacterType.Lowercase))
-                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Lowercase));
+                characterRangeList = characterRangeList.Append(_rangeSwitch.Case(CharacterType.Lowercase));
 
             if (characterType.HasFlag(CharacterType.Uppercase))
-                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Uppercase));
+                characterRangeList = characterRangeList.Append(_rangeSwitch.Case(CharacterType.Uppercase));
 
             if (characterType.HasFlag(CharacterType.Numerics))
-                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Numerics));
+                characterRangeList = characterRangeList.Append(_rangeSwitch.Case(CharacterType.Numerics));
 
             if (characterType.HasFlag(CharacterType.Symbols))
-                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Symbols));
+                characterRangeList= characterRangeList.Append(_rangeSwitch.Case(CharacterType.Symbols));
 
-            return characterRangeList.ToArray();
+            return characterRangeList;
         }
     }
 }
