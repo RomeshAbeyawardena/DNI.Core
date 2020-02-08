@@ -9,9 +9,9 @@ namespace DNI.Shared.Contracts.Enumerations
     [Flags]
     public enum CharacterType
     {
-        Uppercase = 0,
-        Lowercase = 1,
-        Numerics = 2,
-        Symbols = 3
+        Uppercase = 1,
+        Lowercase = 2,
+        Numerics = 4,
+        Symbols = 8
     }
 }

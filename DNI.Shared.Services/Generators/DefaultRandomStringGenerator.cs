@@ -24,37 +24,53 @@ namespace DNI.Shared.Services.Generators
                 .CaseWhen(CharacterType.Symbols, new Range(33, 47));
         }
 
-        public async Task<string> GenerateString(CharacterType characterType, int length)
+        public string GenerateString(CharacterType characterType, int length)
         {
+            return string.Concat(GetCharacters(characterType, length));
+        }
+
+        private IEnumerable<char> GetCharacters(CharacterType characterType, int length)
+        {
+            var ranges = GetCharacterRanges(characterType).ToArray();
+            IEnumerable<int> rangeSequence = Array.Empty<int>();
+
+            foreach(Range range in ranges)
+                rangeSequence = rangeSequence.Concat(GetSequence(range));
             
-            return string.Concat(await GetCharacters(characterType, length));
+            var buffer = new byte[256 * ranges.Length];
+
+            _randomNumberGenerator.GetBytes(buffer); 
+
+            return buffer.ToArray()
+                .Where(index => rangeSequence.Any(rangeIndex => rangeIndex.Equals(index)))
+                .Take(length).Select(b => (char)b);
         }
 
-        private async Task<IEnumerable<char>> GetCharacters(CharacterType characterType, int length)
-        {
-            var range = GetCharacterRange(characterType);
-            var rangeSequence = GetSequence(ref range);
-            var buffer = new byte[1024];
-
-            _randomNumberGenerator.GetBytes(buffer);
-
-            return await Task.FromResult(buffer
-                .Where(b => rangeSequence.Any(r => r.Equals(b)))
-                .Take(length).Select(b => (char)b));
-        }
-
-        private IEnumerable<int> GetSequence(ref Range range)
+        private IEnumerable<int> GetSequence(Range range)
         {
             var rangeList = new List<int>();
-            for(var index = range.Start.Value; index <= range.End.Value; index++)
+            for (var index = range.Start.Value; index <= range.End.Value; index++)
                 rangeList.Add(index);
 
             return rangeList.ToArray();
         }
 
-        private Range GetCharacterRange(CharacterType characterType)
+        private IEnumerable<Range> GetCharacterRanges(CharacterType characterType)
         {
-            return _rangeSwitch.Case(characterType);
+            var characterRangeList = new List<Range>();
+            if (characterType.HasFlag(CharacterType.Lowercase))
+                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Lowercase));
+
+            if (characterType.HasFlag(CharacterType.Uppercase))
+                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Uppercase));
+
+            if (characterType.HasFlag(CharacterType.Numerics))
+                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Numerics));
+
+            if (characterType.HasFlag(CharacterType.Symbols))
+                characterRangeList.Add(_rangeSwitch.Case(CharacterType.Symbols));
+
+            return characterRangeList.ToArray();
         }
     }
 }

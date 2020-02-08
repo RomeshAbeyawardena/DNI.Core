@@ -13,9 +13,10 @@ using Microsoft.IdentityModel.Logging;
 using MessagePack;
 using DNI.Shared.Services.Options;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
+using System.Collections.Generic;   
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Enumerations;
+using System.Diagnostics;
 
 namespace DNI.Shared.App
 {
@@ -30,7 +31,12 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            Console.WriteLine(await _randomStringGenerator.GenerateString(CharacterType.Uppercase, 32));
+            var stopWatch = Stopwatch.StartNew();
+            Console.WriteLine(_randomStringGenerator.GenerateString(
+                CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 32));
+            stopWatch.Stop();
+
+            Console.WriteLine(stopWatch.Elapsed);
             return 0;
         }
 

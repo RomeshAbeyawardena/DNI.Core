@@ -9,6 +9,6 @@ namespace DNI.Shared.Contracts.Generators
 {
     public interface IRandomStringGenerator
     {
-        Task<string> GenerateString(CharacterType characterType, int length);
+        string GenerateString(CharacterType characterType, int length);
     }
 }
