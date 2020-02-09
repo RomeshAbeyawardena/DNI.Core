@@ -27,11 +27,11 @@ namespace DNI.Shared.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
-                .AddSingleton(Switch.Create<CharacterType, Range>()
-                .CaseWhen(CharacterType.Lowercase, new Range(97, 122))
-                .CaseWhen(CharacterType.Uppercase, new Range(65, 90))
-                .CaseWhen(CharacterType.Numerics, new Range(48, 57))
-                .CaseWhen(CharacterType.Symbols, new Range(33, 47)))
+                .AddSingleton(Switch.Create<CharacterType, Domains.Range>()
+                .CaseWhen(CharacterType.Lowercase, new Domains.Range(97, 122))
+                .CaseWhen(CharacterType.Uppercase, new Domains.Range(65, 90))
+                .CaseWhen(CharacterType.Numerics, new Domains.Range(48, 57))
+                .CaseWhen(CharacterType.Symbols, new Domains.Range(33, 47)))
                 .AddSingleton(RandomNumberGenerator.Create())
                 .AddSingleton<IRandomStringGenerator, DefaultRandomStringGenerator>()
                 .AddSingleton<IHttpClientFactory, DefaultHttpClientFactory>()

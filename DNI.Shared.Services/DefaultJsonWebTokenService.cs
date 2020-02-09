@@ -13,8 +13,6 @@ namespace DNI.Shared.Services
 {
     internal sealed class DefaultJsonWebTokenService : IJsonWebTokenService
     {
-        private readonly IClaimTypeValueConvertor _claimTypeValueConvertor;
-
         private SecurityTokenDescriptor GetSecurityTokenDescriptor(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, SigningCredentials signingCredentials, 
             DateTime expiry, IDictionary<string, string> claimsDictionary)
         {
@@ -46,9 +44,8 @@ namespace DNI.Shared.Services
             return signinCredentials;
         }
 
-        public DefaultJsonWebTokenService(IClaimTypeValueConvertor claimTypeValueConvertor)
+        public DefaultJsonWebTokenService()
         {
-               _claimTypeValueConvertor = claimTypeValueConvertor;
         }
 
         public string CreateToken(Action<SecurityTokenDescriptor> populateSecurityTokenDescriptor, DateTime expiry, IDictionary<string, string> claimsDictionary, string secret, Encoding encoding)
@@ -67,7 +64,8 @@ namespace DNI.Shared.Services
             var handledExceptions = new [] { 
                 typeof(SecurityTokenInvalidAudienceException), 
                 typeof(SecurityTokenInvalidSigningKeyException),
-                typeof(SecurityTokenInvalidSignatureException)
+                typeof(SecurityTokenInvalidSignatureException),
+                typeof(SecurityTokenExpiredException)
             };
 
             try

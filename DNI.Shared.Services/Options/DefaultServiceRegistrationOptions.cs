@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Options
 {
-    public class DefaultServiceRegistrationOptions : IServiceRegistrationOptions
+    internal sealed class DefaultServiceRegistrationOptions : IServiceRegistrationOptions
     {
         public static IServiceRegistrationOptions DefaultsOptions => new DefaultServiceRegistrationOptions { 
             RegisterAutoMappingProviders = true, 
@@ -19,5 +19,6 @@ namespace DNI.Shared.Services.Options
         public bool RegisterMessagePackSerialisers { get; set; }
         public bool RegisterAutoMappingProviders { get; set; }
         public bool RegisterMediatorServices { get; set; }
+        public bool RegisterExceptionHandlers { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Options;
+using DNI.Shared.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace DNI.Shared.Services.Abstraction
     public abstract class ServiceBrokerBase : IServiceBroker
     {
         public IEnumerable<Assembly> Assemblies { get; protected set; }
-        
+
         public static Assembly DefaultAssembly => GetAssembly<ServiceBrokerBase>();
-        
+
         public static Assembly GetAssembly<T>()
         {
             return Assembly.GetAssembly(typeof(T));
@@ -25,10 +26,18 @@ namespace DNI.Shared.Services.Abstraction
             {
                 var serviceRegistrationTypes = assembly
                     .GetTypes()
-                    .Where(type => IsOfType<IServiceRegistration>(type));
+                    .Where(type => type.IsOfType<IServiceRegistration>());
 
-                foreach(var serviceRegistrationType in serviceRegistrationTypes)
+                foreach (var serviceRegistrationType in serviceRegistrationTypes)
                     RegisterServices(serviceRegistrationType, services, serviceRegistrationOptions);
+
+                var exceptionHandlerTypes = assembly
+                    .GetTypes()
+                    .Where(type => type.IsOfType<IExceptionHandler>());
+
+                if(serviceRegistrationOptions.RegisterExceptionHandlers)
+                foreach (var exceptionHandlerType in exceptionHandlerTypes)
+                    RegisterExceptionHandlers(services, exceptionHandlerType);
             }
         }
 
@@ -38,11 +47,14 @@ namespace DNI.Shared.Services.Abstraction
             serviceRegistration.RegisterServices(services, serviceRegistrationOptions);
         }
 
-        private bool IsOfType<T>(Type type)
+        private void RegisterExceptionHandlers(IServiceCollection services, Type implementationType)
         {
-            var ofType = typeof(T);
+            var genericServiceType = implementationType.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
 
-            return type.GetInterface(ofType.Name) != null;
+            if (genericServiceType == null)
+                return;
+
+            services.AddSingleton(genericServiceType, implementationType);
         }
     }
 }

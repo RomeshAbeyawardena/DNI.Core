@@ -13,5 +13,13 @@ namespace DNI.Shared.Services.Extensions
             return entityType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(property => property.GetCustomAttribute<TAttribute>() != null);
         }
+
+        
+        public static  bool IsOfType<T>(this Type type)
+        {
+            var ofType = typeof(T);
+
+            return type.GetInterface(ofType.Name) != null;
+        }
     }
 }

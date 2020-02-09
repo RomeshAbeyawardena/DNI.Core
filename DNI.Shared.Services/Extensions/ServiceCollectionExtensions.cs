@@ -10,6 +10,8 @@ using System.Text;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Services.Generators;
 using DNI.Shared.Services.Options;
+using DNI.Shared.Contracts.Factories;
+using System.Reflection;
 
 namespace DNI.Shared.Services.Extensions
 {
@@ -94,6 +96,13 @@ namespace DNI.Shared.Services.Extensions
             }
             
             return services;
+        }
+
+        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services)
+        {
+            return services.AddSingleton((serviceProvider) => {
+                return DefaultExceptionHandlerFactory.Create(serviceProvider);
+            });
         }
 
         public static IServiceCollection RegisterDefaultValueGenerator<TEntity>(this IServiceCollection services, Action<IDefaultValueGenerator<TEntity>> action)

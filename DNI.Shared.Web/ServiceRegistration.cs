@@ -11,6 +11,8 @@ using System.Text;
 using DNI.Shared.App;
 using DNI.Shared.Shared.Extensions;
 using DNI.Shared.Services.Extensions;
+using System;
+
 namespace DNI.Shared.Web
 {
     public class ServiceRegistration : IServiceRegistration
@@ -32,7 +34,8 @@ namespace DNI.Shared.Web
                     Encoding.UTF8, "42e6f1f0-7cd2-4ce3-a06c-f86c1c82fd24", "eeaf5b47-636c-4997-ae41-d979e3b04094", 1000000, 32, "bceac9fa-70a3-4b".GetBytes(Encoding.UTF8))))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII,
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS",
-                "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null);
+                "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
+                .RegisterExceptionHandlers();
             services.AddMediatR(currentAssembly);
         }
     }
