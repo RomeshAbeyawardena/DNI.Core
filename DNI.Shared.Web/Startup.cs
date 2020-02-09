@@ -17,7 +17,8 @@ namespace DNI.Shared.Web
                     options.RegisterAutoMappingProviders = true; 
                     options.RegisterMessagePackSerialisers = true;
                     options.RegisterCacheProviders = true;
-                    options.RegisterMediatorServices = true; }, 
+                    options.RegisterMediatorServices = true;
+                    options.RegisterExceptionHandlers = true; }, 
                 out var serviceBroker)
                 .AddMvc();
         }

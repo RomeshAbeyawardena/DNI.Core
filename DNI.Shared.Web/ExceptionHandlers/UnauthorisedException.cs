@@ -14,6 +14,7 @@ namespace DNI.Shared.Web.ExceptionHandlers
         public bool HandleException(ExceptionContext exception)
         {
             exception.Result = new UnauthorizedResult();
+            return true;
         }
     }
 }

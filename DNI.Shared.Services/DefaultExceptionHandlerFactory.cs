@@ -61,11 +61,9 @@ namespace DNI.Shared.Services
         }
 
         private readonly IServiceProvider _serviceProvider;
-        private readonly ISwitch<Type, Type> _exceptionHandlerSwitch;
         private DefaultExceptionHandlerFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _exceptionHandlerSwitch = Switch.Create<Type, Type>();
         }
     }
 }

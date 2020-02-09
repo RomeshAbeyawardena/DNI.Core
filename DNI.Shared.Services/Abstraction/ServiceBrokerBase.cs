@@ -35,6 +35,7 @@ namespace DNI.Shared.Services.Abstraction
                     .GetTypes()
                     .Where(type => type.IsOfType<IExceptionHandler>());
 
+                if(serviceRegistrationOptions.RegisterExceptionHandlers)
                 foreach (var exceptionHandlerType in exceptionHandlerTypes)
                     RegisterExceptionHandlers(services, exceptionHandlerType);
             }
