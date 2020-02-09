@@ -1,5 +1,6 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Options;
+using DNI.Shared.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace DNI.Shared.Services.Abstraction
             {
                 var serviceRegistrationTypes = assembly
                     .GetTypes()
-                    .Where(type => IsOfType<IServiceRegistration>(type));
+                    .Where(type => type.IsOfType<IServiceRegistration>());
 
                 foreach(var serviceRegistrationType in serviceRegistrationTypes)
                     RegisterServices(serviceRegistrationType, services, serviceRegistrationOptions);
@@ -38,11 +39,5 @@ namespace DNI.Shared.Services.Abstraction
             serviceRegistration.RegisterServices(services, serviceRegistrationOptions);
         }
 
-        private bool IsOfType<T>(Type type)
-        {
-            var ofType = typeof(T);
-
-            return type.GetInterface(ofType.Name) != null;
-        }
     }
 }

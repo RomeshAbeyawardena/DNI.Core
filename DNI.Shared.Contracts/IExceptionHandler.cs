@@ -11,4 +11,10 @@ namespace DNI.Shared.Contracts
     {
         bool HandleException(ExceptionContext exception);
     }
+
+    public interface IExceptionHandler<TException> : IExceptionHandler
+        where TException : Exception
+    {
+        
+    }
 }

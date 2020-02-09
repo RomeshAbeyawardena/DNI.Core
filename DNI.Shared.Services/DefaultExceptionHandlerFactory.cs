@@ -1,8 +1,11 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Factories;
+using DNI.Shared.Services.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,49 +13,60 @@ namespace DNI.Shared.Services
 {
     internal sealed class DefaultExceptionHandlerFactory : IExceptionHandlerFactory
     {
-        public static IExceptionHandlerFactory Create(Action<IExceptionHandlerFactory> configure)
+        public static IExceptionHandlerFactory Create(IServiceProvider serviceProvider)
         {
-            var factory = new DefaultExceptionHandlerFactory();
-            configure(factory);
-            return factory;
-        }
-        public IExceptionHandlerFactory AddExceptionHandler<TException>(IExceptionHandler exceptionHandler, params Type[] handledexceptions) where TException : Exception
-        {
-            return AddExceptionHandler(typeof(TException), exceptionHandler, handledexceptions);
+            return new DefaultExceptionHandlerFactory(serviceProvider);
         }
 
-        public IExceptionHandlerFactory AddExceptionHandler(Type exceptionType, IExceptionHandler exceptionHandler, params Type[] handledexceptions)
+        public IExceptionHandlerFactory RegisterExceptionHandlers(IServiceCollection services, params Assembly[] assemblies)
         {
-            _exceptionHandlerSwitch.CaseWhen(exceptionType, exceptionHandler, handledexceptions);
+            var genericServiceType = typeof(IExceptionHandler<>);
+
+            foreach (var assembly in assemblies)
+            {
+                foreach(var type in assembly.GetTypes().Where(type => type.IsOfType<IExceptionHandler>()))
+                {
+                    if(!type.IsGenericType)
+                        continue;
+
+                    var genericArguments = type.GetGenericArguments();
+                    var gServiceType = genericServiceType.MakeGenericType();
+                    
+                    services.AddSingleton(gServiceType, type);
+                }
+            }
             return this;
         }
 
-        public IExceptionHandler GetExceptionHandler(Type exceptionType)
+        public bool TryGetExceptionHandler<TException>(out IExceptionHandler<TException> exceptionHandler) where TException : Exception
         {
-            return _exceptionHandlerSwitch.Case(exceptionType);
-        }
-
-        public IExceptionHandler GetExceptionHandler<TException>() where TException : Exception
-        {
-            return GetExceptionHandler(typeof(TException));
-        }
-
-        public bool TryGetExceptionHandler<TException>(out IExceptionHandler exceptionHandler) where TException : Exception
-        {
-            return TryGetExceptionHandler(typeof(TException), out exceptionHandler);
+            exceptionHandler = GetExceptionHandler<TException>();
+            return exceptionHandler == null;
         }
 
         public bool TryGetExceptionHandler(Type exceptionType, out IExceptionHandler exceptionHandler)
         {
             exceptionHandler = GetExceptionHandler(exceptionType);
-
-            return exceptionHandler != null;
+            return exceptionHandler == null;
         }
 
-        private readonly ISwitch<Type, IExceptionHandler> _exceptionHandlerSwitch;
-        private DefaultExceptionHandlerFactory()
+        public IExceptionHandler GetExceptionHandler(Type exceptionType)
         {
-            _exceptionHandlerSwitch = Switch.Create<Type, IExceptionHandler>();
+            var exceptionHandlerType = typeof(IExceptionHandler<>).MakeGenericType(exceptionType);
+            return (IExceptionHandler) _serviceProvider.GetService(exceptionHandlerType);
+        }
+
+        public IExceptionHandler<TException> GetExceptionHandler<TException>() where TException : Exception
+        {
+            return _serviceProvider.GetService<IExceptionHandler<TException>>();
+        }
+
+        private readonly IServiceProvider _serviceProvider;
+        private readonly ISwitch<Type, Type> _exceptionHandlerSwitch;
+        private DefaultExceptionHandlerFactory(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+            _exceptionHandlerSwitch = Switch.Create<Type, Type>();
         }
     }
 }

@@ -11,6 +11,7 @@ using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Services.Generators;
 using DNI.Shared.Services.Options;
 using DNI.Shared.Contracts.Factories;
+using System.Reflection;
 
 namespace DNI.Shared.Services.Extensions
 {
@@ -97,10 +98,11 @@ namespace DNI.Shared.Services.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services, Action<IExceptionHandlerFactory> configure)
+        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services, params Assembly[] assemblies)
         {
-            return services.AddSingleton((exceptionHandlerFactory) => {
-                return DefaultExceptionHandlerFactory.Create(configure);    
+            return services.AddSingleton((serviceProvider) => {
+                return DefaultExceptionHandlerFactory.Create(serviceProvider)
+                    .RegisterExceptionHandlers(services, assemblies);
             });
         }
 
