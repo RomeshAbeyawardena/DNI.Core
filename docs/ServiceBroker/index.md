@@ -1,8 +1,23 @@
 ﻿# Service Broker
 
 ## Usage
-Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, instead of IServiceBroker
-to automatically inherit built-in services.
+Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, 
+instead of IServiceBroker to automatically inherit built-in services. 
+
+It's recommended to abstract this class into its own project to reduce 
+decoupling.
+
+    using DNI.Shared.Services.Abstraction;
+    public class ServiceBroker : ServiceBrokerBase
+    {
+        public ServiceBroker()
+        {
+            //List all assemblies with implemented 
+            //IServiceRegistration classes 
+            Assemblies = new [] { DefaultAssembly, 
+                    Assembly.GetAssembly(typeof(ServiceBroker)) };
+        }
+    }
 
 An implemented ServiceBrokerBase will automatically register some 
 internal services using a built-in IServiceRegistration implementation.
