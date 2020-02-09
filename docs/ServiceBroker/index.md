@@ -1,7 +1,7 @@
 ﻿# Service Broker
 
 ## Usage
-Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, instead IServiceBroker
+Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, instead of IServiceBroker
 to automatically inherit built-in services.
 
 An implemented ServiceBrokerBase will automatically register some 
