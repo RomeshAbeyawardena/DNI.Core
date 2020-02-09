@@ -35,7 +35,7 @@ namespace DNI.Shared.Web
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII,
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS",
                 "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
-                .RegisterExceptionHandlers(currentAssembly);
+                .RegisterExceptionHandlers();
             services.AddMediatR(currentAssembly);
         }
     }

@@ -20,19 +20,17 @@ namespace DNI.Shared.Services
 
         public IExceptionHandlerFactory RegisterExceptionHandlers(IServiceCollection services, params Assembly[] assemblies)
         {
-            var genericServiceType = typeof(IExceptionHandler<>);
-
+            
             foreach (var assembly in assemblies)
             {
                 foreach(var type in assembly.GetTypes().Where(type => type.IsOfType<IExceptionHandler>()))
                 {
-                    if(!type.IsGenericType)
+                    var genericServiceType = type.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
+
+                    if(genericServiceType == null)
                         continue;
 
-                    var genericArguments = type.GetGenericArguments();
-                    var gServiceType = genericServiceType.MakeGenericType();
-                    
-                    services.AddSingleton(gServiceType, type);
+                    services.AddSingleton(genericServiceType, type);
                 }
             }
             return this;
@@ -41,19 +39,20 @@ namespace DNI.Shared.Services
         public bool TryGetExceptionHandler<TException>(out IExceptionHandler<TException> exceptionHandler) where TException : Exception
         {
             exceptionHandler = GetExceptionHandler<TException>();
-            return exceptionHandler == null;
+            return exceptionHandler != null;
         }
 
         public bool TryGetExceptionHandler(Type exceptionType, out IExceptionHandler exceptionHandler)
         {
             exceptionHandler = GetExceptionHandler(exceptionType);
-            return exceptionHandler == null;
+            return exceptionHandler != null;
         }
 
         public IExceptionHandler GetExceptionHandler(Type exceptionType)
         {
             var exceptionHandlerType = typeof(IExceptionHandler<>).MakeGenericType(exceptionType);
-            return (IExceptionHandler) _serviceProvider.GetService(exceptionHandlerType);
+            var service = _serviceProvider.GetService(exceptionHandlerType);
+            return (IExceptionHandler) service;
         }
 
         public IExceptionHandler<TException> GetExceptionHandler<TException>() where TException : Exception

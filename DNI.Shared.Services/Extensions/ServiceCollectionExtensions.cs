@@ -98,11 +98,10 @@ namespace DNI.Shared.Services.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services, params Assembly[] assemblies)
+        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services)
         {
             return services.AddSingleton((serviceProvider) => {
-                return DefaultExceptionHandlerFactory.Create(serviceProvider)
-                    .RegisterExceptionHandlers(services, assemblies);
+                return DefaultExceptionHandlerFactory.Create(serviceProvider);
             });
         }
 

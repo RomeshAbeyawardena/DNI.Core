@@ -1,4 +1,5 @@
 ﻿using DNI.Shared.Contracts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace DNI.Shared.Web.ExceptionHandlers
     {
         public bool HandleException(ExceptionContext exception)
         {
-            throw new NotImplementedException();
+            exception.Result = new UnauthorizedResult();
         }
     }
 }

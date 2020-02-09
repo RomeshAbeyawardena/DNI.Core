@@ -12,9 +12,9 @@ namespace DNI.Shared.Services.Abstraction
     public abstract class ServiceBrokerBase : IServiceBroker
     {
         public IEnumerable<Assembly> Assemblies { get; protected set; }
-        
+
         public static Assembly DefaultAssembly => GetAssembly<ServiceBrokerBase>();
-        
+
         public static Assembly GetAssembly<T>()
         {
             return Assembly.GetAssembly(typeof(T));
@@ -28,8 +28,15 @@ namespace DNI.Shared.Services.Abstraction
                     .GetTypes()
                     .Where(type => type.IsOfType<IServiceRegistration>());
 
-                foreach(var serviceRegistrationType in serviceRegistrationTypes)
+                foreach (var serviceRegistrationType in serviceRegistrationTypes)
                     RegisterServices(serviceRegistrationType, services, serviceRegistrationOptions);
+
+                var exceptionHandlerTypes = assembly
+                    .GetTypes()
+                    .Where(type => type.IsOfType<IExceptionHandler>());
+
+                foreach (var exceptionHandlerType in exceptionHandlerTypes)
+                    RegisterExceptionHandlers(services, exceptionHandlerType);
             }
         }
 
@@ -39,5 +46,14 @@ namespace DNI.Shared.Services.Abstraction
             serviceRegistration.RegisterServices(services, serviceRegistrationOptions);
         }
 
+        private void RegisterExceptionHandlers(IServiceCollection services, Type implementationType)
+        {
+            var genericServiceType = implementationType.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
+
+            if (genericServiceType == null)
+                return;
+
+            services.AddSingleton(genericServiceType, implementationType);
+        }
     }
 }
