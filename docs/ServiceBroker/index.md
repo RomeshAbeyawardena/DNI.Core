@@ -1,7 +1,7 @@
 ﻿# Service Broker
 
 ## Usage
-Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, instead IServiceBroker
+Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, instead of IServiceBroker
 to automatically inherit built-in services.
 
 An implemented ServiceBrokerBase will automatically register some 
@@ -80,3 +80,9 @@ The default service registration options object supports the following options:
                         DefaultMediatorService>();
 - RegisterExceptionHandlers 
   - When set to true will trigger the scanning of IExceptionHandler instances
+and execute the following:
+        
+        
+            if(options.RegisterExceptionHandlers)
+                services.AddSingleton<IExceptionHandlerFactory, 
+                    DefaultExceptionHandlerFactory>();
