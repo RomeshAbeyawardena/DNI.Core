@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Attributes
 {
-    public class HandleErrorAttribute : Attribute, IExceptionFilter
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    public sealed class HandleErrorAttribute : Attribute, IExceptionFilter
     {
         public HandleErrorAttribute(Type serviceType, string handleMethod, params Type[] exceptionTypes)
         {
