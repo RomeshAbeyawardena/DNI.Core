@@ -9,6 +9,6 @@ namespace DNI.Shared.Contracts
 {
     public interface IExceptionHandler
     {
-        void HandleException(ExceptionContext exception);
+        bool HandleException(ExceptionContext exception);
     }
 }
