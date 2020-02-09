@@ -13,11 +13,7 @@ namespace DNI.Shared.Services
 {
     internal sealed class DefaultExceptionHandlerFactory : IExceptionHandlerFactory
     {
-        public static IExceptionHandlerFactory Create(IServiceProvider serviceProvider)
-        {
-            return new DefaultExceptionHandlerFactory(serviceProvider);
-        }
-
+        
         public IExceptionHandlerFactory RegisterExceptionHandlers(IServiceCollection services, params Assembly[] assemblies)
         {
             
@@ -61,7 +57,7 @@ namespace DNI.Shared.Services
         }
 
         private readonly IServiceProvider _serviceProvider;
-        private DefaultExceptionHandlerFactory(IServiceProvider serviceProvider)
+        public DefaultExceptionHandlerFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }

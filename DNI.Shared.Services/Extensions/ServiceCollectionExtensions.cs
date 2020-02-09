@@ -98,13 +98,6 @@ namespace DNI.Shared.Services.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterExceptionHandlers(this IServiceCollection services)
-        {
-            return services.AddSingleton((serviceProvider) => {
-                return DefaultExceptionHandlerFactory.Create(serviceProvider);
-            });
-        }
-
         public static IServiceCollection RegisterDefaultValueGenerator<TEntity>(this IServiceCollection services, Action<IDefaultValueGenerator<TEntity>> action)
         {
             return services.AddSingleton( (serviceProvider) => { 

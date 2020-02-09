@@ -80,3 +80,8 @@ The default service registration options object supports the following options:
                         DefaultMediatorService>();
 - RegisterExceptionHandlers 
   - When set to true will trigger the scanning of IExceptionHandler instances
+        
+        
+            if(options.RegisterExceptionHandlers)
+                services.AddSingleton<IExceptionHandlerFactory, 
+                    DefaultExceptionHandlerFactory>();

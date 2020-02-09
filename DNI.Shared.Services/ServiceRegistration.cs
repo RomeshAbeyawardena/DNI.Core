@@ -69,6 +69,9 @@ namespace DNI.Shared.Services
                     .AddScoped<DefaultSessionCacheService>()
                     .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
                     .AddScoped<ICacheProvider, DefaultCacheProvider>();
+
+            if(options.RegisterExceptionHandlers)
+                services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
         }
     }
 }
