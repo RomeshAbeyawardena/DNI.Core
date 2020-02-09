@@ -6,4 +6,4 @@
 
 ## Documentation
 
-Find Technical Documentation [here](/docs/index.md)
+Find Technical Documentation [here](/docs/Index.md)
