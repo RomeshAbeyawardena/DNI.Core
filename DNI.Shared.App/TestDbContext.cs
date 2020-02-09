@@ -7,7 +7,7 @@ namespace DNI.Shared.App
     public class TestDbContext : DbContextBase
     {
         public TestDbContext(DbContextOptions dbContextOptions)
-            : base(dbContextOptions, true, true)
+            : base(dbContextOptions, useSingularTableNames: true, useModifierFlagAttributes: true, useDefaultValueAttributes: true)
         {
 
         }
