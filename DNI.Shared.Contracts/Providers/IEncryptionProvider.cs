@@ -25,5 +25,9 @@ namespace DNI.Shared.Contracts.Providers
         /// <param name="value"></param>
         /// <returns></returns>
         Task<TResult> Decrypt<T, TResult>(T value);
+
+        Task<IEnumerable<TResult>> Encrypt<T, TResult>(IEnumerable<T> value);
+
+        Task<IEnumerable<TResult>> Decrypt<T, TResult>(IEnumerable<T> value);
     }
 }

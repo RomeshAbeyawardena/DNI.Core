@@ -107,6 +107,28 @@ namespace DNI.Shared.Services.Providers
             return resultInstance;
         }
 
+        public async Task<IEnumerable<TResult>> Encrypt<T, TResult>(IEnumerable<T> value)
+        {
+            var encryptedList = new List<TResult>();
+            foreach (var item in value)
+            {
+                encryptedList.Add(await Encrypt<T, TResult>(item));
+            }
+
+            return encryptedList.ToArray();
+        }
+
+        public async Task<IEnumerable<TResult>> Decrypt<T, TResult>(IEnumerable<T> value)
+        {
+            var decryptedList = new List<TResult>();
+            foreach (var item in value)
+            {
+                decryptedList.Add(await Decrypt<T, TResult>(item));
+            }
+
+            return decryptedList.ToArray();
+        }
+
         public EncryptionProvider(ILogger<EncryptionProvider> logger, IMapperProvider mapperProvider,
             ISwitch<string, ICryptographicCredentials> cryptographicCredentialsSwitch,
             ICryptographyProvider cryptographyProvider, IHashingProvider hashingProvider)

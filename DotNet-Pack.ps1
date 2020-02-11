@@ -16,13 +16,14 @@ cd $directory
 
 &"$directory\UpdateVersion-Powershell.ps1" -FileName $directory\Directory.Build.Props -Version $version  
 
-$child_directories = Get-ChildItem $directory -Directory 
+$child_directories = dir -Filter "*.csproj" -Recurse -File
+
 
 Foreach ($dir in $child_directories)
 {
     "--------------- Processing $dir ---------------" 
-    cd $dir.FullName
-    dotnet pack --include-symbols --include-source -o "$output"
-    cd ..
+    
+     dotnet pack --include-symbols --include-source -o "$output" $dir.FullName
+    
     "--------------- Processed $dir ---------------"
 }
