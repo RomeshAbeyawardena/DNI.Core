@@ -2,6 +2,7 @@
 using DNI.Shared.Contracts.Enumerations;
 using DNI.Shared.Contracts.Providers;
 using DNI.Shared.Services.Attributes;
+using DNI.Shared.Services.Extensions;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Logging;
 using System;
@@ -27,15 +28,15 @@ namespace DNI.Shared.Services.Providers
                 .Where(property => property.GetCustomAttribute<EncryptAttribute>() != null);
         }
 
-
+        
         private async Task<IEnumerable<byte>> Encrypt(EncryptionMethod encryptionMethod,
-            ICryptographicCredentials cryptographicCredentials, string value)
+            ICryptographicCredentials cryptographicCredentials, string value, StringCase @case)
         {
             
             switch (encryptionMethod)
             {
                 case EncryptionMethod.Encryption:
-                    return await _cryptographyProvider.Encrypt(cryptographicCredentials, value);
+                    return await _cryptographyProvider.Encrypt(cryptographicCredentials, value.Case(@case));
                 case EncryptionMethod.Hashing:
                     return _hashingProvider.PasswordDerivedBytes(value, cryptographicCredentials.Key, 
                         cryptographicCredentials.KeyDerivationPrf, cryptographicCredentials.Iterations, 
@@ -99,7 +100,7 @@ namespace DNI.Shared.Services.Providers
                     continue;
 
                 var encryptedValue = await Encrypt(encryptCustomAttribute.EncryptionMethod,
-                    cryptographicCredentials, val.ToString());
+                    cryptographicCredentials, val.ToString(), encryptCustomAttribute.Case);
 
                 resultProperty.SetValue(resultInstance, encryptedValue);
             }
