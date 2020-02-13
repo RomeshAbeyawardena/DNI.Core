@@ -30,9 +30,17 @@ namespace DNI.Shared.Services
             _keyProperties = GetKeyProperties();
         }
 
-        public async Task<TEntity> Find(CancellationToken cancellationToken = default, params object[] keys)
+        public async Task<TEntity> Find(CancellationToken cancellationToken = default, bool enableTracking = true, params object[] keys)
         {
-            return await _dbSet.FindAsync(keys, cancellationToken);
+            var foundEntry = await _dbSet.FindAsync(keys, cancellationToken);
+
+            if(enableTracking)
+                return foundEntry;
+
+            var entry = DbContext.Entry(foundEntry);
+            entry.State = EntityState.Detached;
+            
+            return foundEntry;
         }
 
         public IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> whereExpression = null, bool enableTracking = true)

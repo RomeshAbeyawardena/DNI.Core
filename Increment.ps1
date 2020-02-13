@@ -1,3 +1,7 @@
+Param (
+    [string]$path = "C:\Source\packages\nuget"
+)
+
 $solutionProperties = "$PSScriptRoot\Directory.Build.props"
 
 $getVersionScriptPath = "$PSScriptRoot\.\Get-Version.ps1"
@@ -12,4 +16,4 @@ $currentVersion = & $getVersionScriptPath -fileName $solutionProperties
 
 $newVersion = & $incrementVersionScriptPath -versionString $currentVersion -versionPartIndex 3
 
-& $dotnetPackScript -version $newVersion -output "C:\Source\packages\nuget"
+& $dotnetPackScript -version $newVersion -output $path
