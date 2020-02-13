@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using DNI.Shared.Contracts.Enumerations;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -41,5 +43,21 @@ namespace DNI.Shared.Services.Extensions
             return htmlHelper.Raw(stringReplacedHtmlContent);
         }
 
+        public static string Case(this string value, StringCase @case, CultureInfo cultureInfo = default)
+        {
+            if(cultureInfo == default)
+                cultureInfo = CultureInfo.InvariantCulture;
+
+            if(@case == StringCase.None)
+                return value;
+
+            if(@case == StringCase.Upper)
+                return value.ToUpper(cultureInfo);
+
+            if(@case == StringCase.Lower)
+                return value.ToLower(cultureInfo);
+
+            return value;
+        }
     }
 }
