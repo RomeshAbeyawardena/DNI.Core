@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Enumerations;
 using System.Diagnostics;
+using DNI.Shared.Domains;
 
 namespace DNI.Shared.App
 {
@@ -31,32 +32,12 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            while (Console.ReadKey().Key != ConsoleKey.Escape)
-            {
-                var stopWatch = Stopwatch.StartNew();
-                var generatedString = _randomStringGenerator.GenerateString(
-                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics | CharacterType.Symbols, 16);
-                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
-                stopWatch.Stop();
-
-                stopWatch = Stopwatch.StartNew();
-                generatedString = _randomStringGenerator.GenerateString(
-                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics | CharacterType.Symbols, 32);
-                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
-                stopWatch.Stop();
-
-                Console.WriteLine(stopWatch.Elapsed);
-
-                var stopWatch2 = Stopwatch.StartNew();
-                generatedString = _randomStringGenerator.GenerateString(
-                    CharacterType.Lowercase | CharacterType.Uppercase | CharacterType.Numerics, 64);
-                Console.WriteLine("{0} ({1})", generatedString, generatedString.Length);
-                stopWatch2.Stop();
-
-                Console.WriteLine(stopWatch.Elapsed);
-            }
+            var result = Response.Success<CustomerResponse>(new Customer { Id = 1 });
             return 0;
         }
+
+        public class CustomerResponse : ResponseBase<Customer> { }
+
 
         public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider,
             ISwitch<string, ICryptographicCredentials> credentialsDictionary,
