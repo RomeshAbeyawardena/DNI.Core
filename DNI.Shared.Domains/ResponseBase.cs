@@ -23,14 +23,17 @@ namespace DNI.Shared.Domains
             return response;
         }
 
-        public static TResponse Success<TResponse>(object result)
+        public static TResponse Success<TResponse>(object result, Action<TResponse> responseParameterConfiguration = default)
         {
             var responseType = typeof(TResponse);
             var response =  Activator.CreateInstance<TResponse>();
             
+            responseParameterConfiguration?.Invoke(response);
+
             var properties = responseType.GetProperties();
 
-            var resultProperties = properties.Where(property => property.Name == nameof(ResponseBase.Result));
+            var resultProperties = properties
+                .Where(property => property.Name == nameof(ResponseBase.Result));
 
             if(!resultProperties.Any())
                 throw new InvalidCastException();
@@ -38,7 +41,8 @@ namespace DNI.Shared.Domains
             foreach(var resultProperty in resultProperties)
                 resultProperty.SetValue(response, result);
 
-            var successfulProperty = properties.FirstOrDefault(property => property.Name == nameof(ResponseBase.IsSuccessful));
+            var successfulProperty = properties
+                .FirstOrDefault(property => property.Name == nameof(ResponseBase.IsSuccessful));
 
             if(successfulProperty == null)
                 throw new InvalidCastException();
