@@ -56,7 +56,8 @@ namespace DNI.Shared.Services
             return query;
         }
 
-        public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, CancellationToken cancellationToken = default)
+        public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, 
+            bool detachAfterSave = true, CancellationToken cancellationToken = default)
         {
             if(_keyProperties.All(keyProperty => IsValueDefault(keyProperty, entity) ))
                 _dbSet.Add(entity);
@@ -65,7 +66,10 @@ namespace DNI.Shared.Services
                
             if(saveChanges)
                 await DbContext.SaveChangesAsync();
-            
+
+            if(detachAfterSave)
+                DbContext.Entry(entity).State = EntityState.Detached;
+
             return entity;
         }
 
