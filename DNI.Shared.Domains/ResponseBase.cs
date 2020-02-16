@@ -9,7 +9,11 @@ namespace DNI.Shared.Domains
 {
     public static class Response
     {
-        
+        public static bool IsSuccessful(ResponseBase response)
+        {
+            return response.IsSuccessful && response.Result != null;
+        }
+
         public static TResponse Failed<TResponse>(params ValidationFailure[] validationErrors)
             where TResponse : ResponseBase
         {
