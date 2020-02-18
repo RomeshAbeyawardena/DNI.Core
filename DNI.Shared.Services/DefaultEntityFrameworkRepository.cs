@@ -24,6 +24,13 @@ namespace DNI.Shared.Services
 
         private readonly DbSet<TEntity> _dbSet;
 
+        public IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
+            where TQueryEntity : class
+        {
+            return DbContext
+                .Set<TQueryEntity>()
+                .FromSqlRaw(query, parameters);
+        }
 
         public DefaultEntityFrameworkRepository(TDbContext dbContext)
         {

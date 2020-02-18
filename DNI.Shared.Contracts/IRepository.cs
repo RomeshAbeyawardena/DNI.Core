@@ -12,6 +12,8 @@ namespace DNI.Shared.Contracts
         where TEntity : class
     {
         Action<TEntity> ConfigureSoftDeletion { get; set; }
+        IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
+            where TQueryEntity : class;
         IQueryable<TEntity> Query(Expression<Func<TEntity, bool>> whereExpression = default, bool enableTracking = true);
         Task<TEntity> Find(bool enableTracking = true, CancellationToken cancellationToken = default, params object[] keys);
         Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, 
