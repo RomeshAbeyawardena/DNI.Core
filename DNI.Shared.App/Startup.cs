@@ -32,7 +32,7 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            var response = Response.Success<CustomerResponse>(new Customer { Id = 1 });
+            var response = (IResponse)Response.Success<CustomerResponse>(new Customer { Id = 1 });
             var isSuccessful = Response.IsSuccessful(response);
             return 0;
         }
