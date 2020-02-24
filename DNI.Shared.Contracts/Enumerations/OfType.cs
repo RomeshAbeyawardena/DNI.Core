@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Contracts.Enumerations
 {
+    [Flags]
     public enum OfType
     {
         DateTime = 0,
