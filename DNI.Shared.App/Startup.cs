@@ -23,6 +23,7 @@ namespace DNI.Shared.App
 {
     public class Startup
     {
+        private readonly IIs _is;
         private readonly ILogger<Startup> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IEncryptionProvider _encryptionProvider;
@@ -32,8 +33,9 @@ namespace DNI.Shared.App
 
         public async Task<int> Begin(params object[] args)
         {
-            var response = (IResponse)Response.Success<CustomerResponse>(new Customer { Id = 1 });
-            var isSuccessful = Response.IsSuccessful(response);
+            var ofType = _is.TryDetermineType(1234, out var result);
+            var ofType1 = _is.TryDetermineType(1234.66, out var result1);
+            var ofType2= _is.TryDetermineType("1000A.ABC", out var result2);
             return 0;
         }
 
@@ -43,8 +45,9 @@ namespace DNI.Shared.App
         public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider,
             ISwitch<string, ICryptographicCredentials> credentialsDictionary,
             IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory,
-            IRandomStringGenerator randomStringGenerator)
+            IRandomStringGenerator randomStringGenerator, IIs @is)
         {
+            _is = @is;
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _encryptionProvider = encryptionProvider;
