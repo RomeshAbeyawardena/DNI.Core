@@ -53,7 +53,7 @@ namespace DNI.Shared.Services.Providers
         }
 
         public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, Func<T> getValue, 
-            Func<T, object> IdSelector, Func<object> getMaxValue, bool append = false, 
+            Func<T, object> IdSelector, Func<Task<object>> getMaxValue, bool append = false, 
             CancellationToken cancellationToken = default)
         {
             var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
@@ -61,7 +61,7 @@ namespace DNI.Shared.Services.Providers
             if(value == null)
                 return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
 
-            var currentValue = getMaxValue();
+            var currentValue = await getMaxValue();
             var idValue = IdSelector(value);
 
             bool outDated = true; 

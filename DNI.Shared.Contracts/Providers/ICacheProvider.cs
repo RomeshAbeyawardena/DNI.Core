@@ -17,7 +17,7 @@ namespace DNI.Shared.Contracts.Providers
         
         Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName,
             Func<T> getValue,  Func<T, object> IdSelector, 
-            Func<object> getMaxValue,
+            Func<Task<object>> getMaxValue,
             bool append = false,
             CancellationToken cancellationToken = default);
         Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
