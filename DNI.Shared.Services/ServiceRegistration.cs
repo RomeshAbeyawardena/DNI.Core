@@ -32,6 +32,7 @@ namespace DNI.Shared.Services
                 .CaseWhen(CharacterType.Uppercase, new Domains.Range(65, 90))
                 .CaseWhen(CharacterType.Numerics, new Domains.Range(48, 57))
                 .CaseWhen(CharacterType.Symbols, new Domains.Range(33, 47)))
+                .AddSingleton<IIs, DefaultIs>()
                 .AddSingleton(RandomNumberGenerator.Create())
                 .AddSingleton<IRandomStringGenerator, DefaultRandomStringGenerator>()
                 .AddSingleton<IHttpClientFactory, DefaultHttpClientFactory>()

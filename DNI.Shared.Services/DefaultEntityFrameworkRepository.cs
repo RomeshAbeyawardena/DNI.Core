@@ -20,8 +20,17 @@ namespace DNI.Shared.Services
     {
         private readonly IEnumerable<PropertyInfo> _keyProperties;
         private TDbContext DbContext { get; }
+        public Action<TEntity> ConfigureSoftDeletion { get; set; }
+
         private readonly DbSet<TEntity> _dbSet;
 
+        public IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
+            where TQueryEntity : class
+        {
+            return DbContext
+                .Set<TQueryEntity>()
+                .FromSqlRaw(query, parameters);
+        }
 
         public DefaultEntityFrameworkRepository(TDbContext dbContext)
         {
@@ -30,7 +39,7 @@ namespace DNI.Shared.Services
             _keyProperties = GetKeyProperties();
         }
 
-        public async Task<TEntity> Find(CancellationToken cancellationToken = default, bool enableTracking = true, params object[] keys)
+        public async Task<TEntity> Find(bool enableTracking = true, CancellationToken cancellationToken = default, params object[] keys)
         {
             var foundEntry = await _dbSet.FindAsync(keys, cancellationToken);
 
@@ -105,6 +114,40 @@ namespace DNI.Shared.Services
         public IQueryable<TEntity> AsNoTracking(IQueryable<TEntity> query)
         {
             return query.AsNoTracking();
+        }
+
+        public async Task<int> Delete(TEntity entity, CancellationToken cancellationToken = default)
+        {
+            _dbSet.Remove(entity);
+            
+            return await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task<int> Delete(TEntity entity, bool softDelete = true, CancellationToken cancellationToken = default)
+        {
+            if(softDelete && ConfigureSoftDeletion == null)
+                throw new ArgumentNullException(nameof(ConfigureSoftDeletion));
+                
+            if(!softDelete)
+                return await Delete(entity, cancellationToken);
+            else
+            { 
+                ConfigureSoftDeletion(entity);
+                await SaveChanges(entity, true, cancellationToken: cancellationToken);
+                return 1;
+            }
+        }
+
+        public async Task<int> Delete(CancellationToken cancellationToken = default, params object[] keys)
+        {
+            var foundEntity = await Find(true, cancellationToken, keys);
+            return await Delete(foundEntity, cancellationToken);
+        }
+
+        public async Task<int> Delete(bool softDelete = true, CancellationToken cancellationToken = default, params object[] keys)
+        {
+            var foundEntity = await Find(true, cancellationToken, keys);
+            return await Delete(foundEntity, softDelete, cancellationToken);
         }
     }
 }
