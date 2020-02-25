@@ -53,7 +53,7 @@ namespace DNI.Shared.Services.Providers
         }
 
         public async Task<IEnumerable<T>> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<IEnumerable<T>> getValue, 
+            Func<Task<IEnumerable<T>>> getValue, 
             Func<T, object> IdSelector, Func<Task<object>> getMaxValue, bool append = false, 
             CancellationToken cancellationToken = default)
         {
@@ -63,7 +63,12 @@ namespace DNI.Shared.Services.Providers
                 return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
 
             var currentValue = await getMaxValue();
-            var idValue = IdSelector(value.LastOrDefault());
+            var lastValue = value.LastOrDefault();
+
+            if(lastValue == null)
+                return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
+
+            var idValue = IdSelector(lastValue);
 
             bool outDated = true; 
             
