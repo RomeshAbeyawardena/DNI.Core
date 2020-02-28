@@ -34,8 +34,11 @@ namespace DNI.Shared.App
         public async Task<int> Begin(params object[] args)
         {
             var ofType = _is.TryDetermineType(1234, out var result);
+            Console.WriteLine(result);
             var ofType1 = _is.TryDetermineType(1234.66, out var result1);
+            Console.WriteLine(result1);
             var ofType2= _is.TryDetermineType("1000A.ABC", out var result2);
+            Console.WriteLine(result2);
             return 0;
         }
 
