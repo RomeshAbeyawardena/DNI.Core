@@ -5,12 +5,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace DNI.Shared.Contracts
 {
     public interface IRepository<TEntity>
         where TEntity : class
     {
+        Task<int> Commit();
         Action<TEntity> ConfigureSoftDeletion { get; set; }
         IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
             where TQueryEntity : class;

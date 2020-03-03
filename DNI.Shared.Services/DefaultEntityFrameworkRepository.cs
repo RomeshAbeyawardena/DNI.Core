@@ -11,6 +11,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace DNI.Shared.Services
 {
@@ -20,6 +21,7 @@ namespace DNI.Shared.Services
     {
         private readonly IEnumerable<PropertyInfo> _keyProperties;
         private TDbContext DbContext { get; }
+
         public Action<TEntity> ConfigureSoftDeletion { get; set; }
 
         private readonly DbSet<TEntity> _dbSet;
@@ -74,7 +76,7 @@ namespace DNI.Shared.Services
                 _dbSet.Update(entity);
                
             if(saveChanges)
-                await DbContext.SaveChangesAsync();
+                await Commit();
 
             if(detachAfterSave)
                 DbContext.Entry(entity).State = EntityState.Detached;
@@ -148,6 +150,11 @@ namespace DNI.Shared.Services
         {
             var foundEntity = await Find(true, cancellationToken, keys);
             return await Delete(foundEntity, softDelete, cancellationToken);
+        }
+
+        public async Task<int> Commit()
+        {
+            return await DbContext.SaveChangesAsync();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace DNI.Shared.Services.Extensions
                     iterations, totalNumberOfBytes, initialVector));
         }
 
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, 
+        public static IServiceCollection RegisterDbContextRepositories<TDbContext>(this IServiceCollection services, 
             ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
             params Type[] entityTypes)
             where TDbContext : DbContext

@@ -33,7 +33,7 @@ namespace DNI.Shared.App
                     Encoding.UTF8, "42e6f1f0-7cd2-4ce3-a06c-f86c1c82fd24", "eeaf5b47-636c-4997-ae41-d979e3b04094", 1000000, 32, "bceac9fa-70a3-4b".GetBytes(Encoding.UTF8))))
                 .AddAutoMapper(Assembly.GetAssembly(typeof(ServiceRegistration)))
                 .AddDbContextPool<TestDbContext>(dbContextOptions => dbContextOptions.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"))
-                .RegisterDbContentRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
+                .RegisterDbContextRepositories<TestDbContext>(ServiceLifetime.Transient, typeof(Customer))
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 
                 "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
