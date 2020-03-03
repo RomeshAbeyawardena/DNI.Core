@@ -12,7 +12,7 @@ namespace DNI.Shared.Contracts
     public interface IRepository<TEntity>
         where TEntity : class
     {
-        Task<int> Commit();
+        Task<int> Commit(CancellationToken cancellationToken);
         Action<TEntity> ConfigureSoftDeletion { get; set; }
         IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
             where TQueryEntity : class;

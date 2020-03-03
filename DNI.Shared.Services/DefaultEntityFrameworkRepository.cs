@@ -76,7 +76,7 @@ namespace DNI.Shared.Services
                 _dbSet.Update(entity);
                
             if(saveChanges)
-                await Commit();
+                await Commit(cancellationToken);
 
             if(detachAfterSave)
                 DbContext.Entry(entity).State = EntityState.Detached;
@@ -152,9 +152,9 @@ namespace DNI.Shared.Services
             return await Delete(foundEntity, softDelete, cancellationToken);
         }
 
-        public async Task<int> Commit()
+        public async Task<int> Commit(CancellationToken cancellationToken)
         {
-            return await DbContext.SaveChangesAsync();
+            return await DbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }
