@@ -18,12 +18,12 @@ namespace DNI.Shared.Services
 
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
         {
-            var result = await _distributedCache.GetAsync(cacheKeyName, cancellationToken);
+            var result = await _distributedCache.GetAsync(cacheKeyName, cancellationToken).ConfigureAwait(false);
 
             if(result == null)
                 return default;
 
-            return await Deserialise<T>(result);
+            return await Deserialise<T>(result).ConfigureAwait(false);
         }
 
         public override async Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default)
@@ -31,9 +31,9 @@ namespace DNI.Shared.Services
             if(value == null)
                 return;
 
-            var serialisedValue = await Serialise(value);
+            var serialisedValue = await Serialise(value).ConfigureAwait(false);
 
-            await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken);
+            await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), cancellationToken).ConfigureAwait(false);
         }
 
         public override async Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)

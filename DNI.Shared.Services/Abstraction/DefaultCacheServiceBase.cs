@@ -14,16 +14,16 @@ namespace DNI.Shared.Services.Abstraction
     public abstract class DefaultCacheServiceBase : ICacheService
     {
         private readonly IMessagePackService _messagePackService;
-        private MessagePackSerializerOptions _messagePackOptions;
+        private readonly MessagePackSerializerOptions _messagePackOptions;
 
         protected async Task<T> Deserialise<T>(IEnumerable<byte> value)
         {
-            return await _messagePackService.Deserialise<T>(value, _messagePackOptions);
+            return await _messagePackService.Deserialise<T>(value, _messagePackOptions).ConfigureAwait(false);
         }
 
         protected async Task<IEnumerable<byte>> Serialise<T>(T value)
         {
-            return await _messagePackService.Serialise(value, _messagePackOptions);
+            return await _messagePackService.Serialise(value, _messagePackOptions).ConfigureAwait(false);
         }
 
         public abstract Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default);
