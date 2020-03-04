@@ -48,9 +48,9 @@ namespace DNI.Shared.Services
             return value;
         }
 
-        public override async Task<T> Set<T>(string cacheKeyName, Func<Task<T>> getValue, CancellationToken cancellationToken = default)
+        public override async Task<T> Set<T>(string cacheKeyName, Func<CancellationToken, Task<T>> getValue, CancellationToken cancellationToken = default)
         {
-            var value = await getValue();
+            var value = await getValue(cancellationToken);
 
             if(value == null)
                 return default;

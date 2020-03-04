@@ -23,89 +23,74 @@ namespace DNI.Shared.Services.Providers
             _cacheProviderFactory = cacheProviderFactory;
         }
 
-        public async Task<T> Get<T>(CacheType cacheType, string cacheKeyName, 
-            CancellationToken cancellationToken = default)
+        public async Task<T> Get<T>(CacheType cacheType, string cacheKeyName, CancellationToken cancellationToken = default)
         {
-            return await GetCacheService(cacheType)
-                .Get<T>(cacheKeyName, cancellationToken);
-        }
+            var cacheService = GetCacheService(cacheType);
 
-        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<T> getValue, bool append = false, CancellationToken cancellationToken = default)
-        {
-            var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
-
-            if(append || value == null)
-                value = await Set(cacheType, cacheKeyName, getValue, cancellationToken);
-
-            return value;
-        }
-
-        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<Task<T>> getValue, bool append = false, CancellationToken cancellationToken = default)
-        {
-            var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
-
-            if(append || value == null)
-                value = await Set(cacheType, cacheKeyName, getValue, cancellationToken);
-
-            return value;
+            return await cacheService.Get<T>(cacheKeyName, cancellationToken);
         }
 
         public async Task<IEnumerable<T>> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<Task<IEnumerable<T>>> getValue, 
-            Func<T, object> IdSelector, Func<Task<object>> getMaxValue, bool append = false, 
+            Func<CancellationToken, Task<IEnumerable<T>>> getValue, 
+            Func<T, object> selectId, Func<CancellationToken, Task<object>> getMaxValue, bool append = false, 
             CancellationToken cancellationToken = default)
         {
             var value = await Get<IEnumerable<T>>(cacheType, cacheKeyName, cancellationToken);
 
-            if(value == null)
-                return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
+            if(value == null || !value.Any())
+                return await Set(cacheType, cacheKeyName, async (cancellationToken) => await getValue(cancellationToken));
 
-            var currentValue = await getMaxValue();
+            var currentValue = await getMaxValue(cancellationToken);
             var lastValue = value.LastOrDefault();
 
-            if(lastValue == null)
-                return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
+            var identifierValue = selectId(lastValue);
 
-            var idValue = IdSelector(lastValue);
+            var isOutdated = false;
 
-            bool outDated = true; 
-            
             var currentValType = _is
                 .TryDetermineType(currentValue, out var currentVal);
             var idType = _is
-                .TryDetermineType(idValue, out var idVal);
+                .TryDetermineType(identifierValue, out var idVal);
 
-            if(currentValType != OfType.String 
+            if (currentValType != OfType.String
                 && idType != OfType.String)
-                outDated = currentVal > idVal;
+                isOutdated = currentVal > idVal;
 
-            if(outDated)
+            if (isOutdated)
                 return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
 
             return value;
         }
 
-        public async Task Set<T>(CacheType cacheType, string cacheKeyName, T value, 
-            CancellationToken cancellationToken = default)
+        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, Func<CancellationToken, Task<T>> getValue, bool append = false, CancellationToken cancellationToken = default)
         {
-            await GetCacheService(cacheType)
-                .Set(cacheKeyName, value, cancellationToken);
+            var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
+
+            if(value == null)
+                return await Set(cacheType, cacheKeyName, 
+                    async(cancellationToken) => await getValue(cancellationToken), cancellationToken);
+
+            return value;
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, Func<T> getValue, 
-            CancellationToken cancellationToken = default)
+        public async Task Set<T>(CacheType cacheType, string cacheKeyName, T value, CancellationToken cancellationToken = default)
         {
-            return await GetCacheService(cacheType)
-                .Set(cacheKeyName, getValue, cancellationToken);
+            var cacheService = GetCacheService(cacheType);
+            await cacheService.Set(cacheKeyName, value, cancellationToken);
+
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, 
-            Func<Task<T>> getValue, CancellationToken cancellationToken = default)
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
         {
-            return await GetCacheService(cacheType)
-                .Set(cacheKeyName, getValue, cancellationToken);
+            var cacheService = GetCacheService(cacheType);
+            return await cacheService.Set(cacheKeyName, getValue, cancellationToken);
+        }
+
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, Func<CancellationToken, Task<T>> getValue, CancellationToken cancellationToken = default)
+        {
+            var cacheService = GetCacheService(cacheType);
+            return await cacheService.Set(cacheKeyName, getValue, cancellationToken);
+
         }
 
         private ICacheService GetCacheService(CacheType cacheType)

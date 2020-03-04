@@ -29,7 +29,7 @@ namespace DNI.Shared.Services.Abstraction
         public abstract Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default);
         public abstract Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default);
         public abstract Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default);
-        public abstract Task<T> Set<T>(string cacheKeyName, Func<Task<T>> getValue, CancellationToken cancellationToken = default);
+        public abstract Task<T> Set<T>(string cacheKeyName, Func<CancellationToken, Task<T>> getValue, CancellationToken cancellationToken = default);
 
         public DefaultCacheServiceBase(IMessagePackService messagePackService)
         {
