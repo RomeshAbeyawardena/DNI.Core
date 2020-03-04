@@ -65,35 +65,44 @@ namespace DNI.Shared.Services.Providers
             return value;
         }
 
-        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, Func<CancellationToken, Task<T>> getValue, bool append = false, CancellationToken cancellationToken = default)
+        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
+            Func<CancellationToken, Task<T>> getValue, bool append = false, 
+            CancellationToken cancellationToken = default)
         {
             var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
 
-            if(value == null)
-                return await Set(cacheType, cacheKeyName, 
+            return await Set(cacheType, cacheKeyName, 
                     async(cancellationToken) => await getValue(cancellationToken), cancellationToken);
-
-            return value;
         }
 
         public async Task Set<T>(CacheType cacheType, string cacheKeyName, T value, CancellationToken cancellationToken = default)
         {
+            if(value == null)
+                return;
+
             var cacheService = GetCacheService(cacheType);
             await cacheService.Set(cacheKeyName, value, cancellationToken);
 
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, 
+            Func<T> getValue, CancellationToken cancellationToken = default)
         {
-            var cacheService = GetCacheService(cacheType);
-            return await cacheService.Set(cacheKeyName, getValue, cancellationToken);
+            var value = getValue();
+
+            await Set(cacheType, cacheKeyName, value, cancellationToken);
+            return value;
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, Func<CancellationToken, Task<T>> getValue, CancellationToken cancellationToken = default)
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, 
+            Func<CancellationToken, Task<T>> getValue, 
+            CancellationToken cancellationToken = default)
         {
-            var cacheService = GetCacheService(cacheType);
-            return await cacheService.Set(cacheKeyName, getValue, cancellationToken);
+            var value = await getValue(cancellationToken);
 
+            await Set(cacheType, cacheKeyName, value, cancellationToken);
+
+            return value;
         }
 
         private ICacheService GetCacheService(CacheType cacheType)
