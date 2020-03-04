@@ -2,6 +2,7 @@
 using DNI.Shared.Contracts.Services;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,11 +34,11 @@ namespace DNI.Shared.Services.Abstraction
 
         public DefaultCacheServiceBase(IMessagePackService messagePackService)
         {
-            _messagePackService = messagePackService;
-            _messagePackOptions = MessagePackSerializerOptions
+             MessagePackSerializerOptions
                 .Standard
                 .WithCompression(MessagePackCompression.Lz4Block)
                 .WithSecurity(MessagePackSecurity.TrustedData);
+            _messagePackService = messagePackService;
         }
     }
 }
