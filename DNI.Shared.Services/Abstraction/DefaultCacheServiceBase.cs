@@ -14,7 +14,7 @@ namespace DNI.Shared.Services.Abstraction
     public abstract class DefaultCacheServiceBase : ICacheService
     {
         private readonly IMessagePackService _messagePackService;
-        private readonly MessagePackSerializerOptions _messagePackOptions;
+        internal readonly MessagePackSerializerOptions _messagePackOptions;
 
         protected async Task<T> Deserialise<T>(IEnumerable<byte> value)
         {

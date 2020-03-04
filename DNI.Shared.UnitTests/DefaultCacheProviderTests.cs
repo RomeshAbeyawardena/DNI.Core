@@ -9,6 +9,7 @@ using DNI.Shared.Contracts.Enumerations;
 using System.Threading;
 using DNI.Shared.Services;
 using DNI.Shared.Contracts.Services;
+using DNI.Shared.UnitTests.Models;
 
 namespace DNI.Shared.UnitTests
 {
@@ -38,18 +39,18 @@ namespace DNI.Shared.UnitTests
 
 
         [Test]
-        public async Task Get_calls_GetCacheService()
+        public async Task Get_calls_CacheService()
         {
             var cancellationToken = CancellationToken.None;
 
-            var myTestObjectInstance = new MyTestObject();
+            var testCacheModelInstance = new TestCacheModel();
             
             _distributedCacheServiceMock.Setup(cacheService => cacheService
-                .Get<MyTestObject>(nameof(myTestObjectInstance), cancellationToken))
-                .Returns(Task.FromResult(myTestObjectInstance))
+                .Get<TestCacheModel>(nameof(testCacheModelInstance), cancellationToken))
+                .Returns(Task.FromResult(testCacheModelInstance))
                 .Verifiable();
 
-            var result = await sut.Get<MyTestObject>(CacheType.DistributedMemoryCache, nameof(myTestObjectInstance), cancellationToken);
+            var result = await sut.Get<TestCacheModel>(CacheType.DistributedMemoryCache, nameof(testCacheModelInstance), cancellationToken);
 
             _cacheProviderFactoryMock.Verify();
             _distributedCacheServiceMock.Verify();
@@ -60,15 +61,15 @@ namespace DNI.Shared.UnitTests
         {
             var cancellationToken = CancellationToken.None;
 
-            var myTestObjectInstance = new MyTestObject();
+            var testCacheModelInstance = new TestCacheModel();
             
             _distributedCacheServiceMock.Setup(cacheService => cacheService
-                .Set(nameof(myTestObjectInstance), myTestObjectInstance, cancellationToken))
+                .Set(nameof(testCacheModelInstance), testCacheModelInstance, cancellationToken))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
             await sut.Set(CacheType.DistributedMemoryCache, 
-                nameof(myTestObjectInstance), myTestObjectInstance, cancellationToken);
+                nameof(testCacheModelInstance), testCacheModelInstance, cancellationToken);
 
             _cacheProviderFactoryMock.Verify();
             _distributedCacheServiceMock.Verify();
@@ -79,24 +80,20 @@ namespace DNI.Shared.UnitTests
         {
             var cancellationToken = CancellationToken.None;
 
-            var myTestObjectInstance = new MyTestObject();
+            var testCacheModelInstance = new TestCacheModel();
             
             _distributedCacheServiceMock.Setup(cacheService => cacheService
-                .Set(nameof(myTestObjectInstance), It.IsAny<MyTestObject>(), cancellationToken))
+                .Set(nameof(testCacheModelInstance), It.IsAny<TestCacheModel>(), cancellationToken))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
             await sut.Set(CacheType.DistributedMemoryCache, 
-                nameof(myTestObjectInstance), default(MyTestObject), cancellationToken);
+                nameof(testCacheModelInstance), default(TestCacheModel), cancellationToken);
 
             _cacheProviderFactoryMock.Verify(cacheProvider => cacheProvider.GetCache(CacheType.DistributedMemoryCache), Times.Never);
             _distributedCacheServiceMock.Verify(cacheService => cacheService
-                .Set(nameof(myTestObjectInstance), It.IsAny<MyTestObject>(), cancellationToken), Times.Never);
+                .Set(nameof(testCacheModelInstance), It.IsAny<TestCacheModel>(), cancellationToken), Times.Never);
         }
 
-        internal class MyTestObject
-        {
-
-        }
     }
 }
