@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {
+    [assembly: InternalsVisibleTo("DNI.Shared.UnitTests")]
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
