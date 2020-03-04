@@ -24,6 +24,9 @@ namespace DNI.Shared.Services
 
         public Action<TEntity> ConfigureSoftDeletion { get; set; }
 
+        public IAsyncResultTransformer<TEntity> To(IQueryable<TEntity> query) 
+            => DefaultAsyncResultTransformer.Create(query);
+
         private readonly DbSet<TEntity> _dbSet;
 
         public IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
