@@ -46,11 +46,11 @@ namespace DNI.Shared.Services
                 .AddSingleton<IModifierFlagPropertyService, DefaultModifierFlagPropertyService>()
                 .AddSingleton<IDefaultValueSetterService, DefaultValueSetterService>()
                 .AddSingleton<IJsonWebTokenService, DefaultJsonWebTokenService>()
-                .AddSingleton<IMemoryStreamManager, DefaultMemoryStreamManager>();
+                .AddSingleton<IMemoryStreamManager, DefaultMemoryStreamManager>()
+                .AddSingleton<ICryptographyProvider, CryptographyProvider>();
 
             if(options.RegisterCryptographicProviders)
                 services
-                    .AddSingleton<ICryptographyProvider, CryptographyProvider>()
                     .AddSingleton<IEncryptionProvider,EncryptionProvider>();
 
             if(options.RegisterMediatorServices)
