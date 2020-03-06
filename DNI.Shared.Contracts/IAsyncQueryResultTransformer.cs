@@ -11,6 +11,7 @@ namespace DNI.Shared.Contracts
     public interface IAsyncQueryResultTransformer<T>
     {
         Task<IEnumerable<T>> ToArrayAsync(CancellationToken cancellationToken);
+        Task<TSelector> ToMaxAsync<TSelector>(Expression<Func<T, TSelector>> selectorExpression, CancellationToken cancellationToken);
         Task<decimal?> ToSumAsync(Expression<Func<T, decimal?>> selector, CancellationToken cancellationToken);
         Task<int> ToCountAsync(CancellationToken cancellationToken);
         Task<long> ToLongCountAsync(CancellationToken cancellationToken);

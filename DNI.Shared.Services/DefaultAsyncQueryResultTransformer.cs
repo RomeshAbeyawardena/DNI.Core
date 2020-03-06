@@ -76,5 +76,10 @@ namespace DNI.Shared.Services
         {
             return await _query.LongCountAsync(cancellationToken);
         }
+
+        public async Task<TSelector> ToMaxAsync<TSelector>(Expression<Func<T, TSelector>> selectorExpression, CancellationToken cancellationToken)
+        {
+            return await _query.MaxAsync(selectorExpression, cancellationToken);
+        }
     }
 }
