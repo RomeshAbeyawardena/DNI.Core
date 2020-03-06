@@ -19,11 +19,81 @@ using DNI.Shared.Contracts.Generators;
 using System.Security.Cryptography;
 using DNI.Shared.Contracts.Enumerations;
 using System;
+using System.Reactive.Subjects;
+using DNI.Shared.Domains;
 
 namespace DNI.Shared.Services
 {
     public class ServiceRegistration : IServiceRegistration
     {
+        private static RecyclableMemoryStreamManager RegisterRecyclableMemoryStreamManager(IServiceProvider serviceProvider)
+        {
+            var subject = serviceProvider
+                .GetService<ISubject<RecyclableMemoryStreamManagerState>>();
+
+            var rMsm = new RecyclableMemoryStreamManager();
+
+            void RMsm_BlockDiscarded()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    BlockDiscarded = true
+                });
+            }
+
+            void RMsm_BlockCreated()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    BlockCreated = true
+                });
+            }
+
+            void RMsm_UsageReport(long smallPoolInUseBytes, long smallPoolFreeBytes, long largePoolInUseBytes, long largePoolFreeBytes)
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    UsageReportRequested = true,
+                    SmallPoolInUseBytes = smallPoolInUseBytes,
+                    SmallPoolFreeBytes = smallPoolFreeBytes,
+                    LargePoolInUseBytes = largePoolInUseBytes,
+                    LargePoolFreeBytes = largePoolFreeBytes
+                });
+            }
+
+            void RMsm_StreamCreated()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    StreamCreated = true
+                });
+            }
+
+            void RMsm_StreamDisposed()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    StreamDisposed = true
+                });
+            }
+
+            void RMsm_StreamFinalized()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    StreamFinalized = true
+                });
+            }
+
+            rMsm.BlockCreated += RMsm_BlockCreated;
+            rMsm.BlockDiscarded += RMsm_BlockDiscarded;
+            rMsm.UsageReport += RMsm_UsageReport;
+            rMsm.StreamCreated += RMsm_StreamCreated;
+            rMsm.StreamDisposed += RMsm_StreamDisposed;
+            rMsm.StreamFinalized += RMsm_StreamFinalized;
+            return rMsm;
+        }
+
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
@@ -40,7 +110,8 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IClockProvider, DefaultClockProvider>()
-                .AddSingleton(new RecyclableMemoryStreamManager())
+                .AddSingleton<ISubject<RecyclableMemoryStreamManagerState>, Subject<RecyclableMemoryStreamManagerState>>()
+                .AddSingleton(RegisterRecyclableMemoryStreamManager)
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()
                 .AddSingleton<IModifierFlagPropertyService, DefaultModifierFlagPropertyService>()
@@ -49,11 +120,11 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMemoryStreamManager, DefaultMemoryStreamManager>()
                 .AddSingleton<ICryptographyProvider, CryptographyProvider>();
 
-            if(options.RegisterCryptographicProviders)
+            if (options.RegisterCryptographicProviders)
                 services
-                    .AddSingleton<IEncryptionProvider,EncryptionProvider>();
+                    .AddSingleton<IEncryptionProvider, EncryptionProvider>();
 
-            if(options.RegisterMediatorServices)
+            if (options.RegisterMediatorServices)
                 services
                     .AddTransient(typeof(IPipelineBehavior<,>), typeof(DefaultValidationBehaviour<,>))
                     .AddTransient<IMediatorService, DefaultMediatorService>();
@@ -62,7 +133,7 @@ namespace DNI.Shared.Services
                 services
                     .AddSingleton<IMessagePackService, DefaultMessagePackService>();
 
-            if(options.RegisterAutoMappingProviders)
+            if (options.RegisterAutoMappingProviders)
                 services
                     .AddSingleton<IMapperProvider, MapperProvider>();
 
@@ -74,8 +145,9 @@ namespace DNI.Shared.Services
                     .AddScoped<ICacheProviderFactory, DefaultCacheProviderFactory>()
                     .AddScoped<ICacheProvider, DefaultCacheProvider>();
 
-            if(options.RegisterExceptionHandlers)
+            if (options.RegisterExceptionHandlers)
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
         }
+
     }
 }
