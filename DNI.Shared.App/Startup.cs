@@ -18,45 +18,73 @@ using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Contracts.Enumerations;
 using System.Diagnostics;
 using DNI.Shared.Domains;
+using System.Reactive.Subjects;
+using Microsoft.IO;
+using System.IO;
 
 namespace DNI.Shared.App
 {
     public class Startup
     {
-        private readonly IIs _is;
         private readonly ILogger<Startup> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IEncryptionProvider _encryptionProvider;
-        private readonly IHashingProvider _hashingProvider;
-        private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
-        private readonly IRandomStringGenerator _randomStringGenerator;
+        private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
+        private readonly ISubject<RecyclableMemoryStreamManagerState> _subject;
 
         public async Task<int> Begin(params object[] args)
         {
-            var ofType = _is.TryDetermineType(1234, out var result);
-            Console.WriteLine(result);
-            var ofType1 = _is.TryDetermineType(1234.66, out var result1);
-            Console.WriteLine(result1);
-            var ofType2= _is.TryDetermineType("1000A.ABC", out var result2);
-            Console.WriteLine(result2);
+            using (var memoryStream = _recyclableMemoryStreamManager.GetStream())
+            {
+                using (var streamWriter = new StreamWriter(memoryStream)){
+                    await streamWriter.WriteLineAsync("Lorem ipsum");
+                }
+            }
+
+            using (var memoryStream = _recyclableMemoryStreamManager.GetStream())
+            {
+                using (var streamWriter = new StreamWriter(memoryStream))
+                    await streamWriter.WriteLineAsync("Lorem ipsum");
+            }
+
             return 0;
         }
 
         public class CustomerResponse : ResponseBase<Customer> { }
 
 
-        public Startup(ILogger<Startup> logger, IEncryptionProvider encryptionProvider,
-            ISwitch<string, ICryptographicCredentials> credentialsDictionary,
-            IHashingProvider hashingProvider, IHttpClientFactory httpClientFactory,
-            IRandomStringGenerator randomStringGenerator, IIs @is)
+        public Startup(ILogger<Startup> logger, 
+            RecyclableMemoryStreamManager recyclableMemoryStreamManager,
+            ISubject<RecyclableMemoryStreamManagerState> subject)
         {
-            _is = @is;
             _logger = logger;
-            _httpClientFactory = httpClientFactory;
-            _encryptionProvider = encryptionProvider;
-            _hashingProvider = hashingProvider;
-            _credentialsDictionary = credentialsDictionary;
-            _randomStringGenerator = randomStringGenerator;
+            _recyclableMemoryStreamManager = recyclableMemoryStreamManager;
+            _subject = subject;
+            _subject.Subscribe(onNext, onError, onCompleted);
+        }
+
+        private void onCompleted()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void onError(Exception obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void onNext(RecyclableMemoryStreamManagerState obj)
+        {
+            RecyclableMemoryStreamManagerState.Handle(obj, 
+                () => _logger.LogInformation("Stream created"),
+                () => _logger.LogInformation("Block created"),
+                () => _logger.LogInformation("Block discarded"),
+                () => _logger.LogInformation("Stream disposed"),
+                () => _logger.LogInformation("Stream finalized"),
+                onUsageReportRequested: (largePoolFreeBytes, largePoolInUseBytes,
+                 smallPoolFreeBytes, smallPoolInUseBytes) => _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n" 
+                    + "Small Pool\r\n\tFree: {2}\r\n\tIn Use: {3}", 
+                    largePoolFreeBytes, 
+                    largePoolInUseBytes, smallPoolFreeBytes,
+                    smallPoolInUseBytes));
         }
     }
 }

@@ -13,5 +13,6 @@ namespace DNI.Shared.Contracts.Options
         bool RegisterAutoMappingProviders { get; set; }
         bool RegisterMediatorServices { get; set; }
         bool RegisterExceptionHandlers { get; set; }
+        bool RegisterCryptographicProviders { get; set; }
     }
 }

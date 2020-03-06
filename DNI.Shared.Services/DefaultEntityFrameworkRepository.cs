@@ -24,6 +24,9 @@ namespace DNI.Shared.Services
 
         public Action<TEntity> ConfigureSoftDeletion { get; set; }
 
+        public IAsyncQueryResultTransformer<TEntity> For(IQueryable<TEntity> query) 
+            => DefaultAsyncQueryResultTransformer.Create(query);
+
         private readonly DbSet<TEntity> _dbSet;
 
         public IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
@@ -76,7 +79,7 @@ namespace DNI.Shared.Services
                 _dbSet.Update(entity);
                
             if(saveChanges)
-                await Commit();
+                await Commit(cancellationToken);
 
             if(detachAfterSave)
                 DbContext.Entry(entity).State = EntityState.Detached;
@@ -152,9 +155,14 @@ namespace DNI.Shared.Services
             return await Delete(foundEntity, softDelete, cancellationToken);
         }
 
-        public async Task<int> Commit()
+        public async Task<int> Commit(CancellationToken cancellationToken)
         {
-            return await DbContext.SaveChangesAsync();
+            return await DbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public IAsyncQueryResultTransformer<TEntity> For(Expression<Func<TEntity, bool>> whereExpression)
+        {
+            return For(Query(whereExpression));
         }
     }
 }
