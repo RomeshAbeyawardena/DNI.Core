@@ -79,27 +79,18 @@ namespace DNI.Shared.App
 
         private void onNext(RecyclableMemoryStreamManagerState obj)
         {
-            if(obj.StreamCreated)
-                _logger.LogInformation("Stream created");
-
-            if(obj.BlockCreated)
-                _logger.LogInformation("Block created");
-
-            if(obj.BlockDiscarded)
-                _logger.LogInformation("Block dsicarded");
-
-            if(obj.StreamDisposed)
-                _logger.LogInformation("Stream disposed");
-
-            if(obj.StreamFinalized)
-                _logger.LogInformation("Stream finalized");
-
-            if(obj.UsageReportRequested)
-                _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n" 
+            RecyclableMemoryStreamManagerState.Handle(obj, 
+                () => _logger.LogInformation("Stream created"),
+                () => _logger.LogInformation("Block created"),
+                () => _logger.LogInformation("Block discarded"),
+                () => _logger.LogInformation("Stream disposed"),
+                () => _logger.LogInformation("Stream finalized"),
+                (largePoolFreeBytes, largePoolInUseBytes,
+                 smallPoolFreeBytes, smallPoolInUseBytes) => _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n" 
                     + "Small Pool\r\n\tFree: {2}\r\n\tIn Use: {3}", 
-                    obj.LargePoolFreeBytes, 
-                    obj.LargePoolInUseBytes, obj.SmallPoolFreeBytes,
-                    obj.SmallPoolInUseBytes);
+                    largePoolFreeBytes, 
+                    largePoolInUseBytes, smallPoolFreeBytes,
+                    smallPoolInUseBytes));
         }
     }
 }
