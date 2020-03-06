@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 
 namespace DNI.Shared.Domains
 {
@@ -14,7 +15,9 @@ namespace DNI.Shared.Domains
             Action onBlockDiscarded = null,
             Action onStreamDisposed = null,
             Action onStreamFinalized = null,
-            Action<long, long, long, long> OnUsageReportRequested = null)
+            Action onLargeBufferCreated = null,
+            Action<MemoryStreamDiscardReason> onLargeBufferDiscarded = null,
+            Action<long, long, long, long> onUsageReportRequested = null)
         {
             if(state.StreamCreated)
                 onStreamCreated?.Invoke();
@@ -31,8 +34,14 @@ namespace DNI.Shared.Domains
             if(state.StreamFinalized)
                 onStreamFinalized?.Invoke();
 
+            if(state.LargeBufferCreated)
+                onLargeBufferCreated?.Invoke();
+
+            if(state.LargeBufferDiscarded)
+                onLargeBufferDiscarded?.Invoke(state.Reason);
+
             if(state.UsageReportRequested)
-                OnUsageReportRequested?.Invoke(state.LargePoolFreeBytes, 
+                onUsageReportRequested?.Invoke(state.LargePoolFreeBytes, 
                     state.LargePoolInUseBytes, state.SmallPoolFreeBytes,
                     state.SmallPoolInUseBytes);
         }
@@ -46,5 +55,8 @@ namespace DNI.Shared.Domains
         public bool StreamDisposed { get; set; }
         public bool StreamFinalized { get; set; }
         public bool UsageReportRequested { get; set; }
+        public bool LargeBufferCreated { get; set; }
+        public bool LargeBufferDiscarded { get; set; }
+        public MemoryStreamDiscardReason Reason { get; set; }
     }
 }

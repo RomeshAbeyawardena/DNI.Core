@@ -26,15 +26,9 @@ namespace DNI.Shared.App
 {
     public class Startup
     {
-        private readonly IIs _is;
         private readonly ILogger<Startup> _logger;
         private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
         private readonly ISubject<RecyclableMemoryStreamManagerState> _subject;
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IEncryptionProvider _encryptionProvider;
-        private readonly IHashingProvider _hashingProvider;
-        private readonly ISwitch<string, ICryptographicCredentials> _credentialsDictionary;
-        private readonly IRandomStringGenerator _randomStringGenerator;
 
         public async Task<int> Begin(params object[] args)
         {
@@ -85,7 +79,7 @@ namespace DNI.Shared.App
                 () => _logger.LogInformation("Block discarded"),
                 () => _logger.LogInformation("Stream disposed"),
                 () => _logger.LogInformation("Stream finalized"),
-                (largePoolFreeBytes, largePoolInUseBytes,
+                onUsageReportRequested: (largePoolFreeBytes, largePoolInUseBytes,
                  smallPoolFreeBytes, smallPoolInUseBytes) => _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n" 
                     + "Small Pool\r\n\tFree: {2}\r\n\tIn Use: {3}", 
                     largePoolFreeBytes, 

@@ -21,6 +21,7 @@ using DNI.Shared.Contracts.Enumerations;
 using System;
 using System.Reactive.Subjects;
 using DNI.Shared.Domains;
+using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 
 namespace DNI.Shared.Services
 {
@@ -85,14 +86,35 @@ namespace DNI.Shared.Services
                 });
             }
 
+            void RMsm_LargeBufferCreated()
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    LargeBufferCreated = true
+                });
+            }
+
+            void RMsm_LargeBufferDiscarded(MemoryStreamDiscardReason reason)
+            {
+                subject.OnNext(new RecyclableMemoryStreamManagerState
+                {
+                    LargeBufferDiscarded = true,
+                    Reason = reason
+                });
+            }
+
             rMsm.BlockCreated += RMsm_BlockCreated;
             rMsm.BlockDiscarded += RMsm_BlockDiscarded;
             rMsm.UsageReport += RMsm_UsageReport;
             rMsm.StreamCreated += RMsm_StreamCreated;
             rMsm.StreamDisposed += RMsm_StreamDisposed;
             rMsm.StreamFinalized += RMsm_StreamFinalized;
+            rMsm.LargeBufferCreated += RMsm_LargeBufferCreated;
+            rMsm.LargeBufferDiscarded += RMsm_LargeBufferDiscarded;
             return rMsm;
         }
+
+
 
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
