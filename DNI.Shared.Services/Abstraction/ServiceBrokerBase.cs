@@ -1,13 +1,13 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
+using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DNI.Shared.Services.Abstraction
+namespace DNI.Core.Services.Abstraction
 {
     public abstract class ServiceBrokerBase : IServiceBroker
     {

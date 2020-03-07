@@ -1,7 +1,7 @@
 ﻿using System;
 using Markdig;
 
-namespace DNI.Shared.Contracts.Services
+namespace DNI.Core.Contracts.Services
 {
     public interface IMarkdownToHtmlService
     {

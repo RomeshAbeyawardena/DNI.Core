@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DNI.Shared.Web.Domains
+namespace DNI.Core.Web.Domains
 {
     public class Page
     {

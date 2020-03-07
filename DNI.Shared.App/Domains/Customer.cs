@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Services.Attributes;
+﻿using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Services.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DNI.Shared.App.Domains
+namespace DNI.Core.App.Domains
 {
     #pragma warning disable CA1819
     public class Customer

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.App.Contracts
+namespace DNI.Core.App.Contracts
 {
     public interface IGuidGeneratorService
     {

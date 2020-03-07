@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     /// <summary>
     /// Represents a static factory method to create instances of FluentTry

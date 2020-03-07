@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Contracts.Providers
+namespace DNI.Core.Contracts.Providers
 {
     public interface ICryptographyProvider
     {

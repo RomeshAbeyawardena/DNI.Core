@@ -1,4 +1,4 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultAppHost<TStartup> : IAppHost<TStartup>
         where TStartup : class

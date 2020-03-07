@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
     public static class TaskHelper
     {

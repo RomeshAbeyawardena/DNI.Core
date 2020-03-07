@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts.Options;
+﻿using DNI.Core.Contracts.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface IServiceBroker
     {

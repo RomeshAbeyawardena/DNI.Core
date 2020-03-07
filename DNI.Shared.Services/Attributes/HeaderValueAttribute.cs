@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class HeaderValueAttribute  : Attribute, IActionFilter

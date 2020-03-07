@@ -1,4 +1,4 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal class DefaultAsyncQueryResultTransformer
     {

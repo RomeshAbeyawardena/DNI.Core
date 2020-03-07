@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DNI.Shared.App.Domains;
+using DNI.Core.App.Domains;
 using Microsoft.Extensions.Logging;
-using DNI.Shared.Domains;
+using DNI.Core.Domains;
 using System.Reactive.Subjects;
 using Microsoft.IO;
 using System.IO;
-using DNI.Shared.Domains.States;
+using DNI.Core.Domains.States;
 
-namespace DNI.Shared.App
+namespace DNI.Core.App
 {
     public class Startup
     {

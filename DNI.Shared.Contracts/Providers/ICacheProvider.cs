@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts.Enumerations;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Contracts.Providers
+namespace DNI.Core.Contracts.Providers
 {
     public interface ICacheProvider
     {

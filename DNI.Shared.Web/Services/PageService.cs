@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Web.Contracts;
-using DNI.Shared.Web.Domains;
+﻿using DNI.Core.Web.Contracts;
+using DNI.Core.Web.Domains;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Web.Services
+namespace DNI.Core.Web.Services
 {
     public class PageService : IPageService
     {

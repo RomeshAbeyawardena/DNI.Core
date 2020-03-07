@@ -1,8 +1,8 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Contracts.Factories;
-using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Factories;
+using DNI.Core.Contracts.Providers;
+using DNI.Core.Contracts.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +10,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("DNI.Shared.UnitTests")]
-namespace DNI.Shared.Services.Providers
+[assembly: InternalsVisibleTo("DNI.Core.UnitTests")]
+namespace DNI.Core.Services.Providers
 {
 
     internal sealed class DefaultCacheProvider : ICacheProvider

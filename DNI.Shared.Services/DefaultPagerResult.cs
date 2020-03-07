@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
-using DNI.Shared.Services.Options;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
+using DNI.Core.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     public static class DefaultPagerResult
     {

@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.Contracts.Options
+﻿namespace DNI.Core.Contracts.Options
 {
     public interface IPagerResultOptions
     {

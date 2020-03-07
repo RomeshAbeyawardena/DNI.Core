@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace DNI.Shared.Web
+namespace DNI.Core.Web
 {
     public class Program
     {

@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Services.Attributes;
+﻿using DNI.Core.Services.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace DNI.Shared.App.Domains
+namespace DNI.Core.App.Domains
 {
     public class RegisterUser
     {

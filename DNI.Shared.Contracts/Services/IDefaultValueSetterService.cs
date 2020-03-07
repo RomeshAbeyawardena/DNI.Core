@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace DNI.Shared.Contracts.Services
+namespace DNI.Core.Contracts.Services
 {
     public interface IDefaultValueSetterService
     {

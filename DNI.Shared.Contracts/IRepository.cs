@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface IRepository<TEntity>
         where TEntity : class

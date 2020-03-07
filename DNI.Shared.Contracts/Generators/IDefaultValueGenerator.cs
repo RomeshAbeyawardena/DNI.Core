@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace DNI.Shared.Contracts.Generators
+namespace DNI.Core.Contracts.Generators
 {
     public interface IDefaultValueGenerator<TEntity>
     {

@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.App.Domains
+﻿namespace DNI.Core.App.Domains
 {
     public static class Constants
     {

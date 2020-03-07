@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class MustMatchAttribute : ValidationAttribute

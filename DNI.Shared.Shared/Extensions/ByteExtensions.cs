@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace DNI.Shared.Shared.Extensions
+namespace DNI.Core.Shared.Extensions
 {
     public static class ByteExtensions
     {

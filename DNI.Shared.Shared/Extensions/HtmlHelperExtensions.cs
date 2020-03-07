@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Shared.Extensions
+namespace DNI.Core.Shared.Extensions
 {
     public static class HtmlHelperExtensions
     {

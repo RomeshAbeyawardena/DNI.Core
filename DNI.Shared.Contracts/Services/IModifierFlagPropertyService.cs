@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts.Enumerations;
 
-namespace DNI.Shared.Contracts.Services
+namespace DNI.Core.Contracts.Services
 {
     public interface IModifierFlagPropertyService
     {

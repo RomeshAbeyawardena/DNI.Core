@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts.Factories;
-using DNI.Shared.Contracts.Generators;
+﻿using DNI.Core.Contracts.Factories;
+using DNI.Core.Contracts.Generators;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace DNI.Shared.Services.Factories
+namespace DNI.Core.Services.Factories
 {
     internal sealed class DefaultValueGeneratorFactory : IDefaultValueGeneratorFactory
     {

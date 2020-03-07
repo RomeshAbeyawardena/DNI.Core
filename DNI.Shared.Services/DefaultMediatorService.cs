@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultMediatorService : IMediatorService
     {

@@ -1,4 +1,4 @@
-﻿using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts.Enumerations;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
     public static class StringExtensions
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface ICryptographicCredentials
     {

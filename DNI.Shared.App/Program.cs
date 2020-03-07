@@ -1,13 +1,13 @@
-﻿using DNI.Shared.Services;
-using DNI.Shared.Services.Abstraction;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Services;
+using DNI.Core.Services.Abstraction;
+using DNI.Core.Services.Extensions;
 using System;
 using System.Threading.Tasks;
 
 using System.Linq;
-using DNI.Shared.Contracts;
+using DNI.Core.Contracts;
 
-namespace DNI.Shared.App
+namespace DNI.Core.App
 {
     public static partial class Program
     {

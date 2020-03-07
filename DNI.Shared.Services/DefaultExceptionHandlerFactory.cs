@@ -1,12 +1,12 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Factories;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Factories;
+using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultExceptionHandlerFactory : IExceptionHandlerFactory
     {

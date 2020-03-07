@@ -1,8 +1,8 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Services.Attributes;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Providers;
+using DNI.Core.Services.Attributes;
+using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services.Providers
+namespace DNI.Core.Services.Providers
 {
     internal sealed class EncryptionProvider : IEncryptionProvider
     {

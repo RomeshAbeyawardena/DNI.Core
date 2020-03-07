@@ -1,28 +1,28 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
-using DNI.Shared.Contracts.Convertors;
-using DNI.Shared.Contracts.Factories;
-using DNI.Shared.Contracts.Managers;
-using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Contracts.Services;
-using DNI.Shared.Services.Convertors;
-using DNI.Shared.Services.Factories;
-using DNI.Shared.Services.Providers;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
+using DNI.Core.Contracts.Convertors;
+using DNI.Core.Contracts.Factories;
+using DNI.Core.Contracts.Managers;
+using DNI.Core.Contracts.Providers;
+using DNI.Core.Contracts.Services;
+using DNI.Core.Services.Convertors;
+using DNI.Core.Services.Factories;
+using DNI.Core.Services.Providers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.IO;
 using MediatR;
-using DNI.Shared.Services.Generators;
-using DNI.Shared.Contracts.Generators;
+using DNI.Core.Services.Generators;
+using DNI.Core.Contracts.Generators;
 using System.Security.Cryptography;
-using DNI.Shared.Contracts.Enumerations;
+using DNI.Core.Contracts.Enumerations;
 using System;
 using System.Reactive.Subjects;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
-using DNI.Shared.Domains.States;
+using DNI.Core.Domains.States;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     public class ServiceRegistration : IServiceRegistration
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace DNI.Shared.Contracts.Services
+namespace DNI.Core.Contracts.Services
 {
     public interface IHttpClientFactory : IDisposable
     {

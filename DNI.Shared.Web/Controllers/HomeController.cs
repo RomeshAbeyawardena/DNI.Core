@@ -1,12 +1,12 @@
-﻿using DNI.Shared.Services.Abstraction;
-using DNI.Shared.Services.Attributes;
-using DNI.Shared.Web.ViewModels;
+﻿using DNI.Core.Services.Abstraction;
+using DNI.Core.Services.Attributes;
+using DNI.Core.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Web.Controllers
+namespace DNI.Core.Web.Controllers
 {
     public class HomeController : DefaultControllerBase
     {

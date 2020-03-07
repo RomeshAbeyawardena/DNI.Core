@@ -3,7 +3,7 @@ using System.Text;
 using System;
 using System.Linq;
 
-namespace DNI.Shared.Shared.Extensions
+namespace DNI.Core.Shared.Extensions
 {
     public static class StringExtensions
     {

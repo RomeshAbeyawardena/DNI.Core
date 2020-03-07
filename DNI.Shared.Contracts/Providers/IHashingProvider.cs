@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Contracts.Providers
+namespace DNI.Core.Contracts.Providers
 {
     public interface IHashingProvider
     {

@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     public static class ListBuilder
     {

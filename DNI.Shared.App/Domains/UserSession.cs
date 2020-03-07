@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Shared.Attributes;
+﻿using DNI.Core.Shared.Attributes;
 using System;
 
-namespace DNI.Shared.App.Domains
+namespace DNI.Core.App.Domains
 {
     [MessagePack.MessagePackObject(true)]
     public class UserSession

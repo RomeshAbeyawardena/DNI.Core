@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DNI.Shared.Domains
+namespace DNI.Core.Domains
 {
     public class ExtendedDbContextOptions : DbContextOptions
     {

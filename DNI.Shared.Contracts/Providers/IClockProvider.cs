@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.Contracts.Providers
+namespace DNI.Core.Contracts.Providers
 {
     public interface IClockProvider
     {

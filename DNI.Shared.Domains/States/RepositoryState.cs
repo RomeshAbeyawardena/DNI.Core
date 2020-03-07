@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace DNI.Shared.Domains.States
+namespace DNI.Core.Domains.States
 {
     public class RepositoryState
     {

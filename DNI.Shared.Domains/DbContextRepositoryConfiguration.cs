@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Domains
+namespace DNI.Core.Domains
 {
     public class DbContextRepositoryConfiguration
     {

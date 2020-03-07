@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.Contracts.Enumerations
+﻿namespace DNI.Core.Contracts.Enumerations
 {
     public enum StringCase
     {

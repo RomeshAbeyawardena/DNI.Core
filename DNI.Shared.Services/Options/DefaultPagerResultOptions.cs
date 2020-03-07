@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts.Options;
+﻿using DNI.Core.Contracts.Options;
 
-namespace DNI.Shared.Services.Options
+namespace DNI.Core.Services.Options
 {
     internal sealed class DefaultPagerResultOptions : IPagerResultOptions
     {

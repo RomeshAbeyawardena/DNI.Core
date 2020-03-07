@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DNI.Shared.App
+namespace DNI.Core.App
 {
     public class MCryptographicCredentials : ICryptographicCredentials
     {

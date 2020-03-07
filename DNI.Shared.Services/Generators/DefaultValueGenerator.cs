@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Generators;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Generators;
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace DNI.Shared.Services.Generators
+namespace DNI.Core.Services.Generators
 {
     internal sealed class DefaultValueGenerator<TEntity> : IDefaultValueGenerator<TEntity>
     {

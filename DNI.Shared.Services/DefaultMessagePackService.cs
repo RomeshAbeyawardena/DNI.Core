@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Managers;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Managers;
 using MessagePack;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultMessagePackService : IMessagePackService
     {

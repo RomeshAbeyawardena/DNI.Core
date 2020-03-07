@@ -8,7 +8,7 @@ generated internally.
 - Default value properties.
 
 ## Usage
-    using DNI.Shared.Services.Abstraction;
+    using DNI.Core.Services.Abstraction;
     using Microsoft.EntityFrameworkCore;
     public class TestDbContext : DbContextBase
     {

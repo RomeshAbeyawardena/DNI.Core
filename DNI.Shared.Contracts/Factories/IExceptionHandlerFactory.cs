@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace DNI.Shared.Contracts.Factories
+namespace DNI.Core.Contracts.Factories
 {
     public interface IExceptionHandlerFactory
     {

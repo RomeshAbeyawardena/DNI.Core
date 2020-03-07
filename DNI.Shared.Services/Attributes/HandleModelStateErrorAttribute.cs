@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Services.Exceptions;
+﻿using DNI.Core.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = false)]
     public class HandleModelStateErrorAttribute : Attribute, IActionFilter

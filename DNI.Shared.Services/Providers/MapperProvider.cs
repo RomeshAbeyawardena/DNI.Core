@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using DNI.Shared.Contracts;
+using DNI.Core.Contracts;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Services.Providers
+namespace DNI.Core.Services.Providers
 {
     internal sealed class MapperProvider : IMapperProvider
     {

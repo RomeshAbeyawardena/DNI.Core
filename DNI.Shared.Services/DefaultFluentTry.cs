@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Domains;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Domains;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal class DefaultFluentTry : IFluentTry
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.Contracts.Convertors
+namespace DNI.Core.Contracts.Convertors
 {
     public interface IClaimTypeValueConvertor
     {

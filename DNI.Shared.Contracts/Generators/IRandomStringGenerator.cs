@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts.Enumerations;
 
-namespace DNI.Shared.Contracts.Generators
+namespace DNI.Core.Contracts.Generators
 {
     public interface IRandomStringGenerator
     {

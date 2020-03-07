@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Contracts.Providers;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts.Providers;
+using DNI.Core.Services.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace DNI.Shared.Services.Providers
+namespace DNI.Core.Services.Providers
 {
     internal sealed class HashingProvider : IHashingProvider
     {

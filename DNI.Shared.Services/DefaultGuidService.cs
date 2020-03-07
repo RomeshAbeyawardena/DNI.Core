@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultGuidService : IGuidService
     {

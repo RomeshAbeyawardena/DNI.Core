@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts.Generators;
+﻿using DNI.Core.Contracts.Generators;
 
-namespace DNI.Shared.Contracts.Factories
+namespace DNI.Core.Contracts.Factories
 {
     public interface IDefaultValueGeneratorFactory
     {

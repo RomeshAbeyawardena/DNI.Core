@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Services;
 using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultHttpClientFactory : IHttpClientFactory
     {

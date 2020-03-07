@@ -1,4 +1,4 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts.Services;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultJsonWebTokenService : IJsonWebTokenService
     {

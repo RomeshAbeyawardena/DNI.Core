@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.Contracts.Enumerations
+namespace DNI.Core.Contracts.Enumerations
 {
     [Flags]
     public enum OfType

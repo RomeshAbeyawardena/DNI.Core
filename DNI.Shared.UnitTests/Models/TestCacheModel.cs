@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.UnitTests.Models
+﻿namespace DNI.Core.UnitTests.Models
 {
     internal class TestCacheModel
     {

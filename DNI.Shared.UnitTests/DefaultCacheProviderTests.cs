@@ -1,16 +1,16 @@
-using DNI.Shared.Contracts.Providers;
+using DNI.Core.Contracts.Providers;
 using NUnit.Framework;
-using DNI.Shared.Services.Providers;
+using DNI.Core.Services.Providers;
 using Moq;
-using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Factories;
+using DNI.Core.Contracts;
+using DNI.Core.Contracts.Factories;
 using System.Threading.Tasks;
-using DNI.Shared.Contracts.Enumerations;
+using DNI.Core.Contracts.Enumerations;
 using System.Threading;
-using DNI.Shared.Contracts.Services;
-using DNI.Shared.UnitTests.Models;
+using DNI.Core.Contracts.Services;
+using DNI.Core.UnitTests.Models;
 
-namespace DNI.Shared.UnitTests
+namespace DNI.Core.UnitTests
 {
     public class DefaultCacheProviderTests
     {

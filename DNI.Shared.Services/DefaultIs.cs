@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
 using System;
 using System.Linq;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultIs : IIs
     {

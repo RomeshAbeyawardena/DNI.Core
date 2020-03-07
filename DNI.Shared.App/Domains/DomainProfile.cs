@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace DNI.Shared.App.Domains
+namespace DNI.Core.App.Domains
 {
     public class DomainProfile : Profile
     {

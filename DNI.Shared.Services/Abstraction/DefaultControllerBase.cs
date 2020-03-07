@@ -1,12 +1,12 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Domains;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Domains;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
 
-namespace DNI.Shared.Services.Abstraction
+namespace DNI.Core.Services.Abstraction
 {
     [Route("{controller}/{action}")]
     public abstract class DefaultControllerBase : Controller

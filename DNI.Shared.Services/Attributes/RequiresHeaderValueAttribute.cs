@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class RequiresHeaderValueAttribute : Attribute, IActionFilter

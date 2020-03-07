@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
     public static class PropertyInfoExtensions
     {

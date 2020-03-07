@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Contracts.Enumerations;
+﻿using DNI.Core.Contracts.Enumerations;
 using System;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class EncryptAttribute : Attribute

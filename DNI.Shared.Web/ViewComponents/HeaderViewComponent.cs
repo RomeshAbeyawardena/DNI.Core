@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Services.Abstraction;
-using DNI.Shared.Web.Contracts;
-using DNI.Shared.Web.Domains;
-using DNI.Shared.Web.ViewModels;
+﻿using DNI.Core.Services.Abstraction;
+using DNI.Core.Web.Contracts;
+using DNI.Core.Web.Domains;
+using DNI.Core.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Web.ViewComponents
+namespace DNI.Core.Web.ViewComponents
 {
     public class HeaderViewComponent : DefaultViewComponentBase
     {

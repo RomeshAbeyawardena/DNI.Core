@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Web.ViewModels.Partials;
+﻿using DNI.Core.Web.ViewModels.Partials;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Web.ViewModels
+namespace DNI.Core.Web.ViewModels
 {
     public class StyleSheetViewComponentModel
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 
-namespace DNI.Shared.Domains.States
+namespace DNI.Core.Domains.States
 {
     public class RecyclableMemoryStreamManagerState
     {

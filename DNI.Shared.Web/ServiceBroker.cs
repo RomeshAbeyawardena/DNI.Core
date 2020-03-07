@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Services.Abstraction;
+﻿using DNI.Core.Services.Abstraction;
 using System.Reflection;
 
-namespace DNI.Shared.Web
+namespace DNI.Core.Web
 {
     public class ServiceBroker : ServiceBrokerBase
     {

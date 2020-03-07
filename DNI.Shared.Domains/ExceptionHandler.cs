@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.Domains
+namespace DNI.Core.Domains
 {
     public class ExceptionHandler
     {

@@ -1,7 +1,7 @@
-﻿using DNI.Shared.App.Contracts;
+﻿using DNI.Core.App.Contracts;
 using System;
 
-namespace DNI.Shared.App.Domains
+namespace DNI.Core.App.Domains
 {
     public class Data : ICustomerReference
     {

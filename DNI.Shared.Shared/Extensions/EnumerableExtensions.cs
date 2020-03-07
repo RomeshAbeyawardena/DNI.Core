@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DNI.Shared.Shared.Extensions
+namespace DNI.Core.Shared.Extensions
 {
     public static class EnumerableExtensions
     {

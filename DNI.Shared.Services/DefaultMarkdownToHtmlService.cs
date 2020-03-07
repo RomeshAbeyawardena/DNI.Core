@@ -1,8 +1,8 @@
-﻿using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts.Services;
 using System;
 using Markdig;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultMarkdownToHtmlService : IMarkdownToHtmlService
     {

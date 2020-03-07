@@ -1,18 +1,18 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
-using DNI.Shared.Services.Extensions;
-using DNI.Shared.App.Domains;
+using DNI.Core.Services.Extensions;
+using DNI.Core.App.Domains;
 using Microsoft.EntityFrameworkCore;
-using DNI.Shared.App.Contracts;
+using DNI.Core.App.Contracts;
 using AutoMapper;
 using System.Reflection;
-using DNI.Shared.Shared.Extensions;
+using DNI.Core.Shared.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace DNI.Shared.App
+namespace DNI.Core.App
 {
     public class ServiceRegistration : IServiceRegistration
     {

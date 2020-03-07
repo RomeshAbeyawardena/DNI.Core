@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace DNI.Shared.Contracts.Managers
+namespace DNI.Core.Contracts.Managers
 {
     public interface IMemoryStreamManager
     {

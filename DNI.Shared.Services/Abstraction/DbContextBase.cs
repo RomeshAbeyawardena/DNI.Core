@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using DNI.Shared.Contracts.Services;
-using DNI.Shared.Contracts.Enumerations;
+using DNI.Core.Contracts.Services;
+using DNI.Core.Contracts.Enumerations;
 
-namespace DNI.Shared.Services.Abstraction
+namespace DNI.Core.Services.Abstraction
 {
     public abstract class DbContextBase : DbContext
     {

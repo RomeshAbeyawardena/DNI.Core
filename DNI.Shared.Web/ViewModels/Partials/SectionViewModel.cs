@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Web.Enumerations;
+﻿using DNI.Core.Web.Enumerations;
 using Microsoft.AspNetCore.Html;
 
-namespace DNI.Shared.Web.ViewModels.Partials
+namespace DNI.Core.Web.ViewModels.Partials
 {
     public class SectionViewModel
     {

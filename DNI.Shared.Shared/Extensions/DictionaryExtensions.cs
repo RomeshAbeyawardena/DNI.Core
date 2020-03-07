@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Shared.Attributes;
+﻿using DNI.Core.Shared.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace DNI.Shared.Shared.Extensions
+namespace DNI.Core.Shared.Extensions
 {
     public static class DictionaryExtensions
     {

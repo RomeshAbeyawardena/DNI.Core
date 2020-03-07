@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.Web.Enumerations
+﻿namespace DNI.Core.Web.Enumerations
 {
     public enum SectionType
     {

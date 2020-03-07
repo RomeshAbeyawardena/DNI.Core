@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using DNI.Shared.Contracts.Options;
+using DNI.Core.Contracts.Options;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface IServiceRegistration
     {

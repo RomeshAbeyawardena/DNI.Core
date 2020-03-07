@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DNI.Shared.Domains;
+using DNI.Core.Domains;
 using System.Security.Cryptography;
-using DNI.Shared.Contracts.Generators;
-using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Contracts;
+using DNI.Core.Contracts.Generators;
+using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts;
 
-namespace DNI.Shared.Services.Generators
+namespace DNI.Core.Services.Generators
 {
     internal sealed class DefaultRandomStringGenerator : IRandomStringGenerator
     {

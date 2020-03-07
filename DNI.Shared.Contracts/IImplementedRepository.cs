@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface IImplementedRepository<TDbContext, TEntity> : IRepository<TEntity>
         where TDbContext : DbContext

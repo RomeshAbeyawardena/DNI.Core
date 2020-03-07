@@ -1,18 +1,18 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
-using DNI.Shared.Contracts.Providers;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
+using DNI.Core.Contracts.Providers;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DNI.Shared.Contracts.Generators;
-using DNI.Shared.Services.Generators;
-using DNI.Shared.Services.Options;
-using DNI.Shared.Domains;
+using DNI.Core.Contracts.Generators;
+using DNI.Core.Services.Generators;
+using DNI.Core.Services.Options;
+using DNI.Core.Domains;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
     public static class ServiceCollectionExtensions
     {

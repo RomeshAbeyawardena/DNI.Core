@@ -1,10 +1,10 @@
-using DNI.Shared.Services.Extensions;
+using DNI.Core.Services.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace DNI.Shared.Web
+namespace DNI.Core.Web
 {
     public class Startup
     {

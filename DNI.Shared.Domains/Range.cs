@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DNI.Shared.Domains
+namespace DNI.Core.Domains
 {
     public abstract class Range<TStruct>
         where TStruct : struct, IComparable, IComparable<TStruct>, IConvertible, IEquatable<TStruct>, IFormattable

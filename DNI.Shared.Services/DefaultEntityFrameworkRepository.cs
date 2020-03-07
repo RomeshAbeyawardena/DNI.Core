@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Domains.States;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Domains.States;
+using DNI.Core.Services.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultEntityFrameworkRepository<TDbContext, TEntity> : IImplementedRepository<TDbContext, TEntity>
         where TDbContext : DbContext

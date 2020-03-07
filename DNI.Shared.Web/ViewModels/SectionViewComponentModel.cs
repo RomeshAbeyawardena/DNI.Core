@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Web.Enumerations;
+﻿using DNI.Core.Web.Enumerations;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Web.ViewModels
+namespace DNI.Core.Web.ViewModels
 {
     public class SectionViewComponentModel
     {

@@ -4,7 +4,7 @@
 ## ISwitch.Create<TKey, TValue>
 
 ### Usage
-    using DNI.Shared.Services;
+    using DNI.Core.Services;
     var switch = Switch.Create<string,int>()
                         .CaseWhen("foo", 32)
                         .CaseWhen("bar", 42);
@@ -14,7 +14,7 @@
 
 ### Usage
 
-    using DNI.Shared.Services;
+    using DNI.Core.Services;
     var myListBuilder = ListBuilder.Create<string>()
                             .Add("foo")
                             .Add("bar");
@@ -27,7 +27,7 @@
 
 ### Usage
     
-    using DNI.Shared.Services;
+    using DNI.Core.Services;
     var myDictionaryBuilder = DictionaryBuilder
                                 .Create<string, int>()
                                 .Add("foo", 32)

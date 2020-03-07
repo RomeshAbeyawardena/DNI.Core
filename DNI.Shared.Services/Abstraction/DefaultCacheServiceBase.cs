@@ -1,12 +1,12 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Services;
 using MessagePack;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services.Abstraction
+namespace DNI.Core.Services.Abstraction
 {
     public abstract class DefaultCacheServiceBase : ICacheService
     {

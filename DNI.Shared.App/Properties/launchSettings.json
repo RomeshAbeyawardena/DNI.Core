@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "DNI.Shared.App": {
+    "DNI.Core.App": {
       "commandName": "Project",
       "commandLineArgs": "a-lardass b-gay"
     }

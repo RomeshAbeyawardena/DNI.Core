@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Contracts.Managers;
+﻿using DNI.Core.Contracts.Managers;
 using Microsoft.IO;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultMemoryStreamManager : IMemoryStreamManager
     {

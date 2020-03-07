@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Contracts.Factories;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Factories;
+using DNI.Core.Contracts.Services;
 using System;
 
-namespace DNI.Shared.Services.Factories
+namespace DNI.Core.Services.Factories
 {
     internal sealed class DefaultCacheProviderFactory : ICacheProviderFactory
     {

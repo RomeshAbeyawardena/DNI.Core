@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
     public sealed class Instance<T>
     {

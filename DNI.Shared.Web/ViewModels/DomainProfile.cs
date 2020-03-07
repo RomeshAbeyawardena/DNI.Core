@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using DNI.Shared.Web.Domains;
-using DNI.Shared.Web.ViewModels.Partials;
+using DNI.Core.Web.Domains;
+using DNI.Core.Web.ViewModels.Partials;
 
-namespace DNI.Shared.Web.ViewModels
+namespace DNI.Core.Web.ViewModels
 {
     public class DomainProfile : Profile
     {

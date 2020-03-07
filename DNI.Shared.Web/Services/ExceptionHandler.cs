@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace DNI.Shared.Web.Services
+namespace DNI.Core.Web.Services
 {
     public class ExceptionHandler
     {

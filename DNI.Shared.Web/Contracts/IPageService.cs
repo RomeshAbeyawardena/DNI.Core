@@ -1,8 +1,8 @@
-﻿using DNI.Shared.Web.Domains;
+﻿using DNI.Core.Web.Domains;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Web.Contracts
+namespace DNI.Core.Web.Contracts
 {
     public interface IPageService
     {

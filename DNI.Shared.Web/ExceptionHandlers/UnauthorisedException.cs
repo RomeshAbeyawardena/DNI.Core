@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 
-namespace DNI.Shared.Web.ExceptionHandlers
+namespace DNI.Core.Web.ExceptionHandlers
 {
     public class UnauthorisedException : IExceptionHandler<UnauthorizedAccessException>
     {

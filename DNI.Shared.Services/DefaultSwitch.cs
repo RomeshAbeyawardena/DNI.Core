@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultSwitch<TKey, TValue> : ISwitch<TKey, TValue>
     {

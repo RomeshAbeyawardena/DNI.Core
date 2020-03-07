@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.UnitTests
+﻿namespace DNI.Core.UnitTests
 {
     public class DefaultEntityFrameworkRepositoryTests
     {

@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal class DefaultListBuilder<T> : IListBuilder<T>
     {

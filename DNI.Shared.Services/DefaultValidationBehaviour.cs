@@ -1,11 +1,11 @@
-﻿using DNI.Shared.Domains;
+﻿using DNI.Core.Domains;
 using FluentValidation;
 using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     public sealed class DefaultValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {

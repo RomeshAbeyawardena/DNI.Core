@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Services;
-using DNI.Shared.UnitTests.Models;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Services;
+using DNI.Core.UnitTests.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DNI.Shared.UnitTests
+namespace DNI.Core.UnitTests
 {
     public class DistributedCacheServiceTests
     {

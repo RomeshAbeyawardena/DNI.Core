@@ -1,5 +1,5 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Services.Abstraction;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Services.Abstraction;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using System;
@@ -8,8 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("DNI.Shared.UnitTests")]
-namespace DNI.Shared.Services
+[assembly: InternalsVisibleTo("DNI.Core.UnitTests")]
+namespace DNI.Core.Services
 {
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {

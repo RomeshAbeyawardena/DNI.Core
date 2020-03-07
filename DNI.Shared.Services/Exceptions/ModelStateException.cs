@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace DNI.Shared.Services.Exceptions
+namespace DNI.Core.Services.Exceptions
 {
     public class ModelStateException : Exception
     {

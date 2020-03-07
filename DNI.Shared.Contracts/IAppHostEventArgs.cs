@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DNI.Shared.Contracts
+namespace DNI.Core.Contracts
 {
     public interface IAppHostEventArgs
     {

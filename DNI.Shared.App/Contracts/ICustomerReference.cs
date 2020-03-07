@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Shared.Attributes;
+﻿using DNI.Core.Shared.Attributes;
 
-namespace DNI.Shared.App.Contracts
+namespace DNI.Core.App.Contracts
 {
     public interface ICustomerReference
     {

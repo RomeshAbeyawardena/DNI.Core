@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "DNI.Shared.Web": {
+    "DNI.Core.Web": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

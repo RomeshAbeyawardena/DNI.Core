@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.Web.ViewModels.Partials
+﻿namespace DNI.Core.Web.ViewModels.Partials
 {
     public class StyleSheetViewModel
     {

@@ -1,12 +1,12 @@
-﻿using DNI.Shared.Contracts.Generators;
-using DNI.Shared.Services.Generators;
+﻿using DNI.Core.Contracts.Generators;
+using DNI.Core.Services.Generators;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace DNI.Shared.Services.Extensions
+namespace DNI.Core.Services.Extensions
 {
 
     internal class ExtendedDbContextOptionsExtensionInfo : DbContextOptionsExtensionInfo

@@ -1,8 +1,8 @@
-﻿using DNI.Shared.Contracts.Providers;
+﻿using DNI.Core.Contracts.Providers;
 using Microsoft.Extensions.Internal;
 using System;
 
-namespace DNI.Shared.Services.Providers
+namespace DNI.Core.Services.Providers
 {
     internal sealed class DefaultClockProvider : IClockProvider
     {

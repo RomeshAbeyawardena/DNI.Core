@@ -1,8 +1,8 @@
-﻿using DNI.Shared.App.Domains;
-using DNI.Shared.Services.Abstraction;
+﻿using DNI.Core.App.Domains;
+using DNI.Core.Services.Abstraction;
 using Microsoft.EntityFrameworkCore;
 
-namespace DNI.Shared.App
+namespace DNI.Core.App
 {
     public class TestDbContext : DbContextBase
     {

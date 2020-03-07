@@ -1,6 +1,6 @@
-﻿using DNI.Shared.Contracts.Generators;
-using DNI.Shared.Contracts.Services;
-using DNI.Shared.Services.Extensions;
+﻿using DNI.Core.Contracts.Generators;
+using DNI.Core.Contracts.Services;
+using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
-namespace DNI.Shared.Services
+namespace DNI.Core.Services
 {
     internal sealed class DefaultValueSetterService : IDefaultValueSetterService
     {

@@ -1,10 +1,10 @@
-﻿using DNI.Shared.Contracts;
+﻿using DNI.Core.Contracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
-namespace DNI.Shared.Services.Abstraction
+namespace DNI.Core.Services.Abstraction
 {
     public abstract class DefaultViewComponentBase : ViewComponent
     {

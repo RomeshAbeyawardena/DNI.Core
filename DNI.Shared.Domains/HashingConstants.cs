@@ -1,4 +1,4 @@
-﻿namespace DNI.Shared.Domains
+﻿namespace DNI.Core.Domains
 {
     public partial class Constants
     {

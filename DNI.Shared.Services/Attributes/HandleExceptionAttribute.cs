@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts.Factories;
+﻿using DNI.Core.Contracts.Factories;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace DNI.Shared.Services.Attributes
+namespace DNI.Core.Services.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
     public sealed class HandleExceptionAttribute : Attribute, IExceptionFilter

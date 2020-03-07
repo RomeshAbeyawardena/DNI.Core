@@ -1,7 +1,7 @@
-﻿using DNI.Shared.Contracts.Enumerations;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Services;
 
-namespace DNI.Shared.Contracts.Factories
+namespace DNI.Core.Contracts.Factories
 {
     public interface ICacheProviderFactory
     {

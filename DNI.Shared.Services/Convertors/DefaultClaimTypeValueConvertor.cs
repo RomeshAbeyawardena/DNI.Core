@@ -1,9 +1,9 @@
-﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Convertors;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Convertors;
 using System;
 using System.Security.Claims;
 
-namespace DNI.Shared.Services.Convertors
+namespace DNI.Core.Services.Convertors
 {
     public class DefaultClaimTypeValueConvertor : IClaimTypeValueConvertor
     {
