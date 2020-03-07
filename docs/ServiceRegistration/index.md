@@ -3,7 +3,7 @@ Defines an area containing project specific dependencies, that will be
 combined by a user-defined IServiceBroker implementation.
 ## Usage
 
-    using DNI.Shared.Contracts;
+    using DNI.Core.Contracts;
     using Microsoft.Extensions.DependencyInjection;
     
     public class ServiceRegistration : IServiceRegistration

@@ -1,0 +1,22 @@
+﻿@using DNI.Core.Services;
+@model SectionViewComponentModel
+
+@{
+    var replacedContent = Html.Raw(Model.Content);
+
+    if(Model.Sections != null)
+        foreach (var section in Model?.Sections)
+        {
+            
+            var htmlContent = await Html.PartialAsync("Partials/_section", new SectionViewModel { 
+                Container = section.Container, 
+                Content = Html.Raw(section.Content), 
+                Type = section.Type });
+            replacedContent = replacedContent.Replace(Html, $"[!{section.Name}]", htmlContent);
+        }
+}
+
+@await Html.PartialAsync("Partials/_section", new SectionViewModel { 
+                Container = Model.Container, 
+                Content = replacedContent, 
+                Type = Model.Type })

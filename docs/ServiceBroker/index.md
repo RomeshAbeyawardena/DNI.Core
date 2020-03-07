@@ -1,13 +1,13 @@
 ﻿# Service Broker
 
 ## Usage
-Inherit from DNI.Shared.Services.Abstraction.ServiceBrokerBase, 
+Inherit from DNI.Core.Services.Abstraction.ServiceBrokerBase, 
 instead of IServiceBroker to automatically inherit built-in services. 
 
 It's recommended to abstract this class into its own project to reduce 
 decoupling.
 
-    using DNI.Shared.Services.Abstraction;
+    using DNI.Core.Services.Abstraction;
     public class ServiceBroker : ServiceBrokerBase
     {
         public ServiceBroker()

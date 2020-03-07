@@ -2,12 +2,12 @@
 
 ## Usage
 ### Installation
-    Install-Package DNI.Shared.Services
+    Install-Package DNI.Core.Services
 ### Implementation
 **Startup.cs**
     
-    using DNI.Shared.Services;
-    using DNI.Shared.Services.Abstraction;
+    using DNI.Core.Services;
+    using DNI.Core.Services.Abstraction;
 
     //TODO: Move into own class/project
 

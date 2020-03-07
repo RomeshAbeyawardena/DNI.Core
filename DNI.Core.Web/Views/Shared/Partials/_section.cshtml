@@ -1,0 +1,18 @@
+﻿@using DNI.Core.Services;
+@model SectionViewModel
+
+@{
+    var identifier = Html.Switch(Switch.Create<SectionType, string>()
+        .CaseWhen(SectionType.Section, "section")
+        .CaseWhen(SectionType.Block, "div")
+        .CaseWhen(SectionType.Segment, "li"), Model.Type);
+
+    var styleIdentifier = Html.Switch(Switch.Create<SectionType, string>()
+        .CaseWhen(SectionType.Section, "section")
+        .CaseWhen(SectionType.Block, "block")
+        .CaseWhen(SectionType.Segment, "segment"), Model.Type);
+}
+
+<@identifier class="@styleIdentifier @styleIdentifier--@Model.Container">
+    @Html.Raw(Model.Content)
+</@identifier>
