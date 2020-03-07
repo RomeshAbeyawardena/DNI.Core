@@ -13,4 +13,8 @@
     <ProjectReference Include="..\DNI.Shared.Contracts\DNI.Shared.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enumerations\" />
+  </ItemGroup>
+
 </Project>

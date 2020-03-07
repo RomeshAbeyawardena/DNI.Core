@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 
-namespace DNI.Shared.Domains
+namespace DNI.Shared.Domains.States
 {
     public class RecyclableMemoryStreamManagerState
     {

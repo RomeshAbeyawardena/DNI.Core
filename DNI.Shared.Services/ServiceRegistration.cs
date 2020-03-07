@@ -22,6 +22,7 @@ using System;
 using System.Reactive.Subjects;
 using DNI.Shared.Domains;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
+using DNI.Shared.Domains.States;
 
 namespace DNI.Shared.Services
 {
@@ -132,7 +133,7 @@ namespace DNI.Shared.Services
                 .AddSingleton<IMarkdownToHtmlService, DefaultMarkdownToHtmlService>()
                 .AddSingleton<ISystemClock, SystemClock>()
                 .AddSingleton<IClockProvider, DefaultClockProvider>()
-                .AddSingleton<ISubject<RecyclableMemoryStreamManagerState>, Subject<RecyclableMemoryStreamManagerState>>()
+                .AddSingleton(typeof(ISubject<>), typeof(Subject<>))
                 .AddSingleton(RegisterRecyclableMemoryStreamManager)
                 .AddSingleton<IHashingProvider, HashingProvider>()
                 .AddSingleton<IClaimTypeValueConvertor, DefaultClaimTypeValueConvertor>()

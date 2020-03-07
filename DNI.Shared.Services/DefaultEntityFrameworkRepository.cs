@@ -1,13 +1,16 @@
 ﻿using DNI.Shared.Contracts;
 using DNI.Shared.Contracts.Options;
+using DNI.Shared.Domains.States;
 using DNI.Shared.Services.Extensions;
 using DNI.Shared.Services.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +23,8 @@ namespace DNI.Shared.Services
         where TEntity : class
     {
         private readonly IEnumerable<PropertyInfo> _keyProperties;
+        private readonly ISubject<RepositoryState> _repositoryStateSubject;
+
         private TDbContext DbContext { get; }
 
         public Action<TEntity> ConfigureSoftDeletion { get; set; }
@@ -37,11 +42,12 @@ namespace DNI.Shared.Services
                 .FromSqlRaw(query, parameters);
         }
 
-        public DefaultEntityFrameworkRepository(TDbContext dbContext)
+        public DefaultEntityFrameworkRepository(TDbContext dbContext, ISubject<RepositoryState> repositoryStateSubject)
         {
             DbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
             _keyProperties = GetKeyProperties();
+            _repositoryStateSubject = repositoryStateSubject;
         }
 
         public async Task<TEntity> Find(bool enableTracking = true, CancellationToken cancellationToken = default, params object[] keys)
@@ -73,14 +79,22 @@ namespace DNI.Shared.Services
         public async Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, 
             bool detachAfterSave = true, CancellationToken cancellationToken = default)
         {
+            EntityEntry<TEntity> entry;
+
             if(_keyProperties.All(keyProperty => IsValueDefault(keyProperty, entity) ))
-                _dbSet.Add(entity);
+                entry = _dbSet.Add(entity);
             else
-                _dbSet.Update(entity);
-               
+                entry = _dbSet.Update(entity);
+
             if(saveChanges)
                 await Commit(cancellationToken);
 
+            _repositoryStateSubject.OnNext(new RepositoryState { 
+                State = entry.State, 
+                Type = typeof(TEntity), 
+                Value = entity 
+            });
+            
             if(detachAfterSave)
                 DbContext.Entry(entity).State = EntityState.Detached;
 

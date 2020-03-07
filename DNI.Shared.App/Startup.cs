@@ -21,6 +21,7 @@ using DNI.Shared.Domains;
 using System.Reactive.Subjects;
 using Microsoft.IO;
 using System.IO;
+using DNI.Shared.Domains.States;
 
 namespace DNI.Shared.App
 {
