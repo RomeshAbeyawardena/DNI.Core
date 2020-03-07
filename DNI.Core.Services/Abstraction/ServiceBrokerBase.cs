@@ -50,7 +50,9 @@ namespace DNI.Core.Services.Abstraction
 
         private void RegisterExceptionHandlers(IServiceCollection services, Type implementationType)
         {
-            var genericServiceType = implementationType.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
+            var genericServiceType = implementationType
+                .GetInterfaces()
+                .SingleOrDefault(interfaceType => interfaceType.IsGenericType);
 
             if (genericServiceType == null)
                 return;
