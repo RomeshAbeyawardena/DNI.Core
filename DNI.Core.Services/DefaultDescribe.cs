@@ -27,7 +27,7 @@ namespace DNI.Core.Services
         {
             get
             {
-                Types(_typesDescriptor);
+                Types?.Invoke(_typesDescriptor);
                 return _typesDescriptor.ToTypeArray();
             }
         }
@@ -36,7 +36,7 @@ namespace DNI.Core.Services
         {
             get
             {
-                Assemblies(_assembliesDescriptor);
+                Assemblies?.Invoke(_assembliesDescriptor);
                 return _assembliesDescriptor.Assemblies;
             }
         }
