@@ -10,6 +10,7 @@ using System.Text;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Services.Generators;
 using DNI.Shared.Services.Options;
+using DNI.Shared.Domains;
 
 namespace DNI.Shared.Services.Extensions
 {
@@ -56,12 +57,21 @@ namespace DNI.Shared.Services.Extensions
                     iterations, totalNumberOfBytes, initialVector));
         }
 
+        [Obsolete("Use overload RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, " +
+            "Action<DbContextRepositoryConfiguration> configure) instead.")]
         public static IServiceCollection RegisterDbContextRepositories<TDbContext>(this IServiceCollection services, 
             ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
+            Action<DbContextOptionsBuilder> dbContextOptions = default,
             params Type[] entityTypes)
             where TDbContext : DbContext
         {
-            return RegisterDbContentRepositories<TDbContext>(services, typeof(DefaultEntityFrameworkRepository<,>), serviceLifetime, entityTypes);
+            return RegisterDbContentRepositories<TDbContext>(services, configuration => { 
+                    configuration.ServiceLifetime = serviceLifetime;
+                    configuration.DbContextOptions = dbContextOptions;
+                    configuration.EntityTypes = entityTypes;
+                    configuration
+                        .ServiceImplementationType = typeof(DefaultEntityFrameworkRepository<,>);
+                });
         }
 
         /// <summary>
@@ -73,24 +83,44 @@ namespace DNI.Shared.Services.Extensions
         /// <param name="serviceLifetime"></param>
         /// <param name="entityTypes"></param>
         /// <returns></returns>
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, Type serviceImplementationType, 
-            ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
-            params Type[] entityTypes)
+        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, 
+            Action<DbContextRepositoryConfiguration> configure)
             where TDbContext : DbContext
         {
+            var configuration = new DbContextRepositoryConfiguration();
+            configure(configuration);
             var serviceDefinitionType = typeof(IRepository<>);
             
             var dbContextType = typeof(TDbContext);
 
-            foreach(var entityType in entityTypes)
+            if(configuration.ServiceImplementationType == null)
+               configuration.ServiceImplementationType = typeof(DefaultEntityFrameworkRepository<,>);
+
+            if(configuration.DbContextOptions !=null &&
+                configuration.DbContextServiceProviderOptions !=null)
+                throw new ArgumentException(
+                    "Configuration must specify either DbContextOptions or DbContextServiceProviderOptions, unable to use both at the same time", nameof(DbContextOptions));
+
+            if(configuration.DbContextOptions !=null)
+                services = configuration.UseDbContextPool 
+                    ? services.AddDbContextPool<TDbContext>(configuration.DbContextOptions)
+                    : services.AddDbContext<TDbContext>(configuration.DbContextOptions);
+
+            if(configuration.DbContextServiceProviderOptions !=null)
+                services = configuration.UseDbContextPool 
+                    ? services.AddDbContextPool<TDbContext>(configuration.DbContextServiceProviderOptions)
+                    : services.AddDbContext<TDbContext>(configuration.DbContextServiceProviderOptions);
+
+
+            foreach(var entityType in configuration.EntityTypes)
             {    
                 var genericServiceDefinitionType = serviceDefinitionType.MakeGenericType(entityType);
-                var genericServiceImplementationType = serviceImplementationType.MakeGenericType(new [] { dbContextType, entityType });
+                var genericServiceImplementationType = configuration.ServiceImplementationType.MakeGenericType(new [] { dbContextType, entityType });
                 
                 services.Add(new ServiceDescriptor(
                     genericServiceDefinitionType, 
                     genericServiceImplementationType, 
-                    serviceLifetime));
+                    configuration.ServiceLifetime));
             }
             
             return services;
