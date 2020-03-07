@@ -123,8 +123,15 @@ namespace DNI.Shared.Services
 
         public async Task<int> Delete(TEntity entity, CancellationToken cancellationToken = default)
         {
-            _dbSet.Remove(entity);
+            var entityEntry = _dbSet.Remove(entity);
             
+            _repositoryStateSubject.OnNext(new RepositoryState
+            {
+                State = entityEntry.State, 
+                Type = typeof(TEntity), 
+                Value = entity 
+            });
+
             return await DbContext.SaveChangesAsync(cancellationToken);
         }
 
