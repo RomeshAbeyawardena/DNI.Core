@@ -66,6 +66,15 @@ namespace DNI.Core.Services.Extensions
             where TDbContext : DbContext
         {
             return RegisterDbContextRepositories<TDbContext>(services, configuration => { 
+                    
+                foreach(var entityType in entityTypes) {
+
+                    if(configuration.DescribedEntityTypes == null)
+                        configuration.DescribedEntityTypes = TypesDescriptor.Describe(entityType);
+
+                    configuration.DescribedEntityTypes.Describe(entityType);
+                }
+
                     configuration.ServiceLifetime = serviceLifetime;
                     configuration.DbContextOptions = dbContextOptions;
                     configuration

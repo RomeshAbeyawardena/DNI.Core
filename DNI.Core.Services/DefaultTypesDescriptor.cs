@@ -14,6 +14,12 @@ namespace DNI.Core.Services
             return new DefaultTypesDescriptor()
                 .Describe<T>();
         }
+
+        public static ITypesDescriptor Describe(Type type)
+        {
+            return new DefaultTypesDescriptor()
+                .Describe(type);
+        }
     }
 
     internal class DefaultTypesDescriptor : ITypesDescriptor
@@ -22,7 +28,7 @@ namespace DNI.Core.Services
         private readonly IList<ITypeDescriptor> describedTypes;
         public ITypesDescriptor Describe<T>()
         {
-            describedTypes.Add(new DefaultTypeDescritor<T>());
+            describedTypes.Add(new DefaultTypeDescriptor<T>());
             return this;
         }
 
@@ -32,14 +38,34 @@ namespace DNI.Core.Services
                 .Select(describedType => describedType.Type);
         }
 
+        public ITypesDescriptor Describe(Type type)
+        {
+            describedTypes.Add(new DefaultTypeDescriptor(type));
+            return this;
+        }
+
         public DefaultTypesDescriptor()
         {
             describedTypes = new List<ITypeDescriptor>();
         }
     }
 
-    internal class DefaultTypeDescritor<T> : ITypeDescriptor<T>
+    internal class DefaultTypeDescriptor : ITypeDescriptor
     {
-        public Type Type => typeof(T);
+        public DefaultTypeDescriptor(Type type)
+        {
+            Type = type;
+        }
+
+        public Type Type { get; }
+    }
+
+    internal class DefaultTypeDescriptor<T> : DefaultTypeDescriptor, ITypeDescriptor<T>
+    {
+        public DefaultTypeDescriptor()
+            : base(typeof(T))
+        {
+
+        }
     }
 }
