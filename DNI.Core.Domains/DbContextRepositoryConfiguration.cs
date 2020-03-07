@@ -13,12 +13,14 @@ namespace DNI.Core.Domains
     {
         public bool UseDbContextPool { get; set; } = true;
         public Type ServiceImplementationType { get; set; }
-        public ServiceLifetime ServiceLifetime { get; set; } = ServiceLifetime.Scoped;
-        public Action<DbContextOptionsBuilder> DbContextOptions { get; set; } = default;
-        public Action<IServiceProvider, DbContextOptionsBuilder> DbContextServiceProviderOptions { get; set; } = default;
+        public ServiceLifetime ServiceLifetime 
+            { get; set; } = ServiceLifetime.Scoped;
+        public Action<DbContextOptionsBuilder> DbContextOptions 
+            { get; set; } = default;
+        public Action<IServiceProvider, DbContextOptionsBuilder> DbContextServiceProviderOptions 
+            { get; set; } = default;
         
-        public IEnumerable<Type> EntityTypes => DescribedEntityTypes
-            .ToTypeArray(); 
+        public IEnumerable<Type> EntityTypes => DescribedEntityTypes.ToTypeArray(); 
         public ITypesDescriptor DescribedEntityTypes { get; set; }
     }
 }

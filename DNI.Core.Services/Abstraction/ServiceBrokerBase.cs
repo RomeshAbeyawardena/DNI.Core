@@ -11,9 +11,7 @@ namespace DNI.Core.Services.Abstraction
 {
     public abstract class ServiceBrokerBase : IServiceBroker
     {
-        public IEnumerable<Assembly> Assemblies { get; protected set; }
-
-        public static Assembly DefaultAssembly => GetAssembly<ServiceBrokerBase>();
+        public Action<IAssembliesDescriptor> DescribeAssemblies { get; protected set; }
 
         public static Assembly GetAssembly<T>()
         {
@@ -22,7 +20,10 @@ namespace DNI.Core.Services.Abstraction
 
         public virtual void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {
-            foreach (var assembly in Assemblies)
+            var assemblyDescriptor = AssembliesDescriptor.GetAssembly<ServiceBrokerBase>();
+            
+            DescribeAssemblies(assemblyDescriptor);
+            foreach (var assembly in assemblyDescriptor.Assemblies)
             {
                 var serviceRegistrationTypes = assembly
                     .GetTypes()

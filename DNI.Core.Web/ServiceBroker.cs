@@ -7,7 +7,8 @@ namespace DNI.Core.Web
     {
         public ServiceBroker()
         {
-            Assemblies = new [] { DefaultAssembly, Assembly.GetAssembly(typeof(ServiceBroker)) };
+            DescribeAssemblies = assembliesDescriptor => assembliesDescriptor
+                    .GetAssembly<ServiceBroker>();
         }
     }
 }
