@@ -8,6 +8,7 @@ namespace DNI.Core.Contracts
 {
     public interface IServiceBroker
     {
+        IEnumerable<Assembly> Assemblies { get; }
         public Action<IAssembliesDescriptor> DescribeAssemblies { get; }
         void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions);
     }

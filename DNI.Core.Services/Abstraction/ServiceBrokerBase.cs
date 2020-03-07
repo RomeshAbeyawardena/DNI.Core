@@ -18,12 +18,19 @@ namespace DNI.Core.Services.Abstraction
             return Assembly.GetAssembly(typeof(T));
         }
 
+        public IEnumerable<Assembly> Assemblies
+        {
+            get
+            {
+                var assemblyDescriptor = AssembliesDescriptor.GetAssembly<ServiceBrokerBase>();
+                DescribeAssemblies(assemblyDescriptor);
+                return assemblyDescriptor.Assemblies;
+            }
+        }
+
         public virtual void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {
-            var assemblyDescriptor = AssembliesDescriptor.GetAssembly<ServiceBrokerBase>();
-            
-            DescribeAssemblies(assemblyDescriptor);
-            foreach (var assembly in assemblyDescriptor.Assemblies)
+            foreach (var assembly in Assemblies)
             {
                 var serviceRegistrationTypes = assembly
                     .GetTypes()
@@ -36,9 +43,9 @@ namespace DNI.Core.Services.Abstraction
                     .GetTypes()
                     .Where(type => type.IsOfType<IExceptionHandler>());
 
-                if(serviceRegistrationOptions.RegisterExceptionHandlers)
-                foreach (var exceptionHandlerType in exceptionHandlerTypes)
-                    RegisterExceptionHandlers(services, exceptionHandlerType);
+                if (serviceRegistrationOptions.RegisterExceptionHandlers)
+                    foreach (var exceptionHandlerType in exceptionHandlerTypes)
+                        RegisterExceptionHandlers(services, exceptionHandlerType);
             }
         }
 
