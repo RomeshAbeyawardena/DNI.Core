@@ -65,10 +65,9 @@ namespace DNI.Core.Services.Extensions
             params Type[] entityTypes)
             where TDbContext : DbContext
         {
-            return RegisterDbContentRepositories<TDbContext>(services, configuration => { 
+            return RegisterDbContextRepositories<TDbContext>(services, configuration => { 
                     configuration.ServiceLifetime = serviceLifetime;
                     configuration.DbContextOptions = dbContextOptions;
-                    configuration.EntityTypes = entityTypes;
                     configuration
                         .ServiceImplementationType = typeof(DefaultEntityFrameworkRepository<,>);
                 });
@@ -83,7 +82,7 @@ namespace DNI.Core.Services.Extensions
         /// <param name="serviceLifetime"></param>
         /// <param name="entityTypes"></param>
         /// <returns></returns>
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, 
+        public static IServiceCollection RegisterDbContextRepositories<TDbContext>(this IServiceCollection services, 
             Action<DbContextRepositoryConfiguration> configure)
             where TDbContext : DbContext
         {
