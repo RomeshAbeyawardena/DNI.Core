@@ -11,13 +11,21 @@ namespace DNI.Core.Services.Abstraction
 {
     public abstract class ServiceBrokerBase : IServiceBroker
     {
-        public IEnumerable<Assembly> Assemblies { get; protected set; }
-
-        public static Assembly DefaultAssembly => GetAssembly<ServiceBrokerBase>();
+        public Action<IAssembliesDescriptor> DescribeAssemblies { get; protected set; }
 
         public static Assembly GetAssembly<T>()
         {
             return Assembly.GetAssembly(typeof(T));
+        }
+
+        public IEnumerable<Assembly> Assemblies
+        {
+            get
+            {
+                var assemblyDescriptor = AssembliesDescriptor.GetAssembly<ServiceBrokerBase>();
+                DescribeAssemblies(assemblyDescriptor);
+                return assemblyDescriptor.Assemblies;
+            }
         }
 
         public virtual void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
@@ -35,9 +43,9 @@ namespace DNI.Core.Services.Abstraction
                     .GetTypes()
                     .Where(type => type.IsOfType<IExceptionHandler>());
 
-                if(serviceRegistrationOptions.RegisterExceptionHandlers)
-                foreach (var exceptionHandlerType in exceptionHandlerTypes)
-                    RegisterExceptionHandlers(services, exceptionHandlerType);
+                if (serviceRegistrationOptions.RegisterExceptionHandlers)
+                    foreach (var exceptionHandlerType in exceptionHandlerTypes)
+                        RegisterExceptionHandlers(services, exceptionHandlerType);
             }
         }
 
@@ -49,7 +57,9 @@ namespace DNI.Core.Services.Abstraction
 
         private void RegisterExceptionHandlers(IServiceCollection services, Type implementationType)
         {
-            var genericServiceType = implementationType.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
+            var genericServiceType = implementationType
+                .GetInterfaces()
+                .SingleOrDefault(interfaceType => interfaceType.IsGenericType);
 
             if (genericServiceType == null)
                 return;

@@ -65,10 +65,18 @@ namespace DNI.Core.Services.Extensions
             params Type[] entityTypes)
             where TDbContext : DbContext
         {
-            return RegisterDbContentRepositories<TDbContext>(services, configuration => { 
+            return RegisterDbContextRepositories<TDbContext>(services, configuration => { 
+                    
+                foreach(var entityType in entityTypes) {
+
+                    if(configuration.DescribedEntityTypes == null)
+                        configuration.DescribedEntityTypes = TypesDescriptor.Describe(entityType);
+
+                    configuration.DescribedEntityTypes.Describe(entityType);
+                }
+
                     configuration.ServiceLifetime = serviceLifetime;
                     configuration.DbContextOptions = dbContextOptions;
-                    configuration.EntityTypes = entityTypes;
                     configuration
                         .ServiceImplementationType = typeof(DefaultEntityFrameworkRepository<,>);
                 });
@@ -83,10 +91,11 @@ namespace DNI.Core.Services.Extensions
         /// <param name="serviceLifetime"></param>
         /// <param name="entityTypes"></param>
         /// <returns></returns>
-        public static IServiceCollection RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, 
+        public static IServiceCollection RegisterDbContextRepositories<TDbContext>(this IServiceCollection services, 
             Action<DbContextRepositoryConfiguration> configure)
             where TDbContext : DbContext
         {
+             
             var configuration = new DbContextRepositoryConfiguration();
             configure(configuration);
             var serviceDefinitionType = typeof(IRepository<>);
@@ -111,7 +120,7 @@ namespace DNI.Core.Services.Extensions
                     ? services.AddDbContextPool<TDbContext>(configuration.DbContextServiceProviderOptions)
                     : services.AddDbContext<TDbContext>(configuration.DbContextServiceProviderOptions);
 
-
+            
             foreach(var entityType in configuration.EntityTypes)
             {    
                 var genericServiceDefinitionType = serviceDefinitionType.MakeGenericType(entityType);

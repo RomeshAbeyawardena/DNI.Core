@@ -51,6 +51,9 @@ namespace DNI.Core.Services
         {
             var foundEntry = await _dbSet.FindAsync(keys, cancellationToken);
 
+            if(foundEntry == null)
+                return default;
+
             if(enableTracking)
                 return foundEntry;
 

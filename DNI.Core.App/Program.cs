@@ -43,7 +43,8 @@ namespace DNI.Core.App
         {
             public ServiceBroker()
             {
-                Assemblies = new [] { DefaultAssembly, GetAssembly<ServiceBroker>() };
+                DescribeAssemblies = assembliesDescriptor => assembliesDescriptor
+                    .GetAssembly<ServiceBroker>();
             }
         }
 
