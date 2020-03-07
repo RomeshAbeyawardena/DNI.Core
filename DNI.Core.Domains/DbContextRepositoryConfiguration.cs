@@ -17,9 +17,8 @@ namespace DNI.Core.Domains
         public Action<DbContextOptionsBuilder> DbContextOptions { get; set; } = default;
         public Action<IServiceProvider, DbContextOptionsBuilder> DbContextServiceProviderOptions { get; set; } = default;
         
-        public Type[] EntityTypes => DescribedTypes
-            .ToTypeArray()
-            .ToArray(); 
+        public IEnumerable<Type> EntityTypes => DescribedTypes
+            .ToTypeArray(); 
         public ITypesDescriptor DescribedTypes { get; set; }
     }
 }

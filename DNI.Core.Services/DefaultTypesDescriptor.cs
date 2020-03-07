@@ -19,7 +19,7 @@ namespace DNI.Core.Services
     internal class DefaultTypesDescriptor : ITypesDescriptor
     {
         public IEnumerable<ITypeDescriptor> DescribedTypes => describedTypes.ToArray();
-        private IList<ITypeDescriptor> describedTypes;
+        private readonly IList<ITypeDescriptor> describedTypes;
         public ITypesDescriptor Describe<T>()
         {
             describedTypes.Add(new DefaultTypeDescritor<T>());
@@ -30,6 +30,11 @@ namespace DNI.Core.Services
         {
             return describedTypes
                 .Select(describedType => describedType.Type);
+        }
+
+        public DefaultTypesDescriptor()
+        {
+            describedTypes = new List<ITypeDescriptor>();
         }
     }
 

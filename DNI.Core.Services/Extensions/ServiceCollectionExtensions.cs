@@ -86,6 +86,7 @@ namespace DNI.Core.Services.Extensions
             Action<DbContextRepositoryConfiguration> configure)
             where TDbContext : DbContext
         {
+             
             var configuration = new DbContextRepositoryConfiguration();
             configure(configuration);
             var serviceDefinitionType = typeof(IRepository<>);
@@ -110,7 +111,7 @@ namespace DNI.Core.Services.Extensions
                     ? services.AddDbContextPool<TDbContext>(configuration.DbContextServiceProviderOptions)
                     : services.AddDbContext<TDbContext>(configuration.DbContextServiceProviderOptions);
 
-
+            
             foreach(var entityType in configuration.EntityTypes)
             {    
                 var genericServiceDefinitionType = serviceDefinitionType.MakeGenericType(entityType);
