@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
@@ -13,7 +14,9 @@ namespace DNI.Core.Shared.Extensions
             void renderFragment(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
             {
 
-                var componentType = Type.GetType(string.Format("{0}.{1}",
+                var componentType = Assembly
+                     .GetEntryAssembly()
+                    .GetType(string.Format("{0}.{1}",
                     nameSpace, componentName));
 
                 if (componentType == null)
