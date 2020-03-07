@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Broker", "DNI.Shared.Broker\DNI.Shared.Broker.csproj", "{B547520F-16A2-48A0-80D6-688B4071E43C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Broker", "DNI.Core.Broker\DNI.Core.Broker.csproj", "{B547520F-16A2-48A0-80D6-688B4071E43C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Contracts", "DNI.Shared.Contracts\DNI.Shared.Contracts.csproj", "{EA045B1E-329F-4F13-BC80-3CF908F09C12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Contracts", "DNI.Core.Contracts\DNI.Core.Contracts.csproj", "{EA045B1E-329F-4F13-BC80-3CF908F09C12}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Domains", "DNI.Shared.Domains\DNI.Shared.Domains.csproj", "{BBA0A9F3-B31E-467B-AE14-B1F25C805728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Domains", "DNI.Core.Domains\DNI.Core.Domains.csproj", "{BBA0A9F3-B31E-467B-AE14-B1F25C805728}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Services", "DNI.Shared.Services\DNI.Shared.Services.csproj", "{C6B3F926-FA82-4084-8024-3B06B382CE4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Services", "DNI.Core.Services\DNI.Core.Services.csproj", "{C6B3F926-FA82-4084-8024-3B06B382CE4D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Shared", "DNI.Shared.Shared\DNI.Shared.Shared.csproj", "{5E2FBC68-17E4-40DF-B17F-D28E87D0EE14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Shared", "DNI.Core.Shared\DNI.Core.Shared.csproj", "{5E2FBC68-17E4-40DF-B17F-D28E87D0EE14}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.App", "DNI.Shared.App\DNI.Shared.App.csproj", "{AEE248D5-2A8C-4C47-861E-B8C12BC92542}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.App", "DNI.Core.App\DNI.Core.App.csproj", "{AEE248D5-2A8C-4C47-861E-B8C12BC92542}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.Web", "DNI.Shared.Web\DNI.Shared.Web.csproj", "{CEB671F8-B32D-4F3C-A686-95A193196B18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Web", "DNI.Core.Web\DNI.Core.Web.csproj", "{CEB671F8-B32D-4F3C-A686-95A193196B18}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{531079ED-E75E-4012-82C4-E674B4A1E950}"
 	ProjectSection(SolutionItems) = preProject
@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "docs", "docs\docs.csproj", "{5053FECB-8EC4-4A47-B3AD-C9B3847846C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Shared.UnitTests", "DNI.Shared.UnitTests\DNI.Shared.UnitTests.csproj", "{C9C4AD37-0453-4973-88FB-9199069F1514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.UnitTests", "DNI.Core.UnitTests\DNI.Core.UnitTests.csproj", "{C9C4AD37-0453-4973-88FB-9199069F1514}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
