@@ -124,17 +124,6 @@ namespace DNI.Shared.Services
             return key.Properties.Select(property => property.PropertyInfo);
         }
 
-        public IPagerResult<TEntity> GetPager(IQueryable<TEntity> query)
-        {
-            return DefaultPagerResult
-                .Create(query);
-        }
-
-        public IQueryable<TEntity> AsNoTracking(IQueryable<TEntity> query)
-        {
-            return query.AsNoTracking();
-        }
-
         public async Task<int> Delete(TEntity entity, CancellationToken cancellationToken = default)
         {
             _dbSet.Remove(entity);

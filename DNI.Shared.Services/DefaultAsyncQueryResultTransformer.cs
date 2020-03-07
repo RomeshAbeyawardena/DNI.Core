@@ -13,12 +13,14 @@ namespace DNI.Shared.Services
     internal class DefaultAsyncQueryResultTransformer
     {
         public static IAsyncQueryResultTransformer<T> Create<T>(IQueryable<T> query)
+            where T: class
         {
             return DefaultAsyncQueryResultTransformer<T>.Create(query);
         }
     }
 
     internal class DefaultAsyncQueryResultTransformer<T>: IAsyncQueryResultTransformer<T>
+        where T : class
     {
         private readonly IQueryable<T> _query;
 
@@ -80,6 +82,17 @@ namespace DNI.Shared.Services
         public async Task<TSelector> ToMaxAsync<TSelector>(Expression<Func<T, TSelector>> selectorExpression, CancellationToken cancellationToken)
         {
             return await _query.MaxAsync(selectorExpression, cancellationToken);
+        }
+
+        public IQueryable<T> AsNoTracking(IQueryable<T> query)
+        {
+            return query.AsNoTracking();
+        }
+
+        public IPagerResult<T> AsPager(IQueryable<T> query)
+        {
+            return DefaultPagerResult
+                .Create(query);
         }
     }
 }

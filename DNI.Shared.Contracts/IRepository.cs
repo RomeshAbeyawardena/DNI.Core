@@ -20,8 +20,6 @@ namespace DNI.Shared.Contracts
         Task<TEntity> Find(bool enableTracking = true, CancellationToken cancellationToken = default, params object[] keys);
         Task<TEntity> SaveChanges(TEntity entity, bool saveChanges = true, 
             bool detachAfterSave = true,  CancellationToken cancellationToken = default);
-        IPagerResult<TEntity> GetPager(IQueryable<TEntity> query);
-        IQueryable<TEntity> AsNoTracking(IQueryable<TEntity> query);
         Task<int> Delete(TEntity entity, CancellationToken cancellationToken = default);
         Task<int> Delete(TEntity entity, bool softDelete = true, CancellationToken cancellationToken = default);
         Task<int> Delete(CancellationToken cancellationToken = default, params object[] keys);

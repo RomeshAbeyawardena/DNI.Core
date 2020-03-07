@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace DNI.Shared.Contracts
 {
     public interface IAsyncQueryResultTransformer<T>
+        where T: class
     {
         Task<IEnumerable<T>> ToArrayAsync(CancellationToken cancellationToken);
         Task<TSelector> ToMaxAsync<TSelector>(Expression<Func<T, TSelector>> selectorExpression, CancellationToken cancellationToken);
@@ -20,5 +21,7 @@ namespace DNI.Shared.Contracts
         Task<T> ToFirstOrDefaultAsync(CancellationToken cancellationToken);
         Task<T> ToSingleAsync(CancellationToken cancellationToken);
         Task<T> ToSingleOrDefaultAsync(CancellationToken cancellationToken);
+        IQueryable<T> AsNoTracking(IQueryable<T> query);
+        IPagerResult<T> AsPager(IQueryable<T> query);
     }
 }
