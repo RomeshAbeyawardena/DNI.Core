@@ -1,8 +1,6 @@
 ﻿using DNI.Shared.Contracts;
-using DNI.Shared.Contracts.Options;
 using DNI.Shared.Domains.States;
 using DNI.Shared.Services.Extensions;
-using DNI.Shared.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
@@ -14,7 +12,6 @@ using System.Reactive.Subjects;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace DNI.Shared.Services
 {

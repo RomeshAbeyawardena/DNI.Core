@@ -1,7 +1,6 @@
 ﻿using DNI.Shared.Contracts.Enumerations;
 using DNI.Shared.Services.Attributes;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace DNI.Shared.App.Domains

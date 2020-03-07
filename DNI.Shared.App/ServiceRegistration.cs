@@ -9,10 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using DNI.Shared.App.Contracts;
 using AutoMapper;
 using System.Reflection;
-using DNI.Shared.Services;
-using System;
-using DNI.Shared.Contracts.Providers;
-using System.Security.Cryptography;
 using DNI.Shared.Shared.Extensions;
 using Microsoft.Extensions.Logging;
 

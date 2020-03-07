@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Internal;
 using Microsoft.IO;
-using DNI.Shared.Services.Options;
 using MediatR;
 using DNI.Shared.Services.Generators;
 using DNI.Shared.Contracts.Generators;
@@ -20,7 +19,6 @@ using System.Security.Cryptography;
 using DNI.Shared.Contracts.Enumerations;
 using System;
 using System.Reactive.Subjects;
-using DNI.Shared.Domains;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 using DNI.Shared.Domains.States;
 

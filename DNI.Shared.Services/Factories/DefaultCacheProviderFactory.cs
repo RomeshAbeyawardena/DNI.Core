@@ -3,10 +3,6 @@ using DNI.Shared.Contracts.Enumerations;
 using DNI.Shared.Contracts.Factories;
 using DNI.Shared.Contracts.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DNI.Shared.Services.Factories
 {

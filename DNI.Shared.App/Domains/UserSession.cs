@@ -1,5 +1,4 @@
-﻿using DNI.Shared.Services.Attributes;
-using DNI.Shared.Shared.Attributes;
+﻿using DNI.Shared.Shared.Attributes;
 using System;
 
 namespace DNI.Shared.App.Domains

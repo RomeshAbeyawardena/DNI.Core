@@ -3,11 +3,8 @@ using DNI.Shared.Contracts.Factories;
 using DNI.Shared.Services.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DNI.Shared.Services
 {

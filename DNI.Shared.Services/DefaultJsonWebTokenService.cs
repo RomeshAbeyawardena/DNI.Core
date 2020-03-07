@@ -1,5 +1,4 @@
-﻿using DNI.Shared.Contracts.Convertors;
-using DNI.Shared.Contracts.Services;
+﻿using DNI.Shared.Contracts.Services;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;

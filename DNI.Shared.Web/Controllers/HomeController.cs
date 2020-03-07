@@ -1,6 +1,5 @@
 ﻿using DNI.Shared.Services.Abstraction;
 using DNI.Shared.Services.Attributes;
-using DNI.Shared.Web.Services;
 using DNI.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;

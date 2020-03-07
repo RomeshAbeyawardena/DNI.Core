@@ -7,7 +7,6 @@ using DNI.Shared.Contracts.Factories;
 using System.Threading.Tasks;
 using DNI.Shared.Contracts.Enumerations;
 using System.Threading;
-using DNI.Shared.Services;
 using DNI.Shared.Contracts.Services;
 using DNI.Shared.UnitTests.Models;
 

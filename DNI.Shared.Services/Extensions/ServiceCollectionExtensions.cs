@@ -10,8 +10,6 @@ using System.Text;
 using DNI.Shared.Contracts.Generators;
 using DNI.Shared.Services.Generators;
 using DNI.Shared.Services.Options;
-using DNI.Shared.Contracts.Factories;
-using System.Reflection;
 
 namespace DNI.Shared.Services.Extensions
 {
