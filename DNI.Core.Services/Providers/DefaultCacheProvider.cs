@@ -49,7 +49,7 @@ namespace DNI.Core.Services.Providers
 
             RequiresRefreshDelegate requiresRefresh = async () =>
             {
-                await Set(cacheType, cacheKeyName, async (cancellationToken) =>
+                value = await Set(cacheType, cacheKeyName, async (cancellationToken) =>
                     await getValue(cancellationToken));
             };
 

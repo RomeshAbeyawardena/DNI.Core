@@ -19,6 +19,16 @@ namespace DNI.Core.Web.CacheEntityRules
         public override Task OnGet(IServiceProvider services, IEnumerable<Page> currentValues)
         {
             var logger = services.GetService<ILogger<PageCacheEntityRule>>();
+            var maxCurrentPageId = currentValues.Max(page => page.Id);
+            var recentlyModifiedPage = currentValues
+                .OrderByDescending(page => page.Modified);
+
+            if(maxCurrentPageId < 5 
+                || recentlyModifiedPage.FirstOrDefault()?.Modified < new DateTimeOffset(2020, 03, 08, 15, 0, 0, 0, TimeSpan.Zero))
+            {
+                logger.LogInformation("Cache is old, requesting new data...");
+                _requiresRefresh();
+            }
 
             logger.LogInformation("I was requested");
             return _next(services, currentValues);

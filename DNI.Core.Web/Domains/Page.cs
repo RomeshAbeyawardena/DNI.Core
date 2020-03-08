@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DNI.Core.Web.Domains
 {
@@ -13,5 +14,6 @@ namespace DNI.Core.Web.Domains
         public string Keywords { get; set; }
         public IEnumerable<Section> Sections { get; set; }
         public Page ParentPage { get; set; }
+        public DateTimeOffset Modified { get; set; }
     }
 }
