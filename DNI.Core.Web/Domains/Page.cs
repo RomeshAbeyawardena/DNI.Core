@@ -2,6 +2,7 @@
 
 namespace DNI.Core.Web.Domains
 {
+    [MessagePack.MessagePackObject(true)]
     public class Page
     {
         public int Id { get; set; }

@@ -1,5 +1,6 @@
 ﻿namespace DNI.Core.Web.Domains
 {
+    [MessagePack.MessagePackObject(true)]
     public class Section
     {
         public int Id { get; set; }

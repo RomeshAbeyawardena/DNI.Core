@@ -53,11 +53,13 @@ namespace DNI.Core.Services.Abstraction
 
                 foreach (var cacheEntityRule in cacheEntityRules)
                 {
-                    if (!cacheEntityRule.IsGenericType)
+                    if (cacheEntityRule.IsAbstract)
                         continue;
 
+                    var interfaces = cacheEntityRule.GetInterfaces().FirstOrDefault();
+
                     var genericParameter =
-                        cacheEntityRule.GetGenericArguments().SingleOrDefault();
+                        interfaces.GetGenericArguments().SingleOrDefault();
 
                     RegisterCacheEntityRules(genericParameter, cacheEntityRule, services);
                 }

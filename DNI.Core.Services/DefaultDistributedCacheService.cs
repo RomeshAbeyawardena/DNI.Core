@@ -16,9 +16,6 @@ namespace DNI.Core.Services
 {
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IDictionary<Type, IEnumerable<Type>> _entityCacheRules;
-
         private readonly IDistributedCache _distributedCache;
         private readonly DistributedCacheEntryOptions _distributedCacheEntryOptions;
 
@@ -61,25 +58,11 @@ namespace DNI.Core.Services
             return value;
         }
 
-        private IEnumerable<ICacheEntityRule<T>> GetCacheEntityRules<T>()
-        {
-            var cacheRulesList = new List<ICacheEntityRule<T>>();
-            if(!_entityCacheRules.TryGetValue(typeof(T), out var cacheRuleTypes))
-            foreach(var cacheRuleType in cacheRuleTypes)
-            {
-                cacheRulesList.Add(
-                    _serviceProvider.CreateInjectedInstance(cacheRuleType));
-            }
 
-            return cacheRulesList;
-        }
-
-        public DefaultDistributedCacheService(IServiceProvider serviceProvider,  IDictionary<Type, IEnumerable<Type>> entityCacheRules, IDistributedCache distributedCache, 
+        public DefaultDistributedCacheService(IDistributedCache distributedCache, 
             IMessagePackService messagePackService, IOptions<DistributedCacheEntryOptions> options)
             : base(messagePackService)
         {
-            _serviceProvider = serviceProvider;
-            _entityCacheRules = entityCacheRules;
             _distributedCache = distributedCache;
             _distributedCacheEntryOptions = options.Value;
         }

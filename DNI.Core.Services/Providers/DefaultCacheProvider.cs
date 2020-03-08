@@ -3,6 +3,8 @@ using DNI.Core.Contracts.Enumerations;
 using DNI.Core.Contracts.Factories;
 using DNI.Core.Contracts.Providers;
 using DNI.Core.Contracts.Services;
+using DNI.Core.Services.Abstraction;
+using DNI.Core.Services.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +18,17 @@ namespace DNI.Core.Services.Providers
 
     internal sealed class DefaultCacheProvider : ICacheProvider
     {
-        private readonly IIs _is;
         private readonly ICacheProviderFactory _cacheProviderFactory;
 
-        public DefaultCacheProvider(IIs @is, ICacheProviderFactory cacheProviderFactory)
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IDictionary<Type, IEnumerable<Type>> _entityCacheRules;
+
+        public DefaultCacheProvider(ICacheProviderFactory cacheProviderFactory,
+            IServiceProvider serviceProvider, IDictionary<Type, IEnumerable<Type>> entityCacheRules)
         {
-            _is = @is;
             _cacheProviderFactory = cacheProviderFactory;
+            _serviceProvider = serviceProvider;
+            _entityCacheRules = entityCacheRules;
         }
 
         public async Task<T> Get<T>(CacheType cacheType, string cacheKeyName, CancellationToken cancellationToken = default)
@@ -32,51 +38,73 @@ namespace DNI.Core.Services.Providers
             return await cacheService.Get<T>(cacheKeyName, cancellationToken);
         }
 
-        public async Task<IEnumerable<T>> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<CancellationToken, Task<IEnumerable<T>>> getValue, 
-            Func<T, object> selectId, Func<CancellationToken, Task<object>> getMaxValue, bool append = false, 
+        public async Task<IEnumerable<T>> GetOrSet<T>(CacheType cacheType, string cacheKeyName,
+            Func<CancellationToken, Task<IEnumerable<T>>> getValue, bool append = false,
             CancellationToken cancellationToken = default)
         {
             var value = await Get<IEnumerable<T>>(cacheType, cacheKeyName, cancellationToken);
 
-            if(value == null || !value.Any())
+            if (value == null || !value.Any())
                 return await Set(cacheType, cacheKeyName, async (cancellationToken) => await getValue(cancellationToken));
 
-            var currentValue = await getMaxValue(cancellationToken);
-            var lastValue = value.LastOrDefault();
+            RequiresRefreshDelegate requiresRefresh = async () =>
+            {
+                await Set(cacheType, cacheKeyName, async (cancellationToken) =>
+                    await getValue(cancellationToken));
+            };
 
-            var identifierValue = selectId(lastValue);
-
-            var isOutdated = false;
-
-            var currentValType = _is
-                .TryDetermineType(currentValue, out var currentVal);
-            var idType = _is
-                .TryDetermineType(identifierValue, out var idVal);
-
-            if (currentValType != OfType.String
-                && idType != OfType.String)
-                isOutdated = currentVal > idVal;
-
-            if (isOutdated)
-                return await Set(cacheType, cacheKeyName, getValue, cancellationToken);
+            await ValidateCacheEntityRules(requiresRefresh, value);
 
             return value;
         }
 
-        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName, 
-            Func<CancellationToken, Task<T>> getValue, bool append = false, 
+        public async Task ValidateCacheEntityRules<T>(RequiresRefreshDelegate requiresRefresh, IEnumerable<T> currentValue)
+        {
+            
+            if (!_entityCacheRules.TryGetValue(typeof(T), out var ruleTypes))
+                return;
+
+            var ruleTypesArray = ruleTypes.ToArray();
+            var currentIndex = 0;
+
+            ICacheEntityRule<T> GetNext(int index, CacheEntityRuleDelegate<T> cacheEntityRule)
+            {
+                if(index < ruleTypesArray.Length)
+                    return (ICacheEntityRule<T>)Activator.CreateInstance(ruleTypesArray[index], requiresRefresh, cacheEntityRule);
+
+                return default;
+            }
+
+            CacheEntityRuleDelegate<T> cacheEntityRule = null;
+            ICacheEntityRule<T> next;
+            cacheEntityRule = async (serviceProvider, values) =>
+            {
+                next = GetNext(currentIndex++, cacheEntityRule);
+
+                if(next == null)
+                    return;
+
+                await next.OnGet(serviceProvider, values);
+            };
+
+            next = next = GetNext(currentIndex++, cacheEntityRule);
+            await next?.OnGet(_serviceProvider, currentValue);
+
+        }
+
+        public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName,
+            Func<CancellationToken, Task<T>> getValue, bool append = false,
             CancellationToken cancellationToken = default)
         {
             var value = await Get<T>(cacheType, cacheKeyName, cancellationToken);
 
-            return await Set(cacheType, cacheKeyName, 
-                    async(cancellationToken) => await getValue(cancellationToken), cancellationToken);
+            return await Set(cacheType, cacheKeyName,
+                    async (cancellationToken) => await getValue(cancellationToken), cancellationToken);
         }
 
         public async Task Set<T>(CacheType cacheType, string cacheKeyName, T value, CancellationToken cancellationToken = default)
         {
-            if(value == null)
+            if (value == null)
                 return;
 
             var cacheService = GetCacheService(cacheType);
@@ -84,7 +112,7 @@ namespace DNI.Core.Services.Providers
 
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, 
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName,
             Func<T> getValue, CancellationToken cancellationToken = default)
         {
             var value = getValue();
@@ -93,8 +121,8 @@ namespace DNI.Core.Services.Providers
             return value;
         }
 
-        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName, 
-            Func<CancellationToken, Task<T>> getValue, 
+        public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName,
+            Func<CancellationToken, Task<T>> getValue,
             CancellationToken cancellationToken = default)
         {
             var value = await getValue(cancellationToken);
@@ -108,5 +136,6 @@ namespace DNI.Core.Services.Providers
         {
             return _cacheProviderFactory.GetCache(cacheType);
         }
+
     }
 }

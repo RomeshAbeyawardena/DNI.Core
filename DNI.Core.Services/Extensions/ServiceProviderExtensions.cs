@@ -9,7 +9,7 @@ namespace DNI.Core.Services.Extensions
 {
     public static class ServiceProviderExtensions
     {
-        public static TService CreateInjectedInstance(this IServiceProvider services, Type serviceType)
+        public static object CreateInjectedInstance(this IServiceProvider services, Type serviceType, params Type[] excludedTypes)
         {
             //if (serviceType.IsGenericType)
             //    serviceType = serviceType.MakeGenericType(genericParameters);
@@ -20,7 +20,13 @@ namespace DNI.Core.Services.Extensions
 
             foreach(var parameter in constructor.GetParameters())
             {
-                serviceList.Add(services.GetService(parameter.ParameterType));
+                var parameterType = parameter.ParameterType;
+                if(excludedTypes.Contains(parameterType))
+                    continue;
+                    
+                var service = services.GetService(parameterType);
+
+                serviceList.Add(service);
             }
 
             return Activator.CreateInstance(serviceType, serviceList.ToArray());

@@ -8,8 +8,9 @@ namespace DNI.Core.Contracts
 {
     public interface ICacheEntityRule<TEntity> : ICacheEntityRule
     {
-        Task OnGet(IEnumerable<TEntity> currentValues);
+        Task OnGet(IServiceProvider services, IEnumerable<TEntity> currentValues);
     }
+
     public interface ICacheEntityRule
     {
 
