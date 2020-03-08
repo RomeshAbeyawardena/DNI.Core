@@ -1,8 +1,11 @@
 ﻿using DNI.Core.Contracts;
 using DNI.Core.Services.Abstraction;
+using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -13,6 +16,9 @@ namespace DNI.Core.Services
 {
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IDictionary<Type, IEnumerable<Type>> _entityCacheRules;
+
         private readonly IDistributedCache _distributedCache;
         private readonly DistributedCacheEntryOptions _distributedCacheEntryOptions;
 
@@ -55,10 +61,25 @@ namespace DNI.Core.Services
             return value;
         }
 
-        public DefaultDistributedCacheService(IDistributedCache distributedCache, 
+        private IEnumerable<ICacheEntityRule<T>> GetCacheEntityRules<T>()
+        {
+            var cacheRulesList = new List<ICacheEntityRule<T>>();
+            if(!_entityCacheRules.TryGetValue(typeof(T), out var cacheRuleTypes))
+            foreach(var cacheRuleType in cacheRuleTypes)
+            {
+                cacheRulesList.Add(
+                    _serviceProvider.CreateInjectedInstance(cacheRuleType));
+            }
+
+            return cacheRulesList;
+        }
+
+        public DefaultDistributedCacheService(IServiceProvider serviceProvider,  IDictionary<Type, IEnumerable<Type>> entityCacheRules, IDistributedCache distributedCache, 
             IMessagePackService messagePackService, IOptions<DistributedCacheEntryOptions> options)
             : base(messagePackService)
         {
+            _serviceProvider = serviceProvider;
+            _entityCacheRules = entityCacheRules;
             _distributedCache = distributedCache;
             _distributedCacheEntryOptions = options.Value;
         }
