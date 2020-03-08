@@ -17,8 +17,8 @@ namespace DNI.Core.App
                 .Build(describe => describe.GetAssembly<Startup>());
             
             var value = await AppHost.Build<Startup>()
-                .ConfigureServices(services => { ServiceBrokerBuilder
-                    .RegisterServiceBroker(services, serviceBroker, options => { 
+                .ConfigureServices(services => { services
+                    .RegisterServiceBroker(serviceBroker, options => { 
                         options.RegisterAutoMappingProviders = true; 
                         options.RegisterMessagePackSerialisers = true; 
                     }); 
