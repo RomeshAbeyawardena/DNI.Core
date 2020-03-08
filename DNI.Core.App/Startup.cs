@@ -20,16 +20,9 @@ namespace DNI.Core.App
 
         public async Task<int> Begin(params object[] args)
         {
-            using
-                (var job = new Job(0, (job, state) => { job.UpdateState(((int)state) + 1); }, 1000))
-            {
-                job.Subject.Subscribe((jobState) => { 
-                    if((int)jobState.State == 10) jobState.Job.Stop();
-                    _logger.LogInformation("state updated: {0}", jobState.State);
-                    }, () => _logger.LogInformation("Completed"));
-
-                await job.Running(CancellationToken.None);
-            }
+            using(var memoryStream = _recyclableMemoryStreamManager.GetStream())
+                using (var streamWriter = new StreamWriter(memoryStream))
+                    await streamWriter.WriteLineAsync("Hello world");
             return 0;
         }
 
