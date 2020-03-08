@@ -9,7 +9,7 @@ namespace DNI.Core.Services.Abstraction
 {
     public delegate Task CacheEntityRuleDelegate<TEntity>(IServiceProvider serviceProvider, IEnumerable<TEntity> currentValues);
     public delegate Task RequiresRefreshDelegate();
-
+    #pragma warning disable CA1012
     public abstract class CacheEntityRuleBase<TEntity> : ICacheEntityRule<TEntity>
     {
         public CacheEntityRuleBase(RequiresRefreshDelegate requiresRefresh, CacheEntityRuleDelegate<TEntity> next)
@@ -29,4 +29,5 @@ namespace DNI.Core.Services.Abstraction
             return Next(services, currentValues);
         }
     }
+    #pragma warning restore CA1012
 }

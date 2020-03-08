@@ -35,7 +35,7 @@ namespace DNI.Core.Web.Controllers
         public async Task<string> GetValue(string value)
         {
             await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "SAS", 
-                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 7, Modified = DateTimeOffset.Now } })) );
+                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
             Console.WriteLine("GetValue");
                 throw new UnauthorizedAccessException();
             return await Task.FromResult(value);

@@ -44,16 +44,18 @@ namespace DNI.Core.Services.Providers
         {
             var value = await Get<IEnumerable<T>>(cacheType, cacheKeyName, cancellationToken);
 
-            if (value == null || !value.Any())
-                return await Set(cacheType, cacheKeyName, async (cancellationToken) => await getValue(cancellationToken));
-
-            RequiresRefreshDelegate requiresRefresh = async () =>
+            async Task<IEnumerable<T>> getDataFromSource()
             {
                 value = await Set(cacheType, cacheKeyName, async (cancellationToken) =>
                     await getValue(cancellationToken));
+
+                return value;
             };
 
-            await ValidateCacheEntityRules(requiresRefresh, value);
+            if (value == null || !value.Any())
+                return await getDataFromSource();
+
+            await ValidateCacheEntityRules(getDataFromSource, value);
 
             return value;
         }
