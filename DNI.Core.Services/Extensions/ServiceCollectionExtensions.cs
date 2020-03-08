@@ -30,6 +30,12 @@ namespace DNI.Core.Services.Extensions
             return services;
         }
 
+        public static IServiceCollection RegisterServiceBroker(this IServiceCollection services, 
+            IServiceBroker serviceBroker, Action<IServiceRegistrationOptions> configure)
+        {
+            return ServiceBrokerBuilder.RegisterServiceBroker(services, serviceBroker, configure);
+        }
+
         public static IServiceCollection RegisterServiceBroker<TServiceBroker, TServiceRegistrationOptions>(this IServiceCollection services, 
             Action<TServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker

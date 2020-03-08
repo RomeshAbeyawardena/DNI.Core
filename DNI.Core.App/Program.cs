@@ -13,9 +13,16 @@ namespace DNI.Core.App
     {
         public static async Task<int> Main(string[] args)
         {
+            var serviceBroker = ServiceBrokerBuilder
+                .Build(describe => describe.GetAssembly<Startup>());
+            
             var value = await AppHost.Build<Startup>()
-                
-                .ConfigureServices(services => services.RegisterServiceBroker<ServiceBroker>(options => { options.RegisterAutoMappingProviders = true; options.RegisterMessagePackSerialisers = true; }, out var serviceBroker))
+                .ConfigureServices(services => { services
+                    .RegisterServiceBroker(serviceBroker, options => { 
+                        options.RegisterAutoMappingProviders = true; 
+                        options.RegisterMessagePackSerialisers = true; 
+                    }); 
+                }) 
                 .ConfigureStartupDelegate((startup, arguments) => startup.Begin(arguments.ToArray()))
                 .Start<int>(args).ConfigureAwait(false);
 
@@ -32,21 +39,12 @@ namespace DNI.Core.App
             Console.WriteLine(ex);
         }
 
-
         class MClass
         {
             public int K1 { get; set; }
             public string V1 { get; set; }
         }
 
-        public class ServiceBroker : ServiceBrokerBase
-        {
-            public ServiceBroker()
-            {
-                DescribeAssemblies = assembliesDescriptor => assembliesDescriptor
-                    .GetAssembly<ServiceBroker>();
-            }
-        }
 
         public class MyDisposable : IDisposable
         {

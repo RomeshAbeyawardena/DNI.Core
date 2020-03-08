@@ -7,6 +7,8 @@ using System.Reactive.Subjects;
 using Microsoft.IO;
 using System.IO;
 using DNI.Core.Domains.States;
+using DNI.Core.Services;
+using System.Threading;
 
 namespace DNI.Core.App
 {
@@ -18,26 +20,16 @@ namespace DNI.Core.App
 
         public async Task<int> Begin(params object[] args)
         {
-            using (var memoryStream = _recyclableMemoryStreamManager.GetStream())
-            {
-                using (var streamWriter = new StreamWriter(memoryStream)){
-                    await streamWriter.WriteLineAsync("Lorem ipsum");
-                }
-            }
-
-            using (var memoryStream = _recyclableMemoryStreamManager.GetStream())
-            {
+            using(var memoryStream = _recyclableMemoryStreamManager.GetStream())
                 using (var streamWriter = new StreamWriter(memoryStream))
-                    await streamWriter.WriteLineAsync("Lorem ipsum");
-            }
-
+                    await streamWriter.WriteLineAsync("Hello world");
             return 0;
         }
 
         public class CustomerResponse : ResponseBase<Customer> { }
 
 
-        public Startup(ILogger<Startup> logger, 
+        public Startup(ILogger<Startup> logger,
             RecyclableMemoryStreamManager recyclableMemoryStreamManager,
             ISubject<RecyclableMemoryStreamManagerState> subject)
         {
@@ -59,16 +51,16 @@ namespace DNI.Core.App
 
         private void onNext(RecyclableMemoryStreamManagerState obj)
         {
-            RecyclableMemoryStreamManagerState.Handle(obj, 
+            RecyclableMemoryStreamManagerState.Handle(obj,
                 () => _logger.LogInformation("Stream created"),
                 () => _logger.LogInformation("Block created"),
                 () => _logger.LogInformation("Block discarded"),
                 () => _logger.LogInformation("Stream disposed"),
                 () => _logger.LogInformation("Stream finalized"),
                 onUsageReportRequested: (largePoolFreeBytes, largePoolInUseBytes,
-                 smallPoolFreeBytes, smallPoolInUseBytes) => _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n" 
-                    + "Small Pool\r\n\tFree: {2}\r\n\tIn Use: {3}", 
-                    largePoolFreeBytes, 
+                 smallPoolFreeBytes, smallPoolInUseBytes) => _logger.LogInformation("Large Pool\r\n\tFree: {0} bytes\r\n\tIn Use: {1}\r\n"
+                    + "Small Pool\r\n\tFree: {2}\r\n\tIn Use: {3}",
+                    largePoolFreeBytes,
                     largePoolInUseBytes, smallPoolFreeBytes,
                     smallPoolInUseBytes));
         }

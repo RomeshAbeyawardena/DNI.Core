@@ -1,8 +1,11 @@
-﻿using DNI.Core.Services.Abstraction;
+﻿using DNI.Core.Contracts.Providers;
+using DNI.Core.Services.Abstraction;
 using DNI.Core.Services.Attributes;
+using DNI.Core.Web.Domains;
 using DNI.Core.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -10,6 +13,13 @@ namespace DNI.Core.Web.Controllers
 {
     public class HomeController : DefaultControllerBase
     {
+        private readonly ICacheProvider _cacheProvider;
+
+        public HomeController(ICacheProvider cacheProvider)
+        {
+            _cacheProvider = cacheProvider;
+        }
+
         public async Task<ActionResult> Index([FromQuery] HomeIndexRequestViewModel homeIndexRequestViewModel)
         {
             await Task.FromResult(true);
@@ -24,6 +34,8 @@ namespace DNI.Core.Web.Controllers
         [HandleException]
         public async Task<string> GetValue(string value)
         {
+            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "SAS", 
+                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
             Console.WriteLine("GetValue");
                 throw new UnauthorizedAccessException();
             return await Task.FromResult(value);

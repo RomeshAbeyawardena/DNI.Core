@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DNI.Core.Web.Domains
 {
+    [MessagePack.MessagePackObject(true)]
     public class Page
     {
         public int Id { get; set; }
@@ -12,5 +14,6 @@ namespace DNI.Core.Web.Domains
         public string Keywords { get; set; }
         public IEnumerable<Section> Sections { get; set; }
         public Page ParentPage { get; set; }
+        public DateTimeOffset Modified { get; set; }
     }
 }

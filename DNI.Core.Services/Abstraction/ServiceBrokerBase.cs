@@ -46,8 +46,45 @@ namespace DNI.Core.Services.Abstraction
                 if (serviceRegistrationOptions.RegisterExceptionHandlers)
                     foreach (var exceptionHandlerType in exceptionHandlerTypes)
                         RegisterExceptionHandlers(services, exceptionHandlerType);
+
+                var cacheEntityRules = assembly
+                    .GetTypes()
+                    .Where(type => type.IsOfType<ICacheEntityRule>());
+
+                foreach (var cacheEntityRule in cacheEntityRules)
+                {
+                    if (cacheEntityRule.IsAbstract)
+                        continue;
+
+                    var interfaces = cacheEntityRule.GetInterfaces().FirstOrDefault();
+
+                    var genericParameter =
+                        interfaces.GetGenericArguments().SingleOrDefault();
+
+                    RegisterCacheEntityRules(genericParameter, cacheEntityRule, services);
+                }
             }
+
+            services.AddSingleton(CacheEntityRulesDictionary);
         }
+
+        private void RegisterCacheEntityRules(Type genericParameter, Type serviceRegistrationType, IServiceCollection services)
+        {
+            var typesList = new List<Type>();
+            bool exists = CacheEntityRulesDictionary.TryGetValue(genericParameter, out var types);
+            
+            if (exists)
+                typesList = new List<Type>(types);
+
+            if (typesList.Contains(serviceRegistrationType))
+                throw new InvalidOperationException();
+
+            typesList.Add(serviceRegistrationType);
+
+            if (!exists)
+                CacheEntityRulesDictionary.Add(genericParameter, typesList.ToArray());
+        }
+        private IDictionary<Type, IEnumerable<Type>> CacheEntityRulesDictionary = new Dictionary<Type, IEnumerable<Type>>();
 
         private void RegisterServices(Type serviceRegistrationType, IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {

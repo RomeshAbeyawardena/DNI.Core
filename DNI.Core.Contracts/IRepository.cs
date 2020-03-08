@@ -21,6 +21,10 @@ namespace DNI.Core.Contracts
         Task<int> Delete(TEntity entity, bool softDelete = true, CancellationToken cancellationToken = default);
         Task<int> Delete(CancellationToken cancellationToken = default, params object[] keys);
         Task<int> Delete(bool softDelete = true, CancellationToken cancellationToken = default, params object[] keys);
+
+        IAsyncQueryResultTransformer<T> For<T>(IQueryable<T> query)
+            where T : class;
+
         IAsyncQueryResultTransformer<TEntity> For(IQueryable<TEntity> query);
         IAsyncQueryResultTransformer<TEntity> For(Expression<Func<TEntity, bool>> whereExpression);
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Contracts
 {
-    public interface IAsyncQueryResultTransformer<T>
+    public interface IAsyncQueryResultTransformer<T> : IQueryResultTransformer<T>
         where T: class
     {
         Task<IEnumerable<T>> ToArrayAsync(CancellationToken cancellationToken);
@@ -20,7 +20,6 @@ namespace DNI.Core.Contracts
         Task<T> ToFirstOrDefaultAsync(CancellationToken cancellationToken);
         Task<T> ToSingleAsync(CancellationToken cancellationToken);
         Task<T> ToSingleOrDefaultAsync(CancellationToken cancellationToken);
-        IQueryable<T> AsNoTracking(IQueryable<T> query);
-        IPagerResult<T> AsPager(IQueryable<T> query);
+        Task<bool> AnyAsync(CancellationToken cancellation);
     }
 }

@@ -14,7 +14,6 @@ namespace DNI.Core.Services.Extensions
                 .Where(property => property.GetCustomAttribute<TAttribute>() != null);
         }
 
-        
         public static  bool IsOfType<T>(this Type type)
         {
             var ofType = typeof(T);

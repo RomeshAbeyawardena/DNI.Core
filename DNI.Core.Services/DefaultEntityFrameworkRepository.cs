@@ -29,6 +29,11 @@ namespace DNI.Core.Services
         public IAsyncQueryResultTransformer<TEntity> For(IQueryable<TEntity> query) 
             => DefaultAsyncQueryResultTransformer.Create(query);
 
+        public IAsyncQueryResultTransformer<T> For<T>(IQueryable<T> query) 
+            where T : class
+            => DefaultAsyncQueryResultTransformer.Create(query);
+
+
         private readonly DbSet<TEntity> _dbSet;
 
         public IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
@@ -174,5 +179,6 @@ namespace DNI.Core.Services
         {
             return For(Query(whereExpression));
         }
+
     }
 }
