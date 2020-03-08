@@ -64,7 +64,7 @@ namespace DNI.Core.Services.Extensions
         }
 
         [Obsolete("Use overload RegisterDbContentRepositories<TDbContext>(this IServiceCollection services, " +
-            "Action<DbContextRepositoryConfiguration> configure) instead.")]
+            "Action<DbContextRepositoryConfiguration> configure) instead to enable support for future features.")]
         public static IServiceCollection RegisterDbContextRepositories<TDbContext>(this IServiceCollection services, 
             ServiceLifetime serviceLifetime = ServiceLifetime.Scoped, 
             Action<DbContextOptionsBuilder> dbContextOptions = default,
@@ -126,6 +126,10 @@ namespace DNI.Core.Services.Extensions
                     ? services.AddDbContextPool<TDbContext>(configuration.DbContextServiceProviderOptions)
                     : services.AddDbContext<TDbContext>(configuration.DbContextServiceProviderOptions);
 
+            if(configuration.DescribedEntityTypes == null)
+                configuration.DescribedEntityTypes = new DefaultTypesDescriptor();
+
+            configuration.EntityTypeDescriber?.Invoke(configuration.DescribedEntityTypes);
             
             foreach(var entityType in configuration.EntityTypes)
             {    
