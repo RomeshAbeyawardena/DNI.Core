@@ -1,5 +1,6 @@
 ﻿using DNI.Core.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,15 +84,25 @@ namespace DNI.Core.Services
             return await _query.MaxAsync(selectorExpression, cancellationToken);
         }
 
-        public IQueryable<T> AsNoTracking(IQueryable<T> query)
+        public IQueryable<T> AsNoTracking()
         {
-            return query.AsNoTracking();
+            return _query.AsNoTracking();
         }
 
-        public IPagerResult<T> AsPager(IQueryable<T> query)
+        public IPagerResult<T> AsPager()
         {
             return DefaultPagerResult
-                .Create(query);
+                .Create(_query);
+        }
+
+        public async Task<bool> AnyAsync(CancellationToken cancellation)
+        {
+            return await _query.AnyAsync(cancellation);
+        }
+
+        public IIncludableQueryable<T, TProperty> Include<TProperty>(Expression<Func<T, TProperty>> navigationPropertyPath = null, string propertyName = null)
+        {
+            return _query.Include(navigationPropertyPath);
         }
     }
 }
