@@ -14,19 +14,19 @@ namespace DNI.Core.Services.Abstraction
     {
         public CacheEntityRuleBase(RequiresRefreshDelegate requiresRefresh, CacheEntityRuleDelegate<TEntity> next)
         {
-            _requiresRefresh = requiresRefresh;
-            _next = next;
+            RequiresRefresh = requiresRefresh;
+            Next = next;
         }
 
         
-        protected readonly CacheEntityRuleDelegate<TEntity> _next;
-        protected readonly RequiresRefreshDelegate _requiresRefresh;
+        protected readonly CacheEntityRuleDelegate<TEntity> Next;
+        protected readonly RequiresRefreshDelegate RequiresRefresh;
         public virtual Task OnGet(IServiceProvider services, IEnumerable<TEntity> currentValues)
         {
             if(currentValues == null || !currentValues.Any())
-                return _requiresRefresh();
+                return RequiresRefresh();
 
-            return _next(services, currentValues);
+            return Next(services, currentValues);
         }
     }
 }

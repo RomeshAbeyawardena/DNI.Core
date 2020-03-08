@@ -12,7 +12,8 @@ namespace DNI.Core.Web.CacheEntityRules
 {
     public class PageCacheEntityRule : CacheEntityRuleBase<Page>
     {
-        public PageCacheEntityRule(RequiresRefreshDelegate requiresRefresh, CacheEntityRuleDelegate<Page> next) : base(requiresRefresh, next)
+        public PageCacheEntityRule(RequiresRefreshDelegate requiresRefresh, CacheEntityRuleDelegate<Page> next) 
+            : base(requiresRefresh, next)
         {
         }
 
@@ -27,11 +28,11 @@ namespace DNI.Core.Web.CacheEntityRules
                 || recentlyModifiedPage.FirstOrDefault()?.Modified < new DateTimeOffset(2020, 03, 08, 15, 0, 0, 0, TimeSpan.Zero))
             {
                 logger.LogInformation("Cache is old, requesting new data...");
-                _requiresRefresh();
+                RequiresRefresh();
             }
-
-            logger.LogInformation("I was requested");
-            return _next(services, currentValues);
+            else
+                logger.LogInformation("Cache is fine, carry on!");
+            return Next(services, currentValues);
         }
     }
 }
