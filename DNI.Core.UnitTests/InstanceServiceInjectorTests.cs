@@ -91,6 +91,28 @@ namespace DNI.Core.UnitTests
 
         }
 
+        [Test]
+        public void CreateInstance_throws_InvalidOperationException_when_multiple_constructors_are_present()
+        {
+            Assert.Throws<InvalidOperationException>(() => sut.CreateInstance<MyMockConsumerWithNumerousConstructors>());
+        }
+        
+        private class MyMockConsumerWithNumerousConstructors
+        {
+            public MyMockConsumerWithNumerousConstructors(MyMockService mockService)
+            {
+                MyMockService = mockService;
+            }
+
+            public MyMockConsumerWithNumerousConstructors(MyOtherMockService mockService)
+            {
+                MyOtherMockService = mockService;
+            }
+
+            public MyMockService MyMockService { get; }
+            public MyOtherMockService MyOtherMockService { get; }
+        }
+
         private class MyMockConsumer
         {
             public MyMockConsumer(MyMockService mockService)
