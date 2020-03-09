@@ -123,6 +123,7 @@ namespace DNI.Core.Services
                 .CaseWhen(CharacterType.Uppercase, new Domains.Range(65, 90))
                 .CaseWhen(CharacterType.Numerics, new Domains.Range(48, 57))
                 .CaseWhen(CharacterType.Symbols, new Domains.Range(33, 47)))
+                .AddSingleton<IInstanceServiceInjector, DefaultInstanceServiceInjector>()
                 .AddSingleton<IIs, DefaultIs>()
                 .AddSingleton(RandomNumberGenerator.Create())
                 .AddSingleton<IRandomStringGenerator, DefaultRandomStringGenerator>()
