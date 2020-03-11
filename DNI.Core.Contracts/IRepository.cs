@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Contracts
 {
+    /// <summary>
+    /// Represents a data wrapper 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity>
         where TEntity : class
     {
