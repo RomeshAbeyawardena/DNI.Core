@@ -28,6 +28,8 @@ namespace DNI.Core.Services.Abstraction
 
             return Next(services, currentValues);
         }
+
+        public abstract Task<bool> IsEnabled(IServiceProvider serviceProvider);
     }
     #pragma warning restore CA1012
 }

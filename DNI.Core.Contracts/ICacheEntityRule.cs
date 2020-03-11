@@ -13,6 +13,6 @@ namespace DNI.Core.Contracts
 
     public interface ICacheEntityRule
     {
-
+        Task<bool> IsEnabled(IServiceProvider serviceProvider);
     }
 }

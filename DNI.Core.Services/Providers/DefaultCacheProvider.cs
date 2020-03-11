@@ -83,13 +83,13 @@ namespace DNI.Core.Services.Providers
             {
                 next = GetNext(currentIndex++, cacheEntityRule);
 
-                if(next == null)
+                if(next == null || !await next.IsEnabled(serviceProvider))
                     return;
 
                 await next.OnGet(serviceProvider, values);
             };
 
-            next = next = GetNext(currentIndex++, cacheEntityRule);
+            next = GetNext(currentIndex++, cacheEntityRule);
             await next?.OnGet(_serviceProvider, currentValue);
 
         }

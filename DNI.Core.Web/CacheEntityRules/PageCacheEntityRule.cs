@@ -17,6 +17,11 @@ namespace DNI.Core.Web.CacheEntityRules
         {
         }
 
+        public override Task<bool> IsEnabled(IServiceProvider serviceProvider)
+        {
+            return Task.FromResult(true);
+        }
+
         public override Task OnGet(IServiceProvider services, IEnumerable<Page> currentValues)
         {
             var logger = services.GetService<ILogger<PageCacheEntityRule>>();
