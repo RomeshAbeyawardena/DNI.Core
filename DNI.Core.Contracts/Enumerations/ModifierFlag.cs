@@ -2,6 +2,10 @@
 
 namespace DNI.Core.Contracts.Enumerations
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    //Specifies a set of modifier flags
     [Flags]
     public enum ModifierFlag
     {

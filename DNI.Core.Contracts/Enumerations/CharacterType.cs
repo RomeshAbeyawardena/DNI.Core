@@ -2,6 +2,9 @@
 
 namespace DNI.Core.Contracts.Enumerations
 {
+    /// <summary>
+    /// Specifies a set of character types
+    /// </summary>
     [Flags]
     public enum CharacterType
     {
