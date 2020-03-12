@@ -8,8 +8,9 @@ namespace DNI.Core.Contracts
 {
     public interface IRetryHandler
     {
-        TResult Handle<T, TResult>(Func<T, TResult> handle, params Type[] retryExceptions);
-        Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, params Type[] retryExceptions);
-        Task Handle<T>(Func<T, Task> handle, params Type[] retryExceptions);
+        void Handle(Action handle, int retryAttempts, params Type[] retryExceptions);
+        TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, params Type[] retryExceptions);
+        Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, params Type[] retryExceptions);
+        Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions);
     }
 }
