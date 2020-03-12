@@ -1,4 +1,6 @@
-﻿namespace DNI.Core.Contracts.Options
+﻿using System;
+
+namespace DNI.Core.Contracts.Options
 {
     /// <summary>
     /// Represents a list of settings used to configure an IServiceRegistration instance
@@ -31,5 +33,9 @@
         /// Toggles Cryptographic providers
         /// </summary>
         bool RegisterCryptographicProviders { get; set; }
+        
+        bool UseJsonFileCacheTrackerStore { get; }
+        IJsonFileCacheTrackerStoreOptions JsonFileCacheTrackerStoreOptions { get; }
+        void RegisterJsonFileCacheTrackerStore(Action<IJsonFileCacheTrackerStoreOptions> configure);
     }
 }

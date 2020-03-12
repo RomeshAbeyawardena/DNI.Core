@@ -1,5 +1,5 @@
 ﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Stores
+using DNI.Core.Contracts.Stores;
 using DNI.Core.Contracts.Enumerations;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Services
 {
-    public class DefaultCacheEntryTracker : ICacheEntryTracker
+    internal class DefaultCacheEntryTracker : ICacheEntryTracker
     {
         private readonly ICacheTrackerStore _cacheTrackerStore;
 
@@ -44,10 +44,10 @@ namespace DNI.Core.Services
         {
             var items = await _cacheTrackerStore.GetItems(cancellationToken);
 
-            if(items == null)
+            if(items == null && commitChanges)
                 await _cacheTrackerStore.SaveItems(items = new Dictionary<string, CacheEntryState>(), cancellationToken);
 
-            return items;
+            return items ?? new Dictionary<string, CacheEntryState>();
         }
     }
 }

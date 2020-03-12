@@ -21,6 +21,8 @@ using System;
 using System.Reactive.Subjects;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 using DNI.Core.Domains.States;
+using DNI.Core.Contracts.Stores;
+using DNI.Core.Services.Stores;
 
 namespace DNI.Core.Services
 {
@@ -169,6 +171,15 @@ namespace DNI.Core.Services
 
             if (options.RegisterExceptionHandlers)
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
+
+            if(options.UseJsonFileCacheTrackerStore)
+            {
+                services
+                    .AddSingleton(options.JsonFileCacheTrackerStoreOptions)
+                    .AddSingleton<IJsonFileCacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
+                    .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
+                
+            };
         }
 
     }
