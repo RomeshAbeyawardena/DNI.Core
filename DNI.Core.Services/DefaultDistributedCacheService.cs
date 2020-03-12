@@ -40,6 +40,8 @@ namespace DNI.Core.Services
 
             await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), 
                 _distributedCacheEntryOptions, cancellationToken).ConfigureAwait(false);
+
+            await _cacheEntryTracker.SetState(cacheKeyName, CacheEntryState.Valid, cancellationToken);
         }
 
         public override async Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
