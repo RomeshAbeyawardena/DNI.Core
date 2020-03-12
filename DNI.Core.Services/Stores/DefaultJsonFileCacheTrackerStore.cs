@@ -34,13 +34,20 @@ namespace DNI.Core.Services.Stores
 
         public async Task<IFile> SaveItems(IDictionary<string, CacheEntryState> state, CancellationToken cancellationToken)
         {
-            var jsonContent = JsonSerializer.Serialize(state);
 
-            await SavingSemaphoreSlim.WaitAsync(cancellationToken);
-            await _fileService
-                .SaveTextToFile(Options.FileName, jsonContent, cancellationToken);
-            SavingSemaphoreSlim.Release();
-            return _fileService.GetFile(Options.FileName);
+            var jsonContent = JsonSerializer.Serialize(state);
+            try
+            {
+                await SavingSemaphoreSlim.WaitAsync(cancellationToken);
+                await _fileService
+                    .SaveTextToFile(Options.FileName, jsonContent, cancellationToken);
+
+                return _fileService.GetFile(Options.FileName);
+            }
+            finally
+            {
+                SavingSemaphoreSlim.Release();
+            }
         }
 
         private IFile GetFile(string fileName)
@@ -48,23 +55,30 @@ namespace DNI.Core.Services.Stores
             return _fileService.GetFile(fileName);
         }
 
-        private async Task<IDictionary<string,CacheEntryState>> GetItems(IFile file, CancellationToken cancellationToken)
+        private async Task<IDictionary<string, CacheEntryState>> GetItems(IFile file, CancellationToken cancellationToken)
         {
-            if(!file.Exists)
-                return default;
-            await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
+            try
+            {
+                await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
 
-            using var fileStream = file.GetFileStream();
-            using var streamReader = new StreamReader(fileStream);
-            var content = streamReader.ReadToEndAsync();
+                if (!file.Exists)
+                    return default;
 
-            ReadingSemaphoreSlim.Release();
-            return JsonSerializer.Deserialize<IDictionary<string,CacheEntryState>>(await content);
+                using var fileStream = file.GetFileStream();
+                using var streamReader = new StreamReader(fileStream);
+                var content = streamReader.ReadToEndAsync();
+
+                return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(await content);
+            }
+            finally
+            {
+                ReadingSemaphoreSlim.Release();
+            }
         }
 
         public void Dispose()
         {
-            
+
         }
     }
 }
