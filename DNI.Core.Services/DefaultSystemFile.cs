@@ -1,4 +1,5 @@
 ﻿using DNI.Core.Contracts;
+using Microsoft.Extensions.Logging;
 using System.IO;
 
 namespace DNI.Core.Services
@@ -18,10 +19,10 @@ namespace DNI.Core.Services
             fileStream?.Dispose();
         }
 
-        public FileStream GetFileStream()
+        public FileStream GetFileStream(ILogger logger = default)
         {
             if(Exists)
-                return fileStream = RetryHandler.Handle((path) => File.OpenRead(path), FullPath, 5, typeof(IOException));
+                return fileStream = RetryHandler.Handle((path) => File.OpenRead(path), FullPath, 5, logger, typeof(IOException));
 
             return default;
         }

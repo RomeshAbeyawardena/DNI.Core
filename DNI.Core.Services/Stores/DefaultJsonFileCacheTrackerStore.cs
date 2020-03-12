@@ -3,6 +3,7 @@ using DNI.Core.Contracts.Enumerations;
 using DNI.Core.Contracts.Options;
 using DNI.Core.Contracts.Services;
 using DNI.Core.Contracts.Stores;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -18,13 +19,16 @@ namespace DNI.Core.Services.Stores
         public static SemaphoreSlim SavingSemaphoreSlim = new SemaphoreSlim(1, 1);
         public static SemaphoreSlim ReadingSemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options, 
+        public DefaultJsonFileCacheTrackerStore(ILogger<IJsonFileCacheTrackerStore> logger, IJsonFileCacheTrackerStoreOptions options, 
             IFileService fileService, IRetryHandler retryHandler)
         {
+            _logger = logger;
             Options = options;
             _fileService = fileService;
             _retryHandler = retryHandler;
         }
+
+        private readonly ILogger<IJsonFileCacheTrackerStore> _logger;
 
         public IJsonFileCacheTrackerStoreOptions Options { get; }
 
@@ -71,7 +75,7 @@ namespace DNI.Core.Services.Stores
                 if (!file.Exists)
                     return default;
 
-                using var fileStream = file.GetFileStream();
+                using var fileStream = file.GetFileStream(_logger);
                 using var streamReader = new StreamReader(fileStream);
                 var content = streamReader.ReadToEndAsync();
 

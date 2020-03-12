@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.IO;
 
 namespace DNI.Core.Contracts
@@ -9,6 +10,6 @@ namespace DNI.Core.Contracts
         string FullPath { get; }
         string Path { get; }
         string Name { get; }
-        FileStream GetFileStream();
+        FileStream GetFileStream(ILogger logger = default);
     }
 }
