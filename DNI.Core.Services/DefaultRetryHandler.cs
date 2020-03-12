@@ -47,9 +47,16 @@ namespace DNI.Core.Services
         private void HandleException(Exception ex, int maximumAttempts)
         {
             var timeoutInSeconds = Timeout / 1000;
-            _logger?.LogWarning(ex, "Attempt {0} of {1}: Failed and handled within retry handler, retrying in {2} {3}", 
+            _logger?.LogWarning(ex, "Attempt {0} of {1}: Failed and handled within a retry handler, retrying in {2} {3}", 
                 RetryCount, maximumAttempts, timeoutInSeconds, timeoutInSeconds > 0 ? "seconds" : "second");
             Thread.Sleep(Timeout);
+        }
+
+        private bool IsExceptionHandled(Exception exception, int retryAttempts, params Type[] retryExceptions)
+        {
+            var exceptionType = exception.GetType();
+            return retryExceptions.Contains(exceptionType)
+                    && RetryCount++ < retryAttempts;
         }
 
         public DefaultRetryHandler(ILogger logger = null)
@@ -70,8 +77,7 @@ namespace DNI.Core.Services
             }
             catch (Exception ex)
             {
-                if (retryExceptions.Contains(ex.GetType())
-                    && RetryCount++ < retryAttempts)
+                if (IsExceptionHandled(ex, retryAttempts, retryExceptions))
                 {
                     HandleException(ex, retryAttempts);
                     Handle(handle, retryAttempts, true, retryExceptions);
@@ -91,8 +97,7 @@ namespace DNI.Core.Services
             }
             catch (Exception ex)
             {
-                if (retryExceptions.Contains(ex.GetType())
-                    && RetryCount++ < retryAttempts)
+                if (IsExceptionHandled(ex, retryAttempts, retryExceptions))
                 {
                     HandleException(ex, retryAttempts);
                     return Handle(handle, argument, retryAttempts, true, retryExceptions);
@@ -109,8 +114,7 @@ namespace DNI.Core.Services
             }
             catch (Exception ex)
             {
-                if (retryExceptions.Contains(ex.GetType())
-                    && RetryCount++ < retryAttempts)
+                if (IsExceptionHandled(ex, retryAttempts, retryExceptions))
                 {
                     HandleException(ex, retryAttempts);
                     return await Handle(handle, argument, retryAttempts, true, retryExceptions);
@@ -128,8 +132,7 @@ namespace DNI.Core.Services
             }
             catch (Exception ex)
             {
-                if (retryExceptions.Contains(ex.GetType())
-                    && RetryCount++ < retryAttempts)
+                if (IsExceptionHandled(ex, retryAttempts, retryExceptions))
                 {
                     HandleException(ex, retryAttempts);
                     await Handle(handle, argument, retryAttempts, true, retryExceptions);
