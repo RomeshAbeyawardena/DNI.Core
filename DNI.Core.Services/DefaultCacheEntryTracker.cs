@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Services
 {
-    internal class DefaultCacheEntryTracker : ICacheEntryTracker
+    internal sealed class DefaultCacheEntryTracker : ICacheEntryTracker
     {
         private readonly ICacheTrackerStore _cacheTrackerStore;
 

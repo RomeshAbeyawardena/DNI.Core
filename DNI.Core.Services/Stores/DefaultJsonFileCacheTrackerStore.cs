@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Services.Stores
 {
-    internal class DefaultJsonFileCacheTrackerStore : IJsonFileCacheTrackerStore
+    internal sealed class DefaultJsonFileCacheTrackerStore : IJsonFileCacheTrackerStore
     {
         private readonly IFileService _fileService;
 

@@ -9,8 +9,9 @@ namespace DNI.Core.Contracts
 {
     public interface IFile : IDisposable
     {
-        public string Path { get; set; }
-        public string Name { get; set; }
-        public FileStream GetFileStream();
+        string FullPath { get; }
+        string Path { get; }
+        string Name { get; }
+        FileStream GetFileStream();
     }
 }
