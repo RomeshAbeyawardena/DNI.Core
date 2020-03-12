@@ -1,4 +1,5 @@
 ﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
 using DNI.Core.Services.Abstraction;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -14,13 +15,17 @@ namespace DNI.Core.Services
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
+        private readonly ICacheEntryTracker _cacheEntryTracker;
         private readonly DistributedCacheEntryOptions _distributedCacheEntryOptions;
 
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
         {
             var result = await _distributedCache.GetAsync(cacheKeyName, cancellationToken).ConfigureAwait(false);
-
-            if(result == null || result.Length < 1)
+            var currentState = await _cacheEntryTracker.GetState(cacheKeyName, cancellationToken);
+            
+            if(result == null 
+                || result.Length < 1 
+                || currentState != CacheEntryState.Valid)
                 return default;
 
             return await Deserialise<T>(result).ConfigureAwait(false);
@@ -56,11 +61,12 @@ namespace DNI.Core.Services
         }
 
 
-        public DefaultDistributedCacheService(IDistributedCache distributedCache, 
+        public DefaultDistributedCacheService(IDistributedCache distributedCache, ICacheEntryTracker cacheEntryTracker,
             IMessagePackService messagePackService, IOptions<DistributedCacheEntryOptions> options)
             : base(messagePackService)
         {
             _distributedCache = distributedCache;
+            _cacheEntryTracker = cacheEntryTracker;
             _distributedCacheEntryOptions = options.Value;
         }
     }
