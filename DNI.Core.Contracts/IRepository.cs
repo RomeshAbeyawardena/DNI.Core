@@ -13,7 +13,7 @@ namespace DNI.Core.Contracts
     public interface IRepository<TEntity>
         where TEntity : class
     {
-        Task<int> Commit(CancellationToken cancellationToken);
+        Task<int> Commit(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken);
         Action<TEntity> ConfigureSoftDeletion { get; set; }
         IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
             where TQueryEntity : class;
