@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Services
 {
-    public class RetryHandler
+    public static class RetryHandler
     {
         public static void Handle(Action handle, int retryAttempts, params Type[] retryExceptions)
         {
@@ -27,7 +27,7 @@ namespace DNI.Core.Services
                 .Handle(handle, argument, retryAttempts, retryExceptions);
         }
 
-        public async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        public static async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
             await new DefaultRetryHandler()
                 .Handle(handle, argument, retryAttempts, retryExceptions);
