@@ -119,6 +119,7 @@ namespace DNI.Core.Services
         {
             services
                 .AddSingleton<IFileService, DefaultFileSystemService>()
+                .AddSingleton<IRetryHandler, DefaultRetryHandler>()
                 .AddSingleton(Switch.Create<CharacterType, Domains.Range>()
                 .CaseWhen(CharacterType.Lowercase, new Domains.Range(97, 122))
                 .CaseWhen(CharacterType.Uppercase, new Domains.Range(65, 90))

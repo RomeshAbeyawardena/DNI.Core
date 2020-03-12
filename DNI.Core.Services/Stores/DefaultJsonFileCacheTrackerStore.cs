@@ -14,14 +14,16 @@ namespace DNI.Core.Services.Stores
     internal sealed class DefaultJsonFileCacheTrackerStore : IJsonFileCacheTrackerStore
     {
         private readonly IFileService _fileService;
-
+        private readonly IRetryHandler _retryHandler;
         public static SemaphoreSlim SavingSemaphoreSlim = new SemaphoreSlim(1, 1);
         public static SemaphoreSlim ReadingSemaphoreSlim = new SemaphoreSlim(1, 1);
 
-        public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options, IFileService fileService)
+        public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options, 
+            IFileService fileService, IRetryHandler retryHandler)
         {
             Options = options;
             _fileService = fileService;
+            _retryHandler = retryHandler;
         }
 
         public IJsonFileCacheTrackerStoreOptions Options { get; }
@@ -40,7 +42,7 @@ namespace DNI.Core.Services.Stores
             {
                 await SavingSemaphoreSlim.WaitAsync(cancellationToken);
 
-                return await RetryHandler.Handle(async (fileName) =>
+                return await _retryHandler.Handle(async (fileName) =>
                 {
                     await _fileService
                         .SaveTextToFile(fileName, jsonContent, cancellationToken);

@@ -39,6 +39,11 @@ namespace DNI.Core.Services
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
         private readonly ILogger<IRetryHandler> _logger;
+        private void HandleException(Exception ex)
+        {
+            _logger?.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
+            Thread.Sleep(Timeout);
+        }
 
         public DefaultRetryHandler(ILogger<IRetryHandler> logger = null)
         {
@@ -54,13 +59,12 @@ namespace DNI.Core.Services
             {
                 handle();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(retryExceptions.Contains(ex.GetType()) 
+                if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
                 {
-                    _logger.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
-                    Thread.Sleep(Timeout);
+                    HandleException(ex);
                     Handle(handle, retryAttempts, retryExceptions);
                 }
                 throw;
@@ -74,13 +78,12 @@ namespace DNI.Core.Services
             {
                 return handle(argument);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                if(retryExceptions.Contains(ex.GetType()) 
+                if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
-                { 
-                    _logger.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
-                    Thread.Sleep(Timeout);
+                {
+                    HandleException(ex);
                     return Handle(handle, argument, retryAttempts, retryExceptions);
                 }
                 throw;
@@ -89,12 +92,40 @@ namespace DNI.Core.Services
 
         public async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
-            return await Handle<T, Task<TResult>>(handle, argument, retryAttempts, retryExceptions);
+            try
+            {
+                return await Handle<T, Task<TResult>>(handle, argument, retryAttempts, retryExceptions);
+            }
+            catch (Exception ex)
+            {
+                if (retryExceptions.Contains(ex.GetType())
+                    && RetryCount++ < retryAttempts)
+                {
+                    HandleException(ex);
+                    return await Handle(handle, argument, retryAttempts, retryExceptions);
+                }
+                throw;
+            }
+
         }
 
         public async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
-            await Handle<T, Task>(handle, argument, retryAttempts, retryExceptions);
+            try
+            {
+                await Handle<T, Task>(handle, argument, retryAttempts, retryExceptions);
+            }
+            catch (Exception ex)
+            {
+                if (retryExceptions.Contains(ex.GetType())
+                    && RetryCount++ < retryAttempts)
+                {
+                    HandleException(ex);
+                    await Handle(handle, argument, retryAttempts, retryExceptions);
+                }
+                throw;
+            }
+
         }
     }
 }
