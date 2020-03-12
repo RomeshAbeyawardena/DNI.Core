@@ -15,6 +15,9 @@ namespace DNI.Core.Services.Stores
     {
         private readonly IFileService _fileService;
 
+        public static SemaphoreSlim SavingSemaphoreSlim = new SemaphoreSlim(1, 1);
+        public static SemaphoreSlim ReadingSemaphoreSlim = new SemaphoreSlim(1, 1);
+
         public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options, IFileService fileService)
         {
             Options = options;
@@ -32,9 +35,11 @@ namespace DNI.Core.Services.Stores
         public async Task<IFile> SaveItems(IDictionary<string, CacheEntryState> state, CancellationToken cancellationToken)
         {
             var jsonContent = JsonSerializer.Serialize(state);
+
+            await SavingSemaphoreSlim.WaitAsync(cancellationToken);
             await _fileService
                 .SaveTextToFile(Options.FileName, jsonContent, cancellationToken);
-
+            SavingSemaphoreSlim.Release();
             return _fileService.GetFile(Options.FileName);
         }
 
@@ -47,13 +52,19 @@ namespace DNI.Core.Services.Stores
         {
             if(!file.Exists)
                 return default;
+            await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
 
             using var fileStream = file.GetFileStream();
             using var streamReader = new StreamReader(fileStream);
-            
             var content = streamReader.ReadToEndAsync();
 
+            ReadingSemaphoreSlim.Release();
             return JsonSerializer.Deserialize<IDictionary<string,CacheEntryState>>(await content);
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }
