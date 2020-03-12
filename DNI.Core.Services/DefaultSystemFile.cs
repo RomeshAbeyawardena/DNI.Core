@@ -27,7 +27,7 @@ namespace DNI.Core.Services
                 return fileStream = RetryHandler.Handle((path) =>
                 {
                     if (Exists)
-                        return File.Open(path, FileMode.OpenOrCreate);
+                        return File.Open(path, FileMode.Open);
                     return default;
                 }, FullPath, 5, logger, typeof(IOException));
 
