@@ -39,10 +39,15 @@ namespace DNI.Core.Services.Stores
             try
             {
                 await SavingSemaphoreSlim.WaitAsync(cancellationToken);
-                await _fileService
-                    .SaveTextToFile(Options.FileName, jsonContent, cancellationToken);
 
-                return _fileService.GetFile(Options.FileName);
+                return await RetryHandler.Handle(async (fileName) =>
+                {
+                    await _fileService
+                        .SaveTextToFile(fileName, jsonContent, cancellationToken);
+
+                    return _fileService.GetFile(Options.FileName);
+                }, Options.FileName, 6, typeof(IOException));
+
             }
             finally
             {

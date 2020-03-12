@@ -1,8 +1,10 @@
 ﻿using DNI.Core.Contracts;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DNI.Core.Services
@@ -36,8 +38,15 @@ namespace DNI.Core.Services
 
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
-        public int RetryCount { get; private set; }
+        private readonly ILogger<IRetryHandler> _logger;
 
+        public DefaultRetryHandler(ILogger<IRetryHandler> logger = null)
+        {
+            _logger = logger;
+        }
+
+        public int RetryCount { get; private set; }
+        public int Timeout => RetryCount * 1000;
         public void Handle(Action handle, int retryAttempts, params Type[] retryExceptions)
         {
             RetryCount = 0;
@@ -49,8 +58,11 @@ namespace DNI.Core.Services
             {
                 if(retryExceptions.Contains(ex.GetType()) 
                     && RetryCount++ < retryAttempts)
+                {
+                    _logger.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
+                    Thread.Sleep(Timeout);
                     Handle(handle, retryAttempts, retryExceptions);
-                
+                }
                 throw;
             }
         }
@@ -66,8 +78,11 @@ namespace DNI.Core.Services
             {
                 if(retryExceptions.Contains(ex.GetType()) 
                     && RetryCount++ < retryAttempts)
+                { 
+                    _logger.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
+                    Thread.Sleep(Timeout);
                     return Handle(handle, argument, retryAttempts, retryExceptions);
-                
+                }
                 throw;
             }
         }

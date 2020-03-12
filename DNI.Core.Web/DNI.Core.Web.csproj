@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CacheEntityRules\**" />
+    <Content Remove="CacheEntityRules\**" />
+    <EmbeddedResource Remove="CacheEntityRules\**" />
+    <None Remove="CacheEntityRules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="MediatR" Version="8.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
@@ -16,10 +23,6 @@
     <ProjectReference Include="..\DNI.Core.Domains\DNI.Core.Domains.csproj" />
     <ProjectReference Include="..\DNI.Core.Services\DNI.Core.Services.csproj" />
     <ProjectReference Include="..\DNI.Core.Shared\DNI.Core.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="CacheEntityRules\" />
   </ItemGroup>
 
 </Project>
