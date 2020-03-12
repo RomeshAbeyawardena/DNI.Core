@@ -17,13 +17,13 @@ namespace DNI.Core.Services.Options
         public bool RegisterExceptionHandlers { get; set; }
         public bool RegisterCryptographicProviders { get; set; }
 
-        public bool UseJsonFileCacheTrackerStore { get; private set; }
+        public bool UseJsonFileCacheEntryTrackerStore { get; private set; }
 
         public IJsonFileCacheTrackerStoreOptions JsonFileCacheTrackerStoreOptions { get; private set; }
 
         public void RegisterJsonFileCacheTrackerStore(Action<IJsonFileCacheTrackerStoreOptions> configure)
         {
-            UseJsonFileCacheTrackerStore = true;
+            UseJsonFileCacheEntryTrackerStore = true;
             JsonFileCacheTrackerStoreOptions = new DefaultJsonFileCacheTrackerStoreOptions();
             configure(JsonFileCacheTrackerStoreOptions);
         }

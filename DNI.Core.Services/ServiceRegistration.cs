@@ -173,7 +173,7 @@ namespace DNI.Core.Services
             if (options.RegisterExceptionHandlers)
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
 
-            if(options.UseJsonFileCacheTrackerStore)
+            if(options.UseJsonFileCacheEntryTrackerStore)
             {
                 services
                     .AddSingleton(options.JsonFileCacheTrackerStoreOptions)
