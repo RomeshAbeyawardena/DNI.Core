@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Humanizer;
 
 namespace DNI.Core.Services
 {
@@ -41,7 +42,9 @@ namespace DNI.Core.Services
         private readonly ILogger<IRetryHandler> _logger;
         private void HandleException(Exception ex)
         {
-            _logger?.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} seconds", Timeout / 1000);
+            var timeoutInSeconds = Timeout / 1000;
+            _logger?.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} {1}", 
+                timeoutInSeconds, timeoutInSeconds > 0 ? "seconds" : "second");
             Thread.Sleep(Timeout);
         }
 
