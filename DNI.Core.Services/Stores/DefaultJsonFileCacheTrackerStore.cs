@@ -45,6 +45,9 @@ namespace DNI.Core.Services.Stores
 
         private async Task<IDictionary<string,CacheEntryState>> GetItems(IFile file, CancellationToken cancellationToken)
         {
+            if(!file.Exists)
+                return default;
+
             using var fileStream = file.GetFileStream();
             using var streamReader = new StreamReader(fileStream);
             

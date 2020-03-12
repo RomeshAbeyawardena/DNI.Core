@@ -11,6 +11,8 @@ namespace DNI.Core.Services
 
         public string FullPath => System.IO.Path.Combine(Path, Name);
 
+        public bool Exists => File.Exists(FullPath);
+
         public void Dispose()
         {
             fileStream?.Dispose();
@@ -18,7 +20,10 @@ namespace DNI.Core.Services
 
         public FileStream GetFileStream()
         {
-            return fileStream = File.OpenRead(FullPath);
+            if(Exists)
+                return fileStream = File.OpenRead(FullPath);
+
+            return default;
         }
 
         public DefaultSystemFile(string fileName)

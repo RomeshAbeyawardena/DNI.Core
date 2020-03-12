@@ -29,7 +29,7 @@ namespace DNI.Core.UnitTests
                 m.Value)
                 .Returns(new DistributedCacheEntryOptions());
 
-            sut = new DefaultDistributedCacheService(distributedCacheMock.Object, 
+            sut = new DefaultDistributedCacheService(distributedCacheMock.Object, null,
                 messagePackServiceMock.Object, distributedCacheEntryOptionsMock.Object);
         } 
 

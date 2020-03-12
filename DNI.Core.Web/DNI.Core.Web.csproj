@@ -18,4 +18,8 @@
     <ProjectReference Include="..\DNI.Core.Shared\DNI.Core.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CacheEntityRules\" />
+  </ItemGroup>
+
 </Project>

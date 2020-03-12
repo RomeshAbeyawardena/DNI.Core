@@ -174,8 +174,9 @@ namespace DNI.Core.Services
             if(options.UseJsonFileCacheEntryTrackerStore)
             {
                 services
-                    .AddSingleton(options.JsonFileCacheTrackerStoreOptions)
-                    .AddSingleton<IJsonFileCacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
+                    .AddSingleton((serviceProvider) => options
+                        .ConfigureJsonFileCacheTrackerStoreOptions(serviceProvider))
+                    .AddSingleton<ICacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
                     .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
                 
             };

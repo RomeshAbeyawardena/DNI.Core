@@ -19,13 +19,17 @@ namespace DNI.Core.Services.Options
 
         public bool UseJsonFileCacheEntryTrackerStore { get; private set; }
 
-        public IJsonFileCacheTrackerStoreOptions JsonFileCacheTrackerStoreOptions { get; private set; }
-
-        public void RegisterJsonFileCacheTrackerStore(Action<IJsonFileCacheTrackerStoreOptions> configure)
+        public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
+        public void RegisterJsonFileCacheTrackerStore(Action<IServiceProvider, IJsonFileCacheTrackerStoreOptions> configure)
         {
             UseJsonFileCacheEntryTrackerStore = true;
-            JsonFileCacheTrackerStoreOptions = new DefaultJsonFileCacheTrackerStoreOptions();
-            configure(JsonFileCacheTrackerStoreOptions);
+            
+            ConfigureJsonFileCacheTrackerStoreOptions = (serviceProvider) =>
+            {
+                var options = new DefaultJsonFileCacheTrackerStoreOptions();
+                configure(serviceProvider, options);
+                return options;
+            };
         }
     }
 }

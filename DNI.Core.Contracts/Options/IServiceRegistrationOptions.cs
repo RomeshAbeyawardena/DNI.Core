@@ -35,7 +35,9 @@ namespace DNI.Core.Contracts.Options
         bool RegisterCryptographicProviders { get; set; }
         
         bool UseJsonFileCacheEntryTrackerStore { get; }
-        IJsonFileCacheTrackerStoreOptions JsonFileCacheTrackerStoreOptions { get; }
-        void RegisterJsonFileCacheTrackerStore(Action<IJsonFileCacheTrackerStoreOptions> configure);
+
+        Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; }
+
+        void RegisterJsonFileCacheTrackerStore(Action<IServiceProvider, IJsonFileCacheTrackerStoreOptions> configure);
     }
 }

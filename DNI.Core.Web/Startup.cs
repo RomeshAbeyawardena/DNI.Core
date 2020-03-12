@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace DNI.Core.Web
 {
@@ -18,7 +19,12 @@ namespace DNI.Core.Web
                     options.RegisterMessagePackSerialisers = true;
                     options.RegisterCacheProviders = true;
                     options.RegisterMediatorServices = true;
-                    options.RegisterExceptionHandlers = true; }, 
+                    options.RegisterExceptionHandlers = true; 
+                    options.RegisterJsonFileCacheTrackerStore((serviceProvider, configure) => { 
+                        var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
+                        configure
+                            .FileName = Path.Combine(webHostEnvironment.ContentRootPath, "cache.json");
+                    }); }, 
                 out var serviceBroker)
                 .AddMvc();
         }
