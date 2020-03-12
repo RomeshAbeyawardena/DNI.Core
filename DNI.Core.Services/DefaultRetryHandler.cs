@@ -15,36 +15,36 @@ namespace DNI.Core.Services
         public static void Handle(Action handle, int retryAttempts, params Type[] retryExceptions)
         {
             new DefaultRetryHandler()
-                .Handle(handle, retryAttempts, retryExceptions);
+                .Handle(handle, retryAttempts, false, retryExceptions);
         }
 
         public static TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
             return new DefaultRetryHandler()
-                .Handle(handle, argument, retryAttempts, retryExceptions);
+                .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
 
         public static async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
             return await new DefaultRetryHandler()
-                .Handle(handle, argument, retryAttempts, retryExceptions);
+                .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
 
         public static async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
         {
             await new DefaultRetryHandler()
-                .Handle(handle, argument, retryAttempts, retryExceptions);
+                .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
     }
 
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
         private readonly ILogger<IRetryHandler> _logger;
-        private void HandleException(Exception ex)
+        private void HandleException(Exception ex, int maximumAttempts)
         {
             var timeoutInSeconds = Timeout / 1000;
-            _logger?.LogWarning(ex, "Failed and handled within retry handler, retrying in {0} {1}", 
-                timeoutInSeconds, timeoutInSeconds > 0 ? "seconds" : "second");
+            _logger?.LogWarning(ex, "Attempt {0} of {1}: Failed and handled within retry handler, retrying in {2} {3}", 
+                RetryCount, maximumAttempts, timeoutInSeconds, timeoutInSeconds > 0 ? "seconds" : "second");
             Thread.Sleep(Timeout);
         }
 
@@ -55,9 +55,11 @@ namespace DNI.Core.Services
 
         public int RetryCount { get; private set; }
         public int Timeout => RetryCount * 1000;
-        public void Handle(Action handle, int retryAttempts, params Type[] retryExceptions)
+        public void Handle(Action handle, int retryAttempts, bool isRetry = false,  params Type[] retryExceptions)
         {
-            RetryCount = 0;
+            if(!isRetry)
+                RetryCount = 0;
+
             try
             {
                 handle();
@@ -67,16 +69,18 @@ namespace DNI.Core.Services
                 if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
                 {
-                    HandleException(ex);
-                    Handle(handle, retryAttempts, retryExceptions);
+                    HandleException(ex, retryAttempts);
+                    Handle(handle, retryAttempts, true, retryExceptions);
                 }
                 throw;
             }
         }
 
-        public TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        public TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, bool isRetry = false, params Type[] retryExceptions)
         {
-            RetryCount = 0;
+            if(!isRetry)
+                RetryCount = 0;
+
             try
             {
                 return handle(argument);
@@ -86,45 +90,45 @@ namespace DNI.Core.Services
                 if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
                 {
-                    HandleException(ex);
-                    return Handle(handle, argument, retryAttempts, retryExceptions);
+                    HandleException(ex, retryAttempts);
+                    return Handle(handle, argument, retryAttempts, true, retryExceptions);
                 }
                 throw;
             }
         }
 
-        public async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        public async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, bool isRetry = false, params Type[] retryExceptions)
         {
             try
             {
-                return await Handle<T, Task<TResult>>(handle, argument, retryAttempts, retryExceptions);
+                return await Handle<T, Task<TResult>>(handle, argument, retryAttempts, true, retryExceptions);
             }
             catch (Exception ex)
             {
                 if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
                 {
-                    HandleException(ex);
-                    return await Handle(handle, argument, retryAttempts, retryExceptions);
+                    HandleException(ex, retryAttempts);
+                    return await Handle(handle, argument, retryAttempts, true, retryExceptions);
                 }
                 throw;
             }
 
         }
 
-        public async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        public async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, bool isRetry = false, params Type[] retryExceptions)
         {
             try
             {
-                await Handle<T, Task>(handle, argument, retryAttempts, retryExceptions);
+                await Handle<T, Task>(handle, argument, retryAttempts, true, retryExceptions);
             }
             catch (Exception ex)
             {
                 if (retryExceptions.Contains(ex.GetType())
                     && RetryCount++ < retryAttempts)
                 {
-                    HandleException(ex);
-                    await Handle(handle, argument, retryAttempts, retryExceptions);
+                    HandleException(ex, retryAttempts);
+                    await Handle(handle, argument, retryAttempts, true, retryExceptions);
                 }
                 throw;
             }

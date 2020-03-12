@@ -48,7 +48,7 @@ namespace DNI.Core.Services.Stores
                         .SaveTextToFile(fileName, jsonContent, cancellationToken);
 
                     return _fileService.GetFile(Options.FileName);
-                }, Options.FileName, 6, typeof(IOException));
+                }, Options.FileName, 6, false, typeof(IOException));
 
             }
             finally
