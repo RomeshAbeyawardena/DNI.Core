@@ -9,7 +9,29 @@ namespace DNI.Core.Services
 {
     public class RetryHandler
     {
+        public static void Handle(Action handle, int retryAttempts, params Type[] retryExceptions)
+        {
+            new DefaultRetryHandler()
+                .Handle(handle, retryAttempts, retryExceptions);
+        }
 
+        public static TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        {
+            return new DefaultRetryHandler()
+                .Handle(handle, argument, retryAttempts, retryExceptions);
+        }
+
+        public static async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        {
+            return await new DefaultRetryHandler()
+                .Handle(handle, argument, retryAttempts, retryExceptions);
+        }
+
+        public async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, params Type[] retryExceptions)
+        {
+            await new DefaultRetryHandler()
+                .Handle(handle, argument, retryAttempts, retryExceptions);
+        }
     }
 
     internal sealed class DefaultRetryHandler : IRetryHandler
