@@ -21,7 +21,7 @@ namespace DNI.Core.Services
         public FileStream GetFileStream()
         {
             if(Exists)
-                return fileStream = File.OpenRead(FullPath);
+                return fileStream = RetryHandler.Handle((path) => File.OpenRead(path), FullPath, 5, typeof(IOException));
 
             return default;
         }
