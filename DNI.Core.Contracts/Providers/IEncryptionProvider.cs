@@ -6,7 +6,7 @@ namespace DNI.Core.Contracts.Providers
     public interface IEncryptionProvider
     {
         /// <summary>
-        /// Encrypts all encrypted keys
+        /// Encrypts a value of T using reflection or decorated EncryptAttributes
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TResult"></typeparam>
@@ -15,7 +15,7 @@ namespace DNI.Core.Contracts.Providers
         Task<TResult> Encrypt<T, TResult>(T value);
 
         /// <summary>
-        /// Decrypts all encryptable keys
+        /// Decrypts a value of T using reflection or decorated EncryptAttributes
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TResult"></typeparam>
@@ -23,8 +23,22 @@ namespace DNI.Core.Contracts.Providers
         /// <returns></returns>
         Task<TResult> Decrypt<T, TResult>(T value);
 
+        /// <summary>
+        /// Transforms a value of T to TResult using Automapper whilst encrypting decorated EncryptAttributes
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         Task<IEnumerable<TResult>> Encrypt<T, TResult>(IEnumerable<T> value);
 
+        /// <summary>
+        /// Transforms a value of T to TResult using Automapper whilst decrypting decorated EncryptAttributes
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         Task<IEnumerable<TResult>> Decrypt<T, TResult>(IEnumerable<T> value);
     }
 }

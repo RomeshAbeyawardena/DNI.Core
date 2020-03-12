@@ -1,4 +1,5 @@
 ﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
 using DNI.Core.Services.Abstraction;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -11,15 +12,19 @@ namespace DNI.Core.Services
     internal sealed class DefaultSessionCacheService : DefaultCacheServiceBase
     {
         private readonly ISession _session;
+        private readonly ICacheEntryTracker _cacheEntryTracker;
 
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default)
         {
-            var value = _session.Get(cacheKeyName);
-
-            if(value == null)
+            var result = _session.Get(cacheKeyName);
+            var currentState = await _cacheEntryTracker.GetState(cacheKeyName, cancellationToken);
+            
+            if(result == null 
+                || result.Length < 1 
+                || currentState != CacheEntryState.Valid)
                 return default;
 
-            return await Deserialise<T>(value);
+            return await Deserialise<T>(result);
         }
 
         public override async Task Set<T>(string cacheKeyName, T value, CancellationToken cancellationToken = default)
@@ -54,10 +59,12 @@ namespace DNI.Core.Services
             return value;
         }
 
-        public DefaultSessionCacheService(ISession session, IMessagePackService messagePackService)
+        public DefaultSessionCacheService(ISession session, 
+            IMessagePackService messagePackService, ICacheEntryTracker cacheEntryTracker)
             : base(messagePackService)
         {
             _session = session;
+            _cacheEntryTracker = cacheEntryTracker;
         }
     }
 }

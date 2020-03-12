@@ -1,11 +1,9 @@
 ﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
 using DNI.Core.Services.Abstraction;
-using DNI.Core.Services.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -17,13 +15,17 @@ namespace DNI.Core.Services
     internal sealed class DefaultDistributedCacheService : DefaultCacheServiceBase
     {
         private readonly IDistributedCache _distributedCache;
+        private readonly ICacheEntryTracker _cacheEntryTracker;
         private readonly DistributedCacheEntryOptions _distributedCacheEntryOptions;
 
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
         {
             var result = await _distributedCache.GetAsync(cacheKeyName, cancellationToken).ConfigureAwait(false);
-
-            if(result == null || result.Length < 1)
+            var currentState = await _cacheEntryTracker.GetState(cacheKeyName, cancellationToken);
+            
+            if(result == null 
+                || result.Length < 1 
+                || currentState != CacheEntryState.Valid)
                 return default;
 
             return await Deserialise<T>(result).ConfigureAwait(false);
@@ -38,6 +40,8 @@ namespace DNI.Core.Services
 
             await _distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(), 
                 _distributedCacheEntryOptions, cancellationToken).ConfigureAwait(false);
+
+            await _cacheEntryTracker.SetState(cacheKeyName, CacheEntryState.Valid, cancellationToken);
         }
 
         public override async Task<T> Set<T>(string cacheKeyName, Func<T> getValue, CancellationToken cancellationToken = default)
@@ -59,11 +63,12 @@ namespace DNI.Core.Services
         }
 
 
-        public DefaultDistributedCacheService(IDistributedCache distributedCache, 
+        public DefaultDistributedCacheService(IDistributedCache distributedCache, ICacheEntryTracker cacheEntryTracker,
             IMessagePackService messagePackService, IOptions<DistributedCacheEntryOptions> options)
             : base(messagePackService)
         {
             _distributedCache = distributedCache;
+            _cacheEntryTracker = cacheEntryTracker;
             _distributedCacheEntryOptions = options.Value;
         }
     }

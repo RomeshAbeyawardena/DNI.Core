@@ -92,7 +92,7 @@ namespace DNI.Core.Services
                 entry = _dbSet.Update(entity);
 
             if(saveChanges)
-                await Commit(cancellationToken);
+                await Commit(true, cancellationToken);
 
             _repositoryStateSubject.OnNext(new RepositoryState { 
                 State = entry.State, 
@@ -170,9 +170,9 @@ namespace DNI.Core.Services
             return await Delete(foundEntity, softDelete, cancellationToken);
         }
 
-        public async Task<int> Commit(CancellationToken cancellationToken)
+        public async Task<int> Commit(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken)
         {
-            return await DbContext.SaveChangesAsync(cancellationToken);
+            return await DbContext.SaveChangesAsync(acceptAllChangesOnSuccess ,cancellationToken);
         }
 
         public IAsyncQueryResultTransformer<TEntity> For(Expression<Func<TEntity, bool>> whereExpression)

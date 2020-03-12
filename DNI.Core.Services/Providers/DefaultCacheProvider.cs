@@ -4,7 +4,6 @@ using DNI.Core.Contracts.Factories;
 using DNI.Core.Contracts.Providers;
 using DNI.Core.Contracts.Services;
 using DNI.Core.Services.Abstraction;
-using DNI.Core.Services.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +19,9 @@ namespace DNI.Core.Services.Providers
     {
         private readonly ICacheProviderFactory _cacheProviderFactory;
 
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IDictionary<Type, IEnumerable<Type>> _entityCacheRules;
-
-        public DefaultCacheProvider(ICacheProviderFactory cacheProviderFactory,
-            IServiceProvider serviceProvider, IDictionary<Type, IEnumerable<Type>> entityCacheRules)
+        public DefaultCacheProvider(ICacheProviderFactory cacheProviderFactory)
         {
             _cacheProviderFactory = cacheProviderFactory;
-            _serviceProvider = serviceProvider;
-            _entityCacheRules = entityCacheRules;
         }
 
         public async Task<T> Get<T>(CacheType cacheType, string cacheKeyName, CancellationToken cancellationToken = default)
@@ -55,44 +48,9 @@ namespace DNI.Core.Services.Providers
             if (value == null || !value.Any())
                 return await getDataFromSource();
 
-            await ValidateCacheEntityRules(getDataFromSource, value);
-
             return value;
         }
 
-        public async Task ValidateCacheEntityRules<T>(RequiresRefreshDelegate requiresRefresh, IEnumerable<T> currentValue)
-        {
-            
-            if (!_entityCacheRules.TryGetValue(typeof(T), out var ruleTypes))
-                return;
-
-            var ruleTypesArray = ruleTypes.ToArray();
-            var currentIndex = 0;
-
-            ICacheEntityRule<T> GetNext(int index, CacheEntityRuleDelegate<T> cacheEntityRule)
-            {
-                if(index < ruleTypesArray.Length)
-                    return (ICacheEntityRule<T>)Activator.CreateInstance(ruleTypesArray[index], requiresRefresh, cacheEntityRule);
-
-                return default;
-            }
-
-            CacheEntityRuleDelegate<T> cacheEntityRule = null;
-            ICacheEntityRule<T> next;
-            cacheEntityRule = async (serviceProvider, values) =>
-            {
-                next = GetNext(currentIndex++, cacheEntityRule);
-
-                if(next == null)
-                    return;
-
-                await next.OnGet(serviceProvider, values);
-            };
-
-            next = next = GetNext(currentIndex++, cacheEntityRule);
-            await next?.OnGet(_serviceProvider, currentValue);
-
-        }
 
         public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName,
             Func<CancellationToken, Task<T>> getValue, bool append = false,

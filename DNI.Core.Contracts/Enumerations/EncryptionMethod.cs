@@ -1,5 +1,6 @@
 ﻿namespace DNI.Core.Contracts.Enumerations
 {
+    //Specifies a set of Encryption methods
     public enum EncryptionMethod
     {
         /// <summary>

@@ -7,8 +7,6 @@ using System.Reactive.Subjects;
 using Microsoft.IO;
 using System.IO;
 using DNI.Core.Domains.States;
-using DNI.Core.Services;
-using System.Threading;
 
 namespace DNI.Core.App
 {

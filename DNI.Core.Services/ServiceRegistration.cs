@@ -21,6 +21,8 @@ using System;
 using System.Reactive.Subjects;
 using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 using DNI.Core.Domains.States;
+using DNI.Core.Contracts.Stores;
+using DNI.Core.Services.Stores;
 
 namespace DNI.Core.Services
 {
@@ -113,16 +115,17 @@ namespace DNI.Core.Services
             return rMsm;
         }
 
-
-
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton<IFileService, DefaultFileSystemService>()
+                .AddSingleton<IRetryHandler, DefaultRetryHandler>()
                 .AddSingleton(Switch.Create<CharacterType, Domains.Range>()
                 .CaseWhen(CharacterType.Lowercase, new Domains.Range(97, 122))
                 .CaseWhen(CharacterType.Uppercase, new Domains.Range(65, 90))
                 .CaseWhen(CharacterType.Numerics, new Domains.Range(48, 57))
                 .CaseWhen(CharacterType.Symbols, new Domains.Range(33, 47)))
+                .AddSingleton<IInstanceServiceInjector, DefaultInstanceServiceInjector>()
                 .AddSingleton<IIs, DefaultIs>()
                 .AddSingleton(RandomNumberGenerator.Create())
                 .AddSingleton<IRandomStringGenerator, DefaultRandomStringGenerator>()
@@ -168,6 +171,16 @@ namespace DNI.Core.Services
 
             if (options.RegisterExceptionHandlers)
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
+
+            if(options.UseJsonFileCacheEntryTrackerStore)
+            {
+                services
+                    .AddSingleton((serviceProvider) => options
+                        .ConfigureJsonFileCacheTrackerStoreOptions(serviceProvider))
+                    .AddSingleton<ICacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
+                    .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
+                
+            };
         }
 
     }

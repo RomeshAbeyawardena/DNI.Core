@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Contracts
 {
+    /// <summary>
+    /// Represents a data wrapper 
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity>
         where TEntity : class
     {
-        Task<int> Commit(CancellationToken cancellationToken);
+        Task<int> Commit(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken);
         Action<TEntity> ConfigureSoftDeletion { get; set; }
         IQueryable<TQueryEntity> FromQuery<TQueryEntity>(string query, params object[] parameters)
             where TQueryEntity : class;

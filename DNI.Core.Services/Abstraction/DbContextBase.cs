@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using DNI.Core.Contracts.Services;
 using DNI.Core.Contracts.Enumerations;
+using System;
 
 namespace DNI.Core.Services.Abstraction
 {
+    #pragma warning disable CS0809
     public abstract class DbContextBase : DbContext
     {
         private readonly bool _useSingularTableNames;
@@ -30,7 +32,20 @@ namespace DNI.Core.Services.Abstraction
             _useDefaultValueAttributes = useDefaultValueAttributes;
         }
 
+
+        [Obsolete("Override AddEntity instead to enable Table singularing functionality")]
         public override EntityEntry<TEntity> Add<TEntity>(TEntity entity)
+        {
+            return AddEntity(entity);
+        }
+        [Obsolete("Override UpdateEntity instead to enable Table singularing functionality")]
+        public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        {
+            return UpdateEntity(entity);
+        }
+
+        protected virtual EntityEntry<TEntity> AddEntity<TEntity>(TEntity entity)
+            where TEntity : class
         {
             if(_useModifierFlagAttributes)
                 ModifierFlagPropertyService
@@ -42,7 +57,8 @@ namespace DNI.Core.Services.Abstraction
             return base.Add(entity);
         }
 
-        public override EntityEntry<TEntity> Update<TEntity>(TEntity entity)
+        protected virtual EntityEntry<TEntity> UpdateEntity<TEntity>(TEntity entity)
+                        where TEntity : class
         {
             if(_useModifierFlagAttributes)
                 ModifierFlagPropertyService.
@@ -51,12 +67,18 @@ namespace DNI.Core.Services.Abstraction
             if(_useDefaultValueAttributes)
                 DefaultValueSetterService.SetDefaultValues(entity);
 
-            return base.Update(entity);       
+            return base.Update(entity);   
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected virtual void ModelCreating(ModelBuilder modelBuilder)
         {
             SetTableNamesToSingular(modelBuilder.Model.GetEntityTypes(), _useSingularTableNames);
+        }
+
+        [Obsolete("Override ModelCreating instead to enable Table singularing functionality")]
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            ModelCreating(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
         
@@ -72,4 +94,5 @@ namespace DNI.Core.Services.Abstraction
             mutableEntityType.SetTableName(mutableEntityType.GetTableName().Singularize());
         }
     }
+    #pragma warning restore CS0809
 }

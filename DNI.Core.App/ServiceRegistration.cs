@@ -28,7 +28,11 @@ namespace DNI.Core.App
                     .GetCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, 
                     Encoding.UTF8, "42e6f1f0-7cd2-4ce3-a06c-f86c1c82fd24", "eeaf5b47-636c-4997-ae41-d979e3b04094", 1000000, 32, "bceac9fa-70a3-4b".GetBytes(Encoding.UTF8))))
                 .AddAutoMapper(Assembly.GetAssembly(typeof(ServiceRegistration)))
-                .RegisterDbContextRepositories<TestDbContext>(ServiceLifetime.Transient, dbContextOptions => dbContextOptions.UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true"), typeof(Customer))
+                .RegisterDbContextRepositories<TestDbContext>(options => { 
+                    options.ServiceLifetime = ServiceLifetime.Transient; 
+                    options.DbContextOptions = dbContextOptions => dbContextOptions
+                        .UseSqlServer("Server=localhost;Database=KeyExchange;Trusted_Connection=true");
+                    options.EntityTypeDescriber = describer => describer.Describe<Customer>(); })
                 .RegisterCryptographicCredentials<MCryptographicCredentials>(KeyDerivationPrf.HMACSHA512, Encoding.ASCII, 
                 "drrNR2mQjfRpKbuN9f9dSwBP2MAfVCPS", 
                 "vaTfUcv4dK6wYF6Z8HnYGuHQME3PWWYnz5VRaJDXDSPvFWJxqF2Q2ettcbufQbz5", 1000000, 32, null)
