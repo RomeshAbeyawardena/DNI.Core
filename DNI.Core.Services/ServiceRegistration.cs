@@ -115,8 +115,6 @@ namespace DNI.Core.Services
             return rMsm;
         }
 
-
-
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
