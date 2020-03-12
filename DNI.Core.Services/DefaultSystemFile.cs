@@ -6,6 +6,7 @@ namespace DNI.Core.Services
 {
     internal sealed class DefaultSystemFile : IFile
     {
+        private static readonly object ReadLock = new object();
         private FileStream fileStream;
         public string Path { get; }
         public string Name { get; }
@@ -21,10 +22,17 @@ namespace DNI.Core.Services
 
         public FileStream GetFileStream(ILogger logger = default)
         {
-            if(Exists)
-                return fileStream = RetryHandler.Handle((path) => File.OpenRead(path), FullPath, 5, logger, typeof(IOException));
+            lock (ReadLock)
+            {
+                return fileStream = RetryHandler.Handle((path) =>
+                {
+                    if (Exists)
+                        return File.Open(path, FileMode.OpenOrCreate);
+                    return default;
+                }, FullPath, 5, logger, typeof(IOException));
 
-            return default;
+            }
+
         }
 
         public DefaultSystemFile(string fileName)
