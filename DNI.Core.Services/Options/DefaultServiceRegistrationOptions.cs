@@ -17,9 +17,10 @@ namespace DNI.Core.Services.Options
         public bool RegisterMediatorServices { get; set; }
         public bool RegisterExceptionHandlers { get; set; }
         public bool RegisterCryptographicProviders { get; set; }
+        
+        public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
+        public Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; private set; }
 
-        internal Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
-        internal Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; private set; }
         public void RegisterJsonSerializerOptions(Action<IServiceProvider, JsonSerializerOptions> configure)
         {
             ConfigureJsonSerializerOptions = (serviceProvider) =>

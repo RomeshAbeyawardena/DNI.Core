@@ -38,10 +38,9 @@ namespace DNI.Core.Contracts.Options
         /// </summary>
         bool RegisterCryptographicProviders { get; set; }
 
-        internal Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
-        internal Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; private set; }
-        //Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; }
-
+        public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; }
+        public Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; }
+        
         void RegisterJsonFileCacheTrackerStore(Action<IServiceProvider, IJsonFileCacheTrackerStoreOptions> configure);
         void RegisterJsonSerializerOptions(Action<IServiceProvider, JsonSerializerOptions> configure);
     }

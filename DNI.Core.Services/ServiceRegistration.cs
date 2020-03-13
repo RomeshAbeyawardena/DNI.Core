@@ -174,7 +174,8 @@ namespace DNI.Core.Services
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
 
             if(options.ConfigureJsonSerializerOptions != null)
-                services.AddSingleton((serviceProvider) => options.ConfigureJsonSerializerOptions(serviceProvider));
+                services.AddSingleton((serviceProvider) => options
+                    .ConfigureJsonSerializerOptions(serviceProvider));
 
             if(options.ConfigureJsonFileCacheTrackerStoreOptions != null)
             {

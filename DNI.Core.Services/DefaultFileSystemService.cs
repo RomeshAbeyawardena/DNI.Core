@@ -1,4 +1,5 @@
 ﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Options;
 using DNI.Core.Contracts.Services;
 using DNI.Core.Services.Options;
 using Microsoft.Extensions.Logging;
@@ -41,15 +42,16 @@ namespace DNI.Core.Services
 
         public async Task<string> GetTextFromFile(IFile file, CancellationToken cancellationToken)
         {
-            try 
-            { 
+            try
+            {
                 await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
-                return await _retryHandler.Handle(async (file) => { 
-                    using (var fileStream = file.GetFileStream(_logger))
-                    {
-                        using var streamReader = new StreamReader(fileStream);
-                        return await streamReader.ReadToEndAsync();
-                    } 
+                return await _retryHandler.Handle(async (file) =>
+                {
+                    using var fileStream = file.GetFileStream(_logger);
+
+                    using var streamReader = new StreamReader(fileStream);
+                    return await streamReader.ReadToEndAsync();
+
                 }, file, _retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
             }
             finally
@@ -61,15 +63,16 @@ namespace DNI.Core.Services
         public async Task SaveTextToFile(IFile file, string content, CancellationToken cancellationToken)
         {
             try
-            { 
+            {
                 await SavingSemaphoreSlim.WaitAsync(cancellationToken);
-                await _retryHandler.Handle(async(file) => {
+                await _retryHandler.Handle(async (file) =>
+                {
                     await File.WriteAllTextAsync(file.FullPath, content, cancellationToken);
                 }, file, _retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
-                
+
             }
             finally
-            { 
+            {
                 SavingSemaphoreSlim.Release();
             }
         }

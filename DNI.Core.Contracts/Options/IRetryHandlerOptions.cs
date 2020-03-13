@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DNI.Core.Services.Options
+namespace DNI.Core.Contracts.Options
 {
     public interface IRetryHandlerOptions
     {
         int IOExceptionRetryAttempts { get; set; }
+        int Timeout { get; }
     }
 }

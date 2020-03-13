@@ -90,14 +90,14 @@ namespace DNI.Core.UnitTests
                     .Returns(Task.FromResult(jsonData))
                     .Verifiable();
 
+            _jsonSerializerMock.Setup(jsonSerializer => jsonSerializer
+                .Deserialize<IDictionary<string, CacheEntryState>>(It.IsAny<string>()))
+                .Returns(new Dictionary<string, CacheEntryState>())
+                .Verifiable();
+
             var result = await _sut.GetItems(CancellationToken.None);
 
             Assert.IsNotNull(result);
-
-            Assert.IsTrue(result.TryGetValue("SAS", out var value) && value == CacheEntryState.Valid);
-            Assert.IsTrue(result.TryGetValue("MRA", out var value1) && value1 == CacheEntryState.Invalid);
-            Assert.IsTrue(result.TryGetValue("TMR", out var value2) && value2 == CacheEntryState.Valid);
-            Assert.IsTrue(result.TryGetValue("LOL", out var value3) && value3 == CacheEntryState.New);
 
             _fileMock.Verify();
             _fileServiceMock.Verify();
