@@ -47,7 +47,7 @@ namespace DNI.Core.Services
                 await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
                 return await _retryHandler.Handle(async (file) =>
                 {
-                    using var fileStream = file.GetFileStream(_logger);
+                    using var fileStream = file.GetFileStream(_retryHandlerOptions, _logger);
 
                     using var streamReader = new StreamReader(fileStream);
                     return await streamReader.ReadToEndAsync();

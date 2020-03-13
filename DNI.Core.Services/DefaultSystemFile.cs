@@ -1,5 +1,6 @@
 ﻿using DNI.Core.Contracts;
 using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Options;
 using Microsoft.Extensions.Logging;
 using System.IO;
 
@@ -24,8 +25,11 @@ namespace DNI.Core.Services
             fileStream?.Dispose();
         }
 
-        public Stream GetFileStream(ILogger logger = default)
+        public Stream GetFileStream(IRetryHandlerOptions options = default, ILogger logger = default)
         {
+            if(options == null)
+                options = RetryHandler.DefaultOptions;
+
             lock (ReadLock)
             {
                 return fileStream = RetryHandler.Handle((path) =>
@@ -33,7 +37,7 @@ namespace DNI.Core.Services
                     if (Exists)
                         return File.Open(path, FileMode.Open);
                     return default;
-                }, FullPath, 5, logger, typeof(IOException));
+                }, FullPath, 5, logger, options, typeof(IOException));
             }
 
         }

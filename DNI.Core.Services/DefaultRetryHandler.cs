@@ -46,7 +46,7 @@ namespace DNI.Core.Services
 
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
-        public IRetryHandlerOptions _options { get; }
+        public IRetryHandlerOptions Options { get; }
 
         private readonly ILogger _logger;
 
@@ -73,12 +73,12 @@ namespace DNI.Core.Services
 
         public DefaultRetryHandler(IRetryHandlerOptions options, ILogger logger = null)
         {
-            _options = options;
+            Options = options;
             _logger = logger;
         }
 
         public int RetryCount { get; private set; }
-        public int Timeout => RetryCount * _options.Timeout;
+        public int Timeout => RetryCount * Options.Timeout;
         public void Handle(Action handle, int retryAttempts, bool isRetry = false,  params Type[] retryExceptions)
         {
             ResetCount(isRetry);

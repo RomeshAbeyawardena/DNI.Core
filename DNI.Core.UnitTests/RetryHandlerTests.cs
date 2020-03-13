@@ -22,6 +22,7 @@ namespace DNI.Core.UnitTests
         public void SetUp()
         {
             _loggerMock = new Mock<ILogger>();
+            _retryHandlerOptionsMock = new Mock<IRetryHandlerOptions>();
             _sut = new DefaultRetryHandler(_retryHandlerOptionsMock.Object, _loggerMock.Object);
             _count = 0;
         }
