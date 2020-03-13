@@ -1,5 +1,6 @@
 ﻿using DNI.Core.Contracts.Options;
 using System;
+using System.Text.Json;
 
 namespace DNI.Core.Services.Options
 {
@@ -17,13 +18,20 @@ namespace DNI.Core.Services.Options
         public bool RegisterExceptionHandlers { get; set; }
         public bool RegisterCryptographicProviders { get; set; }
 
-        public bool UseJsonFileCacheEntryTrackerStore { get; private set; }
+        internal Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
+        internal Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; private set; }
+        public void RegisterJsonSerializerOptions(Action<IServiceProvider, JsonSerializerOptions> configure)
+        {
+            ConfigureJsonSerializerOptions = (serviceProvider) =>
+            {
+                var jsonSerializerOptions = new JsonSerializerOptions();
+                configure(serviceProvider, jsonSerializerOptions);
+                return jsonSerializerOptions;
+            };
+        }
 
-        public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
         public void RegisterJsonFileCacheTrackerStore(Action<IServiceProvider, IJsonFileCacheTrackerStoreOptions> configure)
         {
-            UseJsonFileCacheEntryTrackerStore = true;
-            
             ConfigureJsonFileCacheTrackerStoreOptions = (serviceProvider) =>
             {
                 var options = new DefaultJsonFileCacheTrackerStoreOptions();

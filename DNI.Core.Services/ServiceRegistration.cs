@@ -118,6 +118,7 @@ namespace DNI.Core.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton<IJsonSerializer, DefaultJsonSerializer>()
                 .AddSingleton<IFileService, DefaultFileSystemService>()
                 .AddSingleton<IRetryHandler, DefaultRetryHandler>()
                 .AddSingleton(Switch.Create<CharacterType, Domains.Range>()
@@ -172,14 +173,16 @@ namespace DNI.Core.Services
             if (options.RegisterExceptionHandlers)
                 services.AddSingleton<IExceptionHandlerFactory, DefaultExceptionHandlerFactory>();
 
-            if(options.UseJsonFileCacheEntryTrackerStore)
+            if(options.ConfigureJsonSerializerOptions != null)
+                services.AddSingleton((serviceProvider) => options.ConfigureJsonSerializerOptions(serviceProvider));
+
+            if(options.ConfigureJsonFileCacheTrackerStoreOptions != null)
             {
                 services
                     .AddSingleton((serviceProvider) => options
                         .ConfigureJsonFileCacheTrackerStoreOptions(serviceProvider))
                     .AddSingleton<ICacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
                     .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
-                
             };
         }
 
