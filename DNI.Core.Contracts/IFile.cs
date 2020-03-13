@@ -7,6 +7,6 @@ namespace DNI.Core.Contracts
     public interface IFile : ISystemItem, IDisposable
     {
         FileInfo FileInfo { get; } 
-        FileStream GetFileStream(ILogger logger = default);
+        Stream GetFileStream(ILogger logger = default);
     }
 }

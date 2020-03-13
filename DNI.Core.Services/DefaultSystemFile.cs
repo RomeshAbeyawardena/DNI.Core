@@ -24,7 +24,7 @@ namespace DNI.Core.Services
             fileStream?.Dispose();
         }
 
-        public FileStream GetFileStream(ILogger logger = default)
+        public Stream GetFileStream(ILogger logger = default)
         {
             lock (ReadLock)
             {

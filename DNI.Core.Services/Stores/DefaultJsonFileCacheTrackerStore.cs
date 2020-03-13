@@ -52,7 +52,7 @@ namespace DNI.Core.Services.Stores
                         .SaveTextToFile(fileName, jsonContent, cancellationToken);
 
                     return _fileService.GetFile(Options.FileName);
-                }, Options.FileName, 6, false, typeof(IOException));
+                }, Options.FileName, Options.IOExceptionRetryAttempts, false, typeof(IOException));
 
             }
             finally
@@ -72,14 +72,20 @@ namespace DNI.Core.Services.Stores
             {
                 await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
 
+                string content = string.Empty;
+
                 if (!file.Exists)
                     return default;
 
-                using var fileStream = file.GetFileStream(_logger);
-                using var streamReader = new StreamReader(fileStream);
-                var content = streamReader.ReadToEndAsync();
+                using (var fileStream = file.GetFileStream(_logger))
+                { 
+                    using var streamReader = new StreamReader(fileStream);
+                    content = await streamReader.ReadToEndAsync();
+                }
+                if(string.IsNullOrWhiteSpace(content))
+                    return new Dictionary<string, CacheEntryState>();
 
-                return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(await content);
+                return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(content);
             }
             finally
             {
