@@ -104,5 +104,67 @@ namespace DNI.Core.UnitTests
             long length;
             Assert.Throws<ObjectDisposedException>(() => length = memoryStream.Length);
         }
+
+        [Test]
+        public async Task GetItems_when_existant_returns_empty_dictionary()
+        {
+            var jsonData = string.Empty;
+            var memoryStream = CreateMemoryStream(jsonData);
+            _fileMock.Setup(file => file.GetFileStream(It.IsAny<ILogger>()))
+                .Returns(memoryStream)
+                .Verifiable();
+
+            _fileMock.Setup(file => file.Exists)
+                .Returns(true)
+                .Verifiable();
+
+            _fileServiceMock.Setup(fileService => fileService.GetFile(It.IsAny<string>()))
+                .Returns(_fileMock.Object)
+                .Verifiable();
+
+            var result = await _sut.GetItems(CancellationToken.None);
+
+            Assert.IsNotNull(result);
+
+            Assert.IsEmpty(result);
+
+            _fileMock.Verify();
+            _fileServiceMock.Verify();
+            long length;
+            Assert.Throws<ObjectDisposedException>(() => length = memoryStream.Length);
+        }
+
+        [Test]
+        public async Task SaveItems_when_state_is_null_or_empty_returns_null()
+        {
+            var state = default(Dictionary<string, CacheEntryState>);
+
+            var result = await _sut.SaveItems(state, CancellationToken.None);
+
+            Assert.IsNull(result);
+
+            state = new Dictionary<string, CacheEntryState>();
+
+            result = await _sut.SaveItems(state, CancellationToken.None);
+
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public async Task SaveItems_when_state_is_valid_and_not_empty_returns()
+        {
+
+
+            var state = new Dictionary<string, CacheEntryState>();
+
+            state.Add("SAS", CacheEntryState.Invalid);
+            state.Add("MRA", CacheEntryState.Valid);
+            state.Add("TMR", CacheEntryState.New);
+
+            var result = await _sut.SaveItems(state, CancellationToken.None);
+
+            Assert.IsNotNull(result);
+
+        }
     }
 }

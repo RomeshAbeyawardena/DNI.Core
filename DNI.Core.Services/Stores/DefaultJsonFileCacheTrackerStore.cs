@@ -40,6 +40,8 @@ namespace DNI.Core.Services.Stores
 
         public async Task<IFile> SaveItems(IDictionary<string, CacheEntryState> state, CancellationToken cancellationToken)
         {
+            if(state == null || state.Count < 1)
+                return default;
 
             var jsonContent = JsonSerializer.Serialize(state);
             try
