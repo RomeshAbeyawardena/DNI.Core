@@ -44,6 +44,13 @@ namespace DNI.Core.Services
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
         private readonly ILogger _logger;
+
+        private void ResetCount(bool isRetry)
+        {
+            if(!isRetry)
+                RetryCount = 0;
+        }
+
         private void HandleException(Exception ex, int maximumAttempts)
         {
             var timeoutInSeconds = Timeout / 1000;
@@ -68,9 +75,7 @@ namespace DNI.Core.Services
         public int Timeout => RetryCount * 1000;
         public void Handle(Action handle, int retryAttempts, bool isRetry = false,  params Type[] retryExceptions)
         {
-            if(!isRetry)
-                RetryCount = 0;
-
+            ResetCount(isRetry);
             try
             {
                 handle();
@@ -88,8 +93,7 @@ namespace DNI.Core.Services
 
         public TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, bool isRetry = false, params Type[] retryExceptions)
         {
-            if(!isRetry)
-                RetryCount = 0;
+            ResetCount(isRetry);
 
             try
             {
