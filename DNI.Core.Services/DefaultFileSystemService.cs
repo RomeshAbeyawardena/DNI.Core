@@ -8,6 +8,11 @@ namespace DNI.Core.Services
 {
     internal sealed class DefaultFileSystemService : IFileService
     {
+        public IDirectory GetDirectory(string directoryPath)
+        {
+            return new DefaultSystemDirectory(directoryPath);
+        }
+
         public IFile GetFile(string fileName)
         {
             return new DefaultSystemFile(fileName);
