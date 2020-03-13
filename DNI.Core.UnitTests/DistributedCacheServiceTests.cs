@@ -69,7 +69,7 @@ namespace DNI.Core.UnitTests
         
         [TestCase(CacheEntryState.New)]
         [TestCase(CacheEntryState.Invalid)]
-        public async Task Get_when_cache_state_is_invalid_does_notcall_deserialize(CacheEntryState invalidEntityState)
+        public async Task Get_when_cache_state_is_invalid_does_not_call_deserialize(CacheEntryState invalidEntityState)
         {
             var cancellationToken = CancellationToken.None;
             var testCacheModel = new TestCacheModel();
@@ -120,6 +120,8 @@ namespace DNI.Core.UnitTests
                 .GetAsync(nameof(TestCacheModel), cancellationToken), Times.Once);
             messagePackServiceMock.Verify(messagePackService => messagePackService
                 .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions), Times.Never);
+
+            Assert.IsNull(result);
         }
 
         [Test]
