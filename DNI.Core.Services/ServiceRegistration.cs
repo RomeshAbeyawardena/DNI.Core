@@ -23,6 +23,7 @@ using static Microsoft.IO.RecyclableMemoryStreamManager.Events;
 using DNI.Core.Domains.States;
 using DNI.Core.Contracts.Stores;
 using DNI.Core.Services.Stores;
+using System.Text.Json;
 
 namespace DNI.Core.Services
 {
@@ -176,15 +177,20 @@ namespace DNI.Core.Services
             if(options.ConfigureJsonSerializerOptions != null)
                 services.AddSingleton((serviceProvider) => options
                     .ConfigureJsonSerializerOptions(serviceProvider));
+            else services.AddSingleton(new JsonSerializerOptions());
 
             if(options.ConfigureJsonFileCacheTrackerStoreOptions != null)
-            {
                 services
                     .AddSingleton((serviceProvider) => options
                         .ConfigureJsonFileCacheTrackerStoreOptions(serviceProvider))
                     .AddSingleton<ICacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
                     .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
-            };
+            
+
+            if(options.ConfigureRetryHandlerOptions != null)
+                services.AddSingleton((serviceProvider) => options.ConfigureRetryHandlerOptions(serviceProvider));
+            else
+                services.AddSingleton(RetryHandler.DefaultOptions);
         }
 
     }

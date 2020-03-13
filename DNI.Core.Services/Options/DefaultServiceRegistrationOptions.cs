@@ -21,6 +21,8 @@ namespace DNI.Core.Services.Options
         public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; private set; }
         public Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; private set; }
 
+        public Func<IServiceProvider, IRetryHandlerOptions> ConfigureRetryHandlerOptions { get; private set; }
+
         public void RegisterJsonSerializerOptions(Action<IServiceProvider, JsonSerializerOptions> configure)
         {
             ConfigureJsonSerializerOptions = (serviceProvider) =>
@@ -36,6 +38,16 @@ namespace DNI.Core.Services.Options
             ConfigureJsonFileCacheTrackerStoreOptions = (serviceProvider) =>
             {
                 var options = new DefaultJsonFileCacheTrackerStoreOptions();
+                configure(serviceProvider, options);
+                return options;
+            };
+        }
+
+        public void RegisterRetryHandlerOptions(Action<IServiceProvider, IRetryHandlerOptions> configure)
+        {
+            ConfigureRetryHandlerOptions = (serviceProvider) =>
+            {
+                var options = new DefaultRetryHandlerOptions();
                 configure(serviceProvider, options);
                 return options;
             };
