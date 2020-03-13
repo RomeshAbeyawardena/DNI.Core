@@ -20,11 +20,9 @@ namespace DNI.Core.UnitTests
     public class DefaultCacheEntryStoreTests
     {
         private ICacheTrackerStore _sut;
-        private Mock<ILogger<IJsonFileCacheTrackerStore>> _loggerMock;
         private Mock<IFileService> _fileServiceMock;
         private Mock<IFile> _fileMock;
-        private Mock<IRetryHandler> _retryHandlerMock;
-
+        
         private MemoryStream CreateMemoryStream(string data)
         {
             MemoryStream memoryStream;
@@ -41,23 +39,17 @@ namespace DNI.Core.UnitTests
         [SetUp]
         public void SetUp()
         {
-            _loggerMock = new Mock<ILogger<IJsonFileCacheTrackerStore>>();
             _fileServiceMock = new Mock<IFileService>();
-            _retryHandlerMock = new Mock<IRetryHandler>();
+          
             _fileMock = new Mock<IFile>();
-            _sut = new DefaultJsonFileCacheTrackerStore(_loggerMock.Object, 
-                new JsonFileCacheTrackerStoreOptions(), 
-                _fileServiceMock.Object,
-                _retryHandlerMock.Object);
+            _sut = new DefaultJsonFileCacheTrackerStore(
+                new JsonFileCacheTrackerStoreOptions { FileName = "My test file" }, 
+                _fileServiceMock.Object);
         }
 
         [Test]
         public async Task GetItems_when_non_existant_returns_default()
         {
-            _fileMock.Setup(file => file.GetFileStream(It.IsAny<ILogger>()))
-                .Returns(new MemoryStream());
-                //.Verifiable();
-
             _fileMock.Setup(file => file.Exists)
                 .Returns(false)
                 .Verifiable();
@@ -77,18 +69,25 @@ namespace DNI.Core.UnitTests
         public async Task GetItems_when_existant_returns()
         {
             var jsonData = "{\"SAS\":1,\"MRA\":0,\"TMR\":1,\"LOL\":3}";
-            var memoryStream = CreateMemoryStream(jsonData);
-            _fileMock.Setup(file => file.GetFileStream(It.IsAny<ILogger>()))
-                .Returns(memoryStream)
-                .Verifiable();
+            //var memoryStream = CreateMemoryStream(jsonData);
+            //_fileMock.Setup(file => file.GetFileStream(It.IsAny<ILogger>()))
+            //    .Returns(memoryStream)
+            //    .Verifiable();
 
             _fileMock.Setup(file => file.Exists)
                 .Returns(true)
                 .Verifiable();
 
+
             _fileServiceMock.Setup(fileService => fileService.GetFile(It.IsAny<string>()))
                 .Returns(_fileMock.Object)
                 .Verifiable();
+
+
+            _fileServiceMock.Setup(fileService => fileService
+                .GetTextFromFile(It.IsAny<IFile>(), CancellationToken.None))
+                    .Returns(Task.FromResult(jsonData))
+                    .Verifiable();
 
             var result = await _sut.GetItems(CancellationToken.None);
 
@@ -101,8 +100,8 @@ namespace DNI.Core.UnitTests
 
             _fileMock.Verify();
             _fileServiceMock.Verify();
-            long length;
-            Assert.Throws<ObjectDisposedException>(() => length = memoryStream.Length);
+            //long length;
+            //Assert.Throws<ObjectDisposedException>(() => length = memoryStream.Length);
         }
 
         [Test]
@@ -110,10 +109,7 @@ namespace DNI.Core.UnitTests
         {
             var jsonData = string.Empty;
             var memoryStream = CreateMemoryStream(jsonData);
-            _fileMock.Setup(file => file.GetFileStream(It.IsAny<ILogger>()))
-                .Returns(memoryStream)
-                .Verifiable();
-
+            
             _fileMock.Setup(file => file.Exists)
                 .Returns(true)
                 .Verifiable();
@@ -130,8 +126,6 @@ namespace DNI.Core.UnitTests
 
             _fileMock.Verify();
             _fileServiceMock.Verify();
-            long length;
-            Assert.Throws<ObjectDisposedException>(() => length = memoryStream.Length);
         }
 
         [Test]
@@ -153,17 +147,27 @@ namespace DNI.Core.UnitTests
         [Test]
         public async Task SaveItems_when_state_is_valid_and_not_empty_returns()
         {
-
-
+            
             var state = new Dictionary<string, CacheEntryState>();
 
             state.Add("SAS", CacheEntryState.Invalid);
             state.Add("MRA", CacheEntryState.Valid);
             state.Add("TMR", CacheEntryState.New);
 
+            _fileServiceMock
+                .Setup(fileService => fileService.GetFile(It.IsAny<string>()))
+                .Returns(_fileMock.Object)
+                .Verifiable();
+
+            _fileServiceMock.Setup(fileService => fileService
+            .SaveTextToFile(It.IsAny<IFile>(), It.IsAny<string>(), CancellationToken.None))
+                .Verifiable();
+
             var result = await _sut.SaveItems(state, CancellationToken.None);
 
             Assert.IsNotNull(result);
+
+            _fileServiceMock.Verify();
 
         }
     }

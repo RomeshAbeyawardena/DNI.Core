@@ -15,20 +15,13 @@ namespace DNI.Core.Services.Stores
     internal sealed class DefaultJsonFileCacheTrackerStore : IJsonFileCacheTrackerStore
     {
         private readonly IFileService _fileService;
-        private readonly IRetryHandler _retryHandler;
-        public static SemaphoreSlim SavingSemaphoreSlim = new SemaphoreSlim(1, 1);
-        public static SemaphoreSlim ReadingSemaphoreSlim = new SemaphoreSlim(1, 1);
-
-        public DefaultJsonFileCacheTrackerStore(ILogger<IJsonFileCacheTrackerStore> logger, IJsonFileCacheTrackerStoreOptions options, 
-            IFileService fileService, IRetryHandler retryHandler)
+        public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options,
+            IFileService fileService)
         {
-            _logger = logger;
             Options = options;
             _fileService = fileService;
-            _retryHandler = retryHandler;
-        }
 
-        private readonly ILogger<IJsonFileCacheTrackerStore> _logger;
+        }
 
         public IJsonFileCacheTrackerStoreOptions Options { get; }
 
@@ -40,27 +33,17 @@ namespace DNI.Core.Services.Stores
 
         public async Task<IFile> SaveItems(IDictionary<string, CacheEntryState> state, CancellationToken cancellationToken)
         {
-            if(state == null || state.Count < 1)
+            if (state == null || state.Count < 1)
                 return default;
 
             var jsonContent = JsonSerializer.Serialize(state);
-            try
-            {
-                await SavingSemaphoreSlim.WaitAsync(cancellationToken);
 
-                return await _retryHandler.Handle(async (fileName) =>
-                {
-                    await _fileService
-                        .SaveTextToFile(fileName, jsonContent, cancellationToken);
+            var file = GetFile(Options.FileName);
 
-                    return _fileService.GetFile(Options.FileName);
-                }, Options.FileName, Options.IOExceptionRetryAttempts, false, typeof(IOException));
+            await _fileService.SaveTextToFile(file, jsonContent, cancellationToken);
 
-            }
-            finally
-            {
-                SavingSemaphoreSlim.Release();
-            }
+            return file;
+
         }
 
         private IFile GetFile(string fileName)
@@ -70,34 +53,17 @@ namespace DNI.Core.Services.Stores
 
         private async Task<IDictionary<string, CacheEntryState>> GetItems(IFile file, CancellationToken cancellationToken)
         {
-            try
-            {
-                await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
+            if (!file.Exists)
+                return default;
 
-                string content = string.Empty;
+            var content = await _fileService.GetTextFromFile(file, cancellationToken);
 
-                if (!file.Exists)
-                    return default;
+            if (string.IsNullOrWhiteSpace(content))
+                return new Dictionary<string, CacheEntryState>();
 
-                using (var fileStream = file.GetFileStream(_logger))
-                { 
-                    using var streamReader = new StreamReader(fileStream);
-                    content = await streamReader.ReadToEndAsync();
-                }
-                if(string.IsNullOrWhiteSpace(content))
-                    return new Dictionary<string, CacheEntryState>();
-
-                return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(content);
-            }
-            finally
-            {
-                ReadingSemaphoreSlim.Release();
-            }
-        }
-
-        public void Dispose()
-        {
+            return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(content);
 
         }
+
     }
 }

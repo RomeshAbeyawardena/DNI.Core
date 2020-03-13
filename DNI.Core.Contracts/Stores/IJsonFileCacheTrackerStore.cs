@@ -3,7 +3,7 @@ using System;
 
 namespace DNI.Core.Contracts.Stores
 {
-    public interface IJsonFileCacheTrackerStore : ICacheTrackerStore, IDisposable
+    public interface IJsonFileCacheTrackerStore : ICacheTrackerStore
     {
         public IJsonFileCacheTrackerStoreOptions Options { get; }
     }
