@@ -22,7 +22,7 @@ namespace DNI.Core.UnitTests
         private ICacheTrackerStore _sut;
         private Mock<IFileService> _fileServiceMock;
         private Mock<IFile> _fileMock;
-        
+        private Mock<IJsonSerializer> _jsonSerializerMock;
         private MemoryStream CreateMemoryStream(string data)
         {
             MemoryStream memoryStream;
@@ -40,11 +40,12 @@ namespace DNI.Core.UnitTests
         public void SetUp()
         {
             _fileServiceMock = new Mock<IFileService>();
-          
+           _jsonSerializerMock = new Mock<IJsonSerializer>();
             _fileMock = new Mock<IFile>();
             _sut = new DefaultJsonFileCacheTrackerStore(
                 new JsonFileCacheTrackerStoreOptions { FileName = "My test file" }, 
-                _fileServiceMock.Object);
+                _fileServiceMock.Object,
+                _jsonSerializerMock.Object);
         }
 
         [Test]

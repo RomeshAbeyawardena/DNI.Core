@@ -15,11 +15,14 @@ namespace DNI.Core.Services.Stores
     internal sealed class DefaultJsonFileCacheTrackerStore : IJsonFileCacheTrackerStore
     {
         private readonly IFileService _fileService;
+        private readonly IJsonSerializer _jsonSerializer;
+
         public DefaultJsonFileCacheTrackerStore(IJsonFileCacheTrackerStoreOptions options,
-            IFileService fileService)
+            IFileService fileService, IJsonSerializer jsonSerializer)
         {
             Options = options;
             _fileService = fileService;
+            _jsonSerializer = jsonSerializer;
 
         }
 
@@ -61,7 +64,7 @@ namespace DNI.Core.Services.Stores
             if (string.IsNullOrWhiteSpace(content))
                 return new Dictionary<string, CacheEntryState>();
 
-            return JsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(content);
+            return _jsonSerializer.Deserialize<IDictionary<string, CacheEntryState>>(content);
 
         }
 
