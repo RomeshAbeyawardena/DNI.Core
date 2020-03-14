@@ -1,0 +1,109 @@
+body
+{
+  background-color: #09193F;
+  padding:0;
+  margin:0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Baloo Chettan 2', cursive;
+  font-size:14pt;
+  font-size:100%;
+}
+
+nav.primary-nav {
+  background: linear-gradient(#4B5E8B, #182B58);
+  margin: 0;
+  padding: 0;
+  color: #6E7FA5;
+  display: flex;
+  margin-bottom: 1rem;
+  border-bottom: 0.2rem outset #6E7FA5;
+}
+
+nav.primary-nav ul {
+  float: left;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+}
+
+nav.primary-nav li {
+  margin: 0;
+  padding: 1rem 1rem;
+}
+
+nav.primary-nav .nav-logo {
+  margin: 0;
+  padding: 1rem 1rem;
+}
+
+nav.primary-nav a {
+  color: #7C83AF;
+  text-decoration: none;
+}
+
+.container {
+  border-radius: 0.6rem;
+  background-color: #2E4272;
+  min-height:300px;
+  max-width:940px;
+  max-height: inherit;
+  margin:auto;
+  display: flex;
+  padding: 1rem;
+  border: 0.1rem inset #6E7FA5; 
+}
+
+.nav-right {
+  flex-grow: 1;
+}
+
+.nav-right li {
+  flex-grow: 1;
+  text-align: right;
+  padding-left: 100%;
+}
+
+@media (max-width:880px) {
+  
+  .container {
+    display: block;
+  }
+  
+  .container .side-bar {
+    min-height: 5rem;
+    margin-bottom: 1rem;
+    min-height: initial;
+  }
+  
+  .container .side-bar ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    list-style: none;
+  }
+  
+  .container .main-bar {
+    max-height: 20em !important;
+  }
+  
+  .container .side-bar li {
+    padding: 0 1rem;
+  }
+}
+
+.container .side-bar {
+  padding: 1rem;
+  background-color: #4B5E8B;
+  min-width: 15rem;
+}
+
+.container .main-bar {
+  padding: 1rem 2rem;
+  background-color: #7C83AF;
+  flex-grow: 1;
+  min-height: 5rem;
+  max-height: 32rem;
+  overflow-y: auto;
+}
