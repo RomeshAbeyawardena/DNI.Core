@@ -25,6 +25,12 @@ namespace DNI.Core.Shared.Extensions
             if(value is bool boolValue)
                 return default == boolValue;
 
+            if (value is DateTimeOffset dateTimeOffsetValue)
+                return default == dateTimeOffsetValue;
+
+            if (value is DateTime dateTimeValue)
+                return default == dateTimeValue;
+
             return value == default;
         }
     }
