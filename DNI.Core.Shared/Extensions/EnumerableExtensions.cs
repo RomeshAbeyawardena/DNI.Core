@@ -67,17 +67,5 @@ namespace DNI.Core.Shared.Extensions
                 forEachItem(value);
         }
 
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> values, 
-            Func<T,T> forEachItem, Func<T, bool> condition = default)
-        {
-            var items = new List<T>();
-            
-            foreach(var value in condition == null 
-                ? values 
-                : values.Where(condition))
-                items.Add(forEachItem(value));
-
-            return items.ToArray();
-        }
     }
 }

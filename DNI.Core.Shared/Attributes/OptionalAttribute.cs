@@ -16,20 +16,28 @@ namespace DNI.Core.Shared.Attributes
         {
             return optionalMembers.ForEach(member => { return type.GetProperty(member); });
         }
+
         public OptionalAttribute(params string[] optionalMembers)
         {
             OptionalMembers = optionalMembers;
         }
 
+        public override bool IsValid(object value)
+        {
+            return base.IsValid(value);
+        }
+
+        public override bool RequiresValidationContext => true;
+        
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            if(value != null)
+            if(!value.IsDefault())
                 return ValidationResult.Success;
 
             var members = GetMembers(validationContext.ObjectType, OptionalMembers);
 
             foreach(var member in members)
-                if(member.GetValue(value) != null)
+                if(!member.GetValue(validationContext.ObjectInstance).IsDefault())
                     return ValidationResult.Success;
 
             return new ValidationResult("A value is required.", 
