@@ -1,0 +1,30 @@
+nav,
+nav .nav-main,
+nav .nav-right {
+  display: flex;
+  padding: 1rem;
+  text-align: right;
+}
+nav a,
+nav li a{
+  padding: 1rem;
+  color: #7986AC;
+  text-decoration: none;
+  display: block;;
+}
+
+nav {
+  background-color: #061339;
+}
+
+nav .nav-right {
+  flex-grow: 1;
+}
+
+nav .nav-right ul {
+  flex-grow: 1;
+}
+
+.nav-right li {
+  
+}
