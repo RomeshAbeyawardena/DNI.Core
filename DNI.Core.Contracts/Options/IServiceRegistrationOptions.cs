@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
 
+[assembly: InternalsVisibleTo("DNI.Core.Services")]
 namespace DNI.Core.Contracts.Options
 {
     /// <summary>
     /// Represents a list of settings used to configure an IServiceRegistration instance
     /// </summary>
+    
     public interface IServiceRegistrationOptions
     {
         /// <summary>
         /// Toggles Cache Provier support
-        /// </summary>
+        /// </s ummary>
         bool RegisterCacheProviders { get; set; }
         /// <summary>
         /// Toggles MessagePack serialiser support
@@ -33,11 +37,13 @@ namespace DNI.Core.Contracts.Options
         /// Toggles Cryptographic providers
         /// </summary>
         bool RegisterCryptographicProviders { get; set; }
+
+        public Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; }
+        public Func<IServiceProvider, JsonSerializerOptions> ConfigureJsonSerializerOptions { get; }
+        public Func<IServiceProvider, IRetryHandlerOptions> ConfigureRetryHandlerOptions { get; }
         
-        bool UseJsonFileCacheEntryTrackerStore { get; }
-
-        Func<IServiceProvider, IJsonFileCacheTrackerStoreOptions> ConfigureJsonFileCacheTrackerStoreOptions { get; }
-
+        void RegisterRetryHandlerOptions(Action<IServiceProvider, IRetryHandlerOptions> configure);
         void RegisterJsonFileCacheTrackerStore(Action<IServiceProvider, IJsonFileCacheTrackerStoreOptions> configure);
+        void RegisterJsonSerializerOptions(Action<IServiceProvider, JsonSerializerOptions> configure);
     }
 }

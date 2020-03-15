@@ -119,7 +119,7 @@ namespace DNI.Core.Services.Extensions
             if(configuration.DbContextOptions !=null)
                 services = configuration.UseDbContextPool 
                     ? services.AddDbContextPool<TDbContext>(configuration.DbContextOptions)
-                    : services.AddDbContext<TDbContext>(configuration.DbContextOptions);
+                    : services.AddDbContext<TDbContext>(configuration.DbContextOptions, configuration.ServiceLifetime);
 
             if(configuration.DbContextServiceProviderOptions !=null)
                 services = configuration.UseDbContextPool 

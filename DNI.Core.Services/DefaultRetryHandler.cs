@@ -7,43 +7,55 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Humanizer;
+using DNI.Core.Contracts.Options;
+using DNI.Core.Services.Options;
 
 namespace DNI.Core.Services
 {
     public static class RetryHandler
     {
+        public static IRetryHandlerOptions DefaultOptions = new DefaultRetryHandlerOptions { IOExceptionRetryAttempts = 3, Timeout = 1000 };
         public static void Handle(Action handle, int retryAttempts, 
-            ILogger logger = default, params Type[] retryExceptions)
+            ILogger logger = default, IRetryHandlerOptions options = default, params Type[] retryExceptions)
         {
-            new DefaultRetryHandler(logger)
+            new DefaultRetryHandler(options, logger)
                 .Handle(handle, retryAttempts, false, retryExceptions);
         }
 
         public static TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, 
-            ILogger logger = default, params Type[] retryExceptions)
+            ILogger logger = default, IRetryHandlerOptions options = default, params Type[] retryExceptions)
         {
-            return new DefaultRetryHandler(logger)
+            return new DefaultRetryHandler(options, logger)
                 .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
 
         public static async Task<TResult> Handle<T, TResult>(Func<T, Task<TResult>> handle, T argument, int retryAttempts, 
-            ILogger logger = default, params Type[] retryExceptions)
+            ILogger logger = default, IRetryHandlerOptions options = default, params Type[] retryExceptions)
         {
-            return await new DefaultRetryHandler(logger)
+            return await new DefaultRetryHandler(options, logger)
                 .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
 
         public static async Task Handle<T>(Func<T, Task> handle, T argument, int retryAttempts, 
-            ILogger logger = default, params Type[] retryExceptions)
+            ILogger logger = default, IRetryHandlerOptions options = default, params Type[] retryExceptions)
         {
-            await new DefaultRetryHandler(logger)
+            await new DefaultRetryHandler(options, logger)
                 .Handle(handle, argument, retryAttempts, false, retryExceptions);
         }
     }
 
     internal sealed class DefaultRetryHandler : IRetryHandler
     {
+        public IRetryHandlerOptions Options { get; }
+
         private readonly ILogger _logger;
+
+        private void ResetCount(bool isRetry)
+        {
+            if(!isRetry)
+                RetryCount = 0;
+        }
+
         private void HandleException(Exception ex, int maximumAttempts)
         {
             var timeoutInSeconds = Timeout / 1000;
@@ -59,18 +71,17 @@ namespace DNI.Core.Services
                     && RetryCount++ < retryAttempts;
         }
 
-        public DefaultRetryHandler(ILogger logger = null)
+        public DefaultRetryHandler(IRetryHandlerOptions options, ILogger logger = null)
         {
+            Options = options;
             _logger = logger;
         }
 
         public int RetryCount { get; private set; }
-        public int Timeout => RetryCount * 1000;
+        public int Timeout => RetryCount * Options.Timeout;
         public void Handle(Action handle, int retryAttempts, bool isRetry = false,  params Type[] retryExceptions)
         {
-            if(!isRetry)
-                RetryCount = 0;
-
+            ResetCount(isRetry);
             try
             {
                 handle();
@@ -88,8 +99,7 @@ namespace DNI.Core.Services
 
         public TResult Handle<T, TResult>(Func<T, TResult> handle, T argument, int retryAttempts, bool isRetry = false, params Type[] retryExceptions)
         {
-            if(!isRetry)
-                RetryCount = 0;
+            ResetCount(isRetry);
 
             try
             {
