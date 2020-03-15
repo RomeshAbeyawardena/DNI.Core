@@ -49,6 +49,17 @@ namespace DNI.Core.Shared.Extensions
             return await Task.WhenAll(items.ToArray());
         }
 
+        public static IEnumerable<TOut> ForEach<T, TOut>(this IEnumerable<T> values, 
+            Func<T, TOut> forEachItem, Func<T, bool> condition = default)
+        {
+            var itemList = new List<TOut>();
+            foreach(var value in condition == null ? 
+                values : values.Where(condition))
+                itemList.Add(forEachItem(value));
+
+            return itemList.ToArray();
+        }
+
         public static void ForEach<T>(this IEnumerable<T> values, 
             Action<T> forEachItem, Func<T, bool> condition = default)
         {
