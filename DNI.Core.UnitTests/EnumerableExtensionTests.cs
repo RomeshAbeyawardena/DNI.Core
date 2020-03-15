@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DNI.Core.Shared.Extensions;
+using System.Collections.Generic;
 
 namespace DNI.Core.UnitTests
 {
@@ -38,7 +39,7 @@ namespace DNI.Core.UnitTests
         }
 
         [Test]
-        public async Task ForEachAsync()
+        public async Task ForEachAsync_returns()
         {
             var myList = new System.Collections.Generic.List<int>(new [] { 1, 2, 3, 5, 6, 7, 8, 9, 10 });
 
@@ -47,11 +48,30 @@ namespace DNI.Core.UnitTests
             CollectionAssert.AreNotEqual(myList, await newList);
         }
 
+        
+        [Test]
+        public async Task ForEachAsync()
+        {
+            var myList = new List<int>(new [] { 1, 2, 3, 5, 6, 7, 8, 9, 10 });
+            var newList = new List<int>();
+            await EnumerableExtensions.ForEachAsync(myList, async (t) => await DoWorkAsync(t, 500, 3500, t1 => newList.Add(t1 * 2)));
+
+            CollectionAssert.AreNotEqual(myList, newList);
+        }
+
         private async Task<T> DoWorkAsync<T>(T item, int from, int upto, Func<T, T> work)
         {
             var delayInterval = _random.Next(from, upto);
             await Task.Delay(delayInterval);
             return await Task.FromResult(work(item));
+        }
+
+        private async Task DoWorkAsync<T>(T item, int from, int upto, Action<T> work)
+        {
+            var delayInterval = _random.Next(from, upto);
+            await Task.Delay(delayInterval);
+            work(item);
+            return;
         }
     }
 }
