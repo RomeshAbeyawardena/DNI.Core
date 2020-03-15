@@ -9,6 +9,13 @@ namespace DNI.Core.UnitTests
 {
     public class EnumerableExtensionTests
     {
+        private readonly Random _random;
+
+        public EnumerableExtensionTests()
+        {
+            _random = new Random();
+        }
+
         [Test]
         public void ForEach_returns_leaving_original_list_unchanged()
         {
@@ -28,6 +35,23 @@ namespace DNI.Core.UnitTests
                 item => item * 2, item=> item > 1);
 
             Assert.AreEqual(expectedCollectionLength, actualCollection.Count());
+        }
+
+        [Test]
+        public async Task ForEachAsync()
+        {
+            var myList = new System.Collections.Generic.List<int>(new [] { 1, 2, 3, 5, 6, 7, 8, 9, 10 });
+
+            var newList = EnumerableExtensions.ForEachAsync(myList, async (t) => await DoWorkAsync(t, 500, 3500, t1 => t1 * 2));
+
+            CollectionAssert.AreNotEqual(myList, await newList);
+        }
+
+        private async Task<T> DoWorkAsync<T>(T item, int from, int upto, Func<T, T> work)
+        {
+            var delayInterval = _random.Next(from, upto);
+            await Task.Delay(delayInterval);
+            return await Task.FromResult(work(item));
         }
     }
 }
