@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace DNI.Core.Services.Abstraction
 {
+    #pragma warning disable CA1012
     public abstract class DataServiceBase<TEntity> : IDataService<TEntity>
         where TEntity : class
     {        
@@ -29,4 +30,5 @@ namespace DNI.Core.Services.Abstraction
 
         public IQueryable<TEntity> DefaultQuery => Repository.Query(_defaultQueryExpression, EnableTracking);
     }
+    #pragma warning restore CA1012
 }
