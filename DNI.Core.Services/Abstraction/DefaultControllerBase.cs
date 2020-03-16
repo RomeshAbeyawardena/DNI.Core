@@ -40,7 +40,10 @@ namespace DNI.Core.Services.Abstraction
             if(!IsResponseValid(response))
             {
                 await onFailure(response, cancellationToken);
-                await OnFailure(response, cancellationToken);
+
+                if(onFailure != null)
+                    await OnFailure(response, cancellationToken);
+
                 return BadRequest(response.Errors);
             }
 
