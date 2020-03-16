@@ -9,14 +9,24 @@ namespace DNI.Core.Services
     {
         public static ITypesDescriptor Describe<T>()
         {
-            return new DefaultTypesDescriptor()
+            return Create()
                 .Describe<T>();
         }
 
-        public static ITypesDescriptor Describe(Type type)
+        public static ITypesDescriptor Describe(Type type = default)
         {
-            return new DefaultTypesDescriptor()
-                .Describe(type);
+            var typeDescriptor = Create();
+
+            if(type != null)
+               return typeDescriptor.Describe(type);
+
+            return typeDescriptor;
+        }
+
+        public static ITypesDescriptor Create()
+        {
+            return new DefaultTypesDescriptor();
+
         }
     }
 

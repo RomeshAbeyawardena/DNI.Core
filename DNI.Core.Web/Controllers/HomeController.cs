@@ -1,4 +1,5 @@
-﻿using DNI.Core.Contracts.Providers;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Contracts.Providers;
 using DNI.Core.Services.Abstraction;
 using DNI.Core.Services.Attributes;
 using DNI.Core.Web.Domains;
@@ -15,7 +16,9 @@ namespace DNI.Core.Web.Controllers
     {
         private readonly ICacheProvider _cacheProvider;
 
-        public HomeController(ICacheProvider cacheProvider)
+        public HomeController(IMediatorService mediatorService, IMapperProvider mapperProvider,
+            ICacheProvider cacheProvider) 
+            : base(mediatorService, mapperProvider)
         {
             _cacheProvider = cacheProvider;
         }

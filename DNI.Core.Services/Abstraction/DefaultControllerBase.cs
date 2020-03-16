@@ -1,44 +1,74 @@
 ﻿using DNI.Core.Contracts;
 using DNI.Core.Domains;
+using DNI.Core.Services.Attributes;
+using DNI.Core.Services.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-
+using System.Threading;
+using System.Threading.Tasks;
+using ResponseHelper = DNI.Core.Domains.Response;
 
 namespace DNI.Core.Services.Abstraction
 {
     [Route("{controller}/{action}")]
+    [HandleException]
+    #pragma warning disable CA1012
     public abstract class DefaultControllerBase : Controller
     {
-        public virtual TDestination Map<TSource, TDestination>(TSource source)
+        protected readonly IMediatorService Mediator;
+        protected readonly IMapperProvider Mapper;
+        
+        public DefaultControllerBase(IMediatorService mediatorService, IMapperProvider mapperProvider)
         {
-            return MapperProvider.Map<TSource, TDestination>(source);
+            Mediator = mediatorService;
+            Mapper = mapperProvider;
         }
 
-        public virtual IEnumerable<TDestination> Map<TSource, TDestination>(IEnumerable<TSource> source)
+        protected virtual bool IsResponseValid(ResponseBase response)
         {
-            return MapperProvider.Map<TSource, TDestination>(source);
+            return ResponseHelper.IsSuccessful(response);
         }
 
-        protected void AddErrorsToModelState(ResponseBase response)
+        protected async Task<ActionResult> HandleResponse<TResponse>(TResponse response, 
+            CancellationToken cancellationToken,
+            Func<TResponse, CancellationToken, Task> onSuccess = default,
+            Func<TResponse, CancellationToken, Task> onFailure = default)
+            where TResponse : ResponseBase
         {
-            foreach(var error in response.Errors)
-                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            if(!IsResponseValid(response))
+            {
+                await onFailure(response, cancellationToken);
+                await OnFailure(response, cancellationToken);
+                return BadRequest(response.Errors);
+            }
+
+            if(onSuccess != null)
+                await onSuccess(response, cancellationToken);
+
+            await OnSuccess(response, cancellationToken);
+
+            return Ok(response.Result);
         }
 
-        protected IMediatorService MediatorService => GetService<IMediatorService>();
-
-        protected IMapperProvider MapperProvider => GetService<IMapperProvider>();
-
-        protected TService GetService<TService>()
+        protected virtual Task OnSuccess(ResponseBase responseBase, CancellationToken cancellationToken)
         {
-            if(HttpContext == null)
-                throw new NullReferenceException("HttpContext unavailable");
+            return Task.CompletedTask;
+        }
 
-            return HttpContext
-                .RequestServices
-                .GetRequiredService<TService>();
+        protected virtual Task OnFailure(ResponseBase responseBase, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
+        protected void EnsureModalStateIsValid()
+        {
+            if (ModelState.IsValid)
+                return;
+
+            throw new ModelStateException(ModelState);
         }
     }
+    #pragma warning restore CA1012
 }

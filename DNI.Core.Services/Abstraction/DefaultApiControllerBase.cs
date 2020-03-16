@@ -1,20 +1,19 @@
-﻿using DNI.Core.Domains;
+﻿using DNI.Core.Contracts;
+using DNI.Core.Domains;
 using DNI.Core.Services.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DNI.Core.Services.Abstraction
 {
-    [HandleModelStateError]
+    #pragma warning disable CA1012
+    [Route("api/{controller}/{action}")]
     public abstract class DefaultApiControllerBase : DefaultControllerBase
     {
-        protected ActionResult ResponseResult(ResponseBase response)
+        public DefaultApiControllerBase(IMediatorService mediatorService, IMapperProvider mapperProvider) 
+            : base(mediatorService, mapperProvider)
         {
-            if(response.IsSuccessful)
-                return Ok(response);
 
-            AddErrorsToModelState(response);
-
-            return BadRequest(ModelState);
         }
     }
+    #pragma warning restore CA1012
 }
