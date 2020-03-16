@@ -119,6 +119,7 @@ namespace DNI.Core.Services
         public void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options)
         {
             services
+                .AddSingleton<DefaultDependecyInjectionJobActivator>()
                 .AddSingleton<IJsonSerializer, DefaultJsonSerializer>()
                 .AddSingleton<IFileService, DefaultFileSystemService>()
                 .AddSingleton<IRetryHandler, DefaultRetryHandler>()
@@ -185,7 +186,6 @@ namespace DNI.Core.Services
                         .ConfigureJsonFileCacheTrackerStoreOptions(serviceProvider))
                     .AddSingleton<ICacheTrackerStore, DefaultJsonFileCacheTrackerStore>()
                     .AddSingleton<ICacheEntryTracker, DefaultCacheEntryTracker>();
-            
 
             if(options.ConfigureRetryHandlerOptions != null)
                 services.AddSingleton((serviceProvider) => options.ConfigureRetryHandlerOptions(serviceProvider));
