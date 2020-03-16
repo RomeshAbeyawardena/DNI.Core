@@ -31,6 +31,13 @@ namespace DNI.Core.Services.Abstraction
             return ResponseHelper.IsSuccessful(response);
         }
 
+        protected async Task InvokeOnNotNull<TResponse>(TResponse response, CancellationToken cancellationToken,
+            Func<TResponse, CancellationToken, Task> onNotNull = default)
+        {
+            if(onNotNull != null)
+                await onNotNull(response, cancellationToken);
+        }
+
         protected async Task<ActionResult> HandleResponse<TResponse>(TResponse response, 
             CancellationToken cancellationToken,
             Func<TResponse, CancellationToken, Task> onSuccess = default,
@@ -39,16 +46,14 @@ namespace DNI.Core.Services.Abstraction
         {
             if(!IsResponseValid(response))
             {
-                await onFailure(response, cancellationToken);
+                await InvokeOnNotNull(response, cancellationToken, onFailure);
 
-                if(onFailure != null)
-                    await OnFailure(response, cancellationToken);
+                await OnFailure(response, cancellationToken);
 
                 return BadRequest(response.Errors);
             }
 
-            if(onSuccess != null)
-                await onSuccess(response, cancellationToken);
+            await InvokeOnNotNull(response, cancellationToken, onSuccess);
 
             await OnSuccess(response, cancellationToken);
 
