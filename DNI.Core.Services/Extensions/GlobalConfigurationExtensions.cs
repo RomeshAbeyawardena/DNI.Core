@@ -12,7 +12,7 @@
     {
         public static IGlobalConfiguration UseDefaultDependencyInjectionActivator(
             this IGlobalConfiguration configuration,
-                                                                                        IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider)
         {
             var defaultDependencyInjectionJobActivator = serviceProvider
                 .GetRequiredService<DefaultDependecyInjectionJobActivator>();

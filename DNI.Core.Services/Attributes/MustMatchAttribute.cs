@@ -32,7 +32,7 @@
                 return ValidationResult.Success;
             }
 
-            return new ValidationResult($"'{DisplayMatchingMember}' does not match '{ validationContext.DisplayName }'"); ;
+            return new ValidationResult($"'{DisplayMatchingMember}' does not match '{validationContext.DisplayName }'");
         }
     }
 }
