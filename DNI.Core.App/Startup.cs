@@ -18,9 +18,9 @@ namespace DNI.Core.App
 
         public async Task<int> Begin(params object[] args)
         {
-            using(var memoryStream = _recyclableMemoryStreamManager.GetStream())
-                using (var streamWriter = new StreamWriter(memoryStream))
-                    await streamWriter.WriteLineAsync("Hello world");
+            using (var memoryStream = _recyclableMemoryStreamManager.GetStream())
+            using (var streamWriter = new StreamWriter(memoryStream))
+                await streamWriter.WriteLineAsync("Hello world");
             return 0;
         }
 

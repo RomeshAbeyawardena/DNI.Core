@@ -35,9 +35,11 @@ namespace DNI.Core.UnitTests
         {
             _retryHandlerOptionsMock.SetupGet(options => options.Timeout)
                 .Returns(10);
-            Assert.Throws<InvalidOperationException>(() => _sut.Handle(() => { 
-                _count++; 
-                throw new InvalidOperationException(); }, attempts, false, typeof(InvalidOperationException)));
+            Assert.Throws<InvalidOperationException>(() => _sut.Handle(() =>
+            {
+                _count++;
+                throw new InvalidOperationException();
+            }, attempts, false, typeof(InvalidOperationException)));
 
             Assert.AreEqual(attempts + 1, _count);
         }

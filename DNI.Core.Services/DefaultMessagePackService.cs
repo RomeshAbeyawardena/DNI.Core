@@ -1,26 +1,27 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Managers;
-using MessagePack;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Managers;
+    using MessagePack;
+
     internal sealed class DefaultMessagePackService : IMessagePackService
     {
-        private readonly IMemoryStreamManager _memoryStreamManager;
+        private readonly IMemoryStreamManager memoryStreamManager;
 
         public async Task<T> Deserialise<T>(IEnumerable<byte> value, MessagePackSerializerOptions options)
         {
-
-            using(var memoryStream = _memoryStreamManager.GetStream(true, value.ToArray()))
+            using (var memoryStream = memoryStreamManager.GetStream(true, value.ToArray()))
+            {
                 return await MessagePackSerializer.DeserializeAsync<T>(memoryStream, options);
+            }
         }
 
         public async Task<IEnumerable<byte>> Serialise<T>(T value, MessagePackSerializerOptions options)
         {
-            using(var memoryStream = _memoryStreamManager.GetStream(true))
+            using (var memoryStream = memoryStreamManager.GetStream(true))
             {
                 await MessagePackSerializer.SerializeAsync<T>(memoryStream, value, options);
                 return memoryStream.ToArray();
@@ -29,7 +30,7 @@ namespace DNI.Core.Services
 
         public DefaultMessagePackService(IMemoryStreamManager memoryStreamManager)
         {
-            _memoryStreamManager = memoryStreamManager;
+            this.memoryStreamManager = memoryStreamManager;
         }
     }
 }

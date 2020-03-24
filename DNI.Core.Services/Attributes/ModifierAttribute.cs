@@ -1,8 +1,8 @@
-﻿using DNI.Core.Contracts.Enumerations;
-using System;
-
-namespace DNI.Core.Services.Attributes
+﻿namespace DNI.Core.Services.Attributes
 {
+    using System;
+    using DNI.Core.Contracts.Enumerations;
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class ModifierAttribute : Attribute
     {

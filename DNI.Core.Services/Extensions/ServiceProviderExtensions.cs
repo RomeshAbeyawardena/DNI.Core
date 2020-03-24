@@ -1,9 +1,9 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System;
+    using DNI.Core.Contracts;
+    using Microsoft.Extensions.DependencyInjection;
+
     public static class ServiceProviderExtensions
     {
         public static TService CreateInjectedInstance<TService>(this IServiceProvider services)

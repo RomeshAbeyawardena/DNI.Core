@@ -1,14 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Reflection;
-
-namespace DNI.Core.Contracts.Factories
+﻿namespace DNI.Core.Contracts.Factories
 {
+    using System;
+    using System.Reflection;
+    using Microsoft.Extensions.DependencyInjection;
+
     public interface IExceptionHandlerFactory
     {
         bool TryGetExceptionHandler<TException>(out IExceptionHandler<TException> exceptionHandler)
             where TException : Exception;
-        
+
         bool TryGetExceptionHandler(Type exceptionType, out IExceptionHandler exceptionHandler);
 
         IExceptionHandler GetExceptionHandler(Type exceptionType);

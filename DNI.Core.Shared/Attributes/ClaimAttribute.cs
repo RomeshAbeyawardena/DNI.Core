@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace DNI.Core.Shared.Attributes
+﻿namespace DNI.Core.Shared.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class ClaimAttribute : Attribute
     {

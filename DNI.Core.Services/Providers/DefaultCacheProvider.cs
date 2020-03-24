@@ -1,27 +1,27 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Enumerations;
-using DNI.Core.Contracts.Factories;
-using DNI.Core.Contracts.Providers;
-using DNI.Core.Contracts.Services;
-using DNI.Core.Services.Abstraction;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using DNI.Core.Contracts;
+using DNI.Core.Contracts.Enumerations;
+using DNI.Core.Contracts.Factories;
+using DNI.Core.Contracts.Providers;
+using DNI.Core.Contracts.Services;
+using DNI.Core.Services.Abstraction;
 
 [assembly: InternalsVisibleTo("DNI.Core.UnitTests")]
+
 namespace DNI.Core.Services.Providers
 {
-
     internal sealed class DefaultCacheProvider : ICacheProvider
     {
-        private readonly ICacheProviderFactory _cacheProviderFactory;
+        private readonly ICacheProviderFactory cacheProviderFactory;
 
         public DefaultCacheProvider(ICacheProviderFactory cacheProviderFactory)
         {
-            _cacheProviderFactory = cacheProviderFactory;
+            this.cacheProviderFactory = cacheProviderFactory;
         }
 
         public async Task<T> Get<T>(CacheType cacheType, string cacheKeyName, CancellationToken cancellationToken = default)
@@ -46,11 +46,12 @@ namespace DNI.Core.Services.Providers
             };
 
             if (value == null || !value.Any())
+            {
                 return await getDataFromSource();
+            }
 
             return value;
         }
-
 
         public async Task<T> GetOrSet<T>(CacheType cacheType, string cacheKeyName,
             Func<CancellationToken, Task<T>> getValue, bool append = false,
@@ -65,11 +66,12 @@ namespace DNI.Core.Services.Providers
         public async Task Set<T>(CacheType cacheType, string cacheKeyName, T value, CancellationToken cancellationToken = default)
         {
             if (value == null)
+            {
                 return;
+            }
 
             var cacheService = GetCacheService(cacheType);
             await cacheService.Set(cacheKeyName, value, cancellationToken);
-
         }
 
         public async Task<T> Set<T>(CacheType cacheType, string cacheKeyName,
@@ -94,8 +96,7 @@ namespace DNI.Core.Services.Providers
 
         private ICacheService GetCacheService(CacheType cacheType)
         {
-            return _cacheProviderFactory.GetCache(cacheType);
+            return cacheProviderFactory.GetCache(cacheType);
         }
-
     }
 }

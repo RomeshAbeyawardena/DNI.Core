@@ -1,41 +1,44 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Managers;
-using DNI.Core.Contracts.Providers;
-using DNI.Core.Domains;
-using DNI.Core.Services.Extensions;
-using DNI.Core.Shared.Extensions;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services.Providers
+﻿namespace DNI.Core.Services.Providers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Managers;
+    using DNI.Core.Contracts.Providers;
+    using DNI.Core.Domains;
+    using DNI.Core.Services.Extensions;
+    using DNI.Core.Shared.Extensions;
+    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+
     internal sealed class CryptographyProvider : ICryptographyProvider
     {
-        private readonly IMemoryStreamManager _memoryStreamManager;
-        private readonly IHashingProvider _hashingProvider;
+        private readonly IMemoryStreamManager memoryStreamManager;
+        private readonly IHashingProvider hashingProvider;
 
         public async Task<string> Decrypt(ICryptographicCredentials cryptographicCredentials, IEnumerable<byte> value)
         {
-            return await CreateSymmetricAlgorithm(cryptographicCredentials,
+            return await CreateSymmetricAlgorithm(
+                cryptographicCredentials,
                 async (symmetricAlgorithm) => await Decrypt(value, symmetricAlgorithm)).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<byte>> Encrypt(ICryptographicCredentials cryptographicCredentials, string value)
         {
-            return await CreateSymmetricAlgorithm(cryptographicCredentials,
+            return await CreateSymmetricAlgorithm(
+                cryptographicCredentials,
                 async (symmetricAlgorithm) => await Encrypt(value, symmetricAlgorithm)).ConfigureAwait(false);
         }
 
         private async Task<T> CreateSymmetricAlgorithm<T>(ICryptographicCredentials cryptographicCredentials, Func<SymmetricAlgorithm, Task<T>> action)
         {
-            return await DisposableHelper.UseAsync(async (symmetricAlgorithm) => await action(symmetricAlgorithm),
-                () => CreateSymmetricAlgorithm(cryptographicCredentials)).ConfigureAwait(false);;
+            return await DisposableHelper.UseAsync(
+                async (symmetricAlgorithm) => await action(symmetricAlgorithm),
+                () => CreateSymmetricAlgorithm(cryptographicCredentials)).ConfigureAwait(false); ;
         }
 
         private static SymmetricAlgorithm CreateSymmetricAlgorithm(ICryptographicCredentials cryptographicCredentials)
@@ -44,28 +47,30 @@ namespace DNI.Core.Services.Providers
 
             symmetricAlgorithm.Key = cryptographicCredentials.Key.ToArray();
             symmetricAlgorithm.IV = cryptographicCredentials.InitialVector.ToArray();
-              
+
             return symmetricAlgorithm;
         }
 
         private async Task<string> Decrypt(IEnumerable<byte> encryptedData, SymmetricAlgorithm symmetricAlgorithm)
         {
             return await DisposableHelper
-                .UseAsync(async (decryptor) => await Decrypt(decryptor, encryptedData),
+                .UseAsync(
+                    async (decryptor) => await Decrypt(decryptor, encryptedData),
                     () => symmetricAlgorithm.CreateDecryptor()).ConfigureAwait(false);
         }
 
         private async Task<string> Decrypt(ICryptoTransform decryptor, IEnumerable<byte> encryptedData)
         {
-            using var memoryStream = _memoryStreamManager.GetStream(buffer: encryptedData.ToArray());
+            using var memoryStream = memoryStreamManager.GetStream(buffer: encryptedData.ToArray());
             using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using var srDecrypt = new StreamReader(cryptoStream);
-            return await srDecrypt.ReadToEndAsync().ConfigureAwait(false);;
+            return await srDecrypt.ReadToEndAsync().ConfigureAwait(false); ;
         }
-           
+
         private async Task<IEnumerable<byte>> Encrypt(string value, SymmetricAlgorithm symmetricAlgorithm)
         {
-            return await DisposableHelper.UseAsync(async (encryptor) => await Encrypt(encryptor, value),
+            return await DisposableHelper.UseAsync(
+                async (encryptor) => await Encrypt(encryptor, value),
                 () => symmetricAlgorithm.CreateEncryptor()).ConfigureAwait(false);
         }
 
@@ -73,11 +78,14 @@ namespace DNI.Core.Services.Providers
         {
             var encrypted = Array.Empty<byte>();
 
-            using (var memoryStream = _memoryStreamManager.GetStream(false))
+            using (var memoryStream = memoryStreamManager.GetStream(false))
             {
                 using (var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write))
-                    using (var srDecrypt = new StreamWriter(cryptoStream))
-                        await srDecrypt.WriteAsync(plainText).ConfigureAwait(false);
+                using (var srDecrypt = new StreamWriter(cryptoStream))
+                {
+                    await srDecrypt.WriteAsync(plainText).ConfigureAwait(false);
+                }
+
                 encrypted = memoryStream.ToArray();
             }
 
@@ -92,7 +100,9 @@ namespace DNI.Core.Services.Providers
             instance.Key = key;
 
             if (initialVector == null)
-                initialVector = _hashingProvider.GetRandomNumberGeneratorBytes(initialVectorSize);
+            {
+                initialVector = hashingProvider.GetRandomNumberGeneratorBytes(initialVectorSize);
+            }
 
             instance.InitialVector = initialVector;
 
@@ -101,7 +111,7 @@ namespace DNI.Core.Services.Providers
 
         public TCryptographicCredentials GetCryptographicCredentials<TCryptographicCredentials>(KeyDerivationPrf keyDerivationPrf, string password, IEnumerable<byte> salt, int iterations, int totalNumberOfBytes, IEnumerable<byte> initialVector) where TCryptographicCredentials : ICryptographicCredentials
         {
-            var key = _hashingProvider.PasswordDerivedBytes(password, salt, keyDerivationPrf, iterations, totalNumberOfBytes);
+            var key = hashingProvider.PasswordDerivedBytes(password, salt, keyDerivationPrf, iterations, totalNumberOfBytes);
             var credentials = GetCryptographicCredentials<TCryptographicCredentials>(Constants.AES, key, initialVector);
             credentials.KeyDerivationPrf = keyDerivationPrf;
             credentials.Iterations = iterations;
@@ -120,8 +130,8 @@ namespace DNI.Core.Services.Providers
 
         public CryptographyProvider(IMemoryStreamManager memoryStreamManager, IHashingProvider hashingProvider)
         {
-            _memoryStreamManager = memoryStreamManager;
-            _hashingProvider = hashingProvider;
+            this.memoryStreamManager = memoryStreamManager;
+            this.hashingProvider = hashingProvider;
         }
     }
 }

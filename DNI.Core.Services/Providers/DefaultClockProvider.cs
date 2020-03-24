@@ -1,22 +1,22 @@
-﻿using DNI.Core.Contracts.Providers;
-using Microsoft.Extensions.Internal;
-using System;
-
-namespace DNI.Core.Services.Providers
+﻿namespace DNI.Core.Services.Providers
 {
+    using System;
+    using DNI.Core.Contracts.Providers;
+    using Microsoft.Extensions.Internal;
+
     internal sealed class DefaultClockProvider : IClockProvider
     {
-        private readonly ISystemClock _systemClock;
+        private readonly ISystemClock systemClock;
 
         public DefaultClockProvider(ISystemClock systemClock)
         {
-            _systemClock = systemClock;
+            this.systemClock = systemClock;
         }
 
-        public DateTimeOffset DateTimeOffset => _systemClock.UtcNow;
+        public DateTimeOffset DateTimeOffset => systemClock.UtcNow;
 
         public DateTime DateTime => DateTimeOffset.LocalDateTime;
 
-        public DateTime UtcDateTime => _systemClock.UtcNow.UtcDateTime;
+        public DateTime UtcDateTime => systemClock.UtcNow.UtcDateTime;
     }
 }

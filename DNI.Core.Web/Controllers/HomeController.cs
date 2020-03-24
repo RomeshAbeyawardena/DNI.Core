@@ -17,7 +17,7 @@ namespace DNI.Core.Web.Controllers
         private readonly ICacheProvider _cacheProvider;
 
         public HomeController(IMediatorService mediatorService, IMapperProvider mapperProvider,
-            ICacheProvider cacheProvider) 
+            ICacheProvider cacheProvider)
             : base(mediatorService, mapperProvider)
         {
             _cacheProvider = cacheProvider;
@@ -26,7 +26,8 @@ namespace DNI.Core.Web.Controllers
         public async Task<ActionResult> Index([FromQuery] HomeIndexRequestViewModel homeIndexRequestViewModel)
         {
             await Task.FromResult(true);
-            return View(new HomeIndexViewModel {
+            return View(new HomeIndexViewModel
+            {
                 PageRequest = new PageViewComponentRequestViewModel
                 {
                     PageName = "Home"
@@ -37,15 +38,15 @@ namespace DNI.Core.Web.Controllers
         [HandleException]
         public async Task<string> GetValue(string value)
         {
-            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "SAS", 
-                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
+            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "SAS",
+                async (cancellationToken) => await Task.FromResult(new List<Page>(new[] { new Page { Id = 2, Modified = DateTimeOffset.Now } })));
 
-            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "MRA", 
-                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
-            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "TMR", 
-                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
-            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "LOL", 
-                async(cancellationToken) => await Task.FromResult(new List<Page>(new [] {new Page { Id = 2, Modified = DateTimeOffset.Now } })) );
+            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "MRA",
+                async (cancellationToken) => await Task.FromResult(new List<Page>(new[] { new Page { Id = 2, Modified = DateTimeOffset.Now } })));
+            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "TMR",
+                async (cancellationToken) => await Task.FromResult(new List<Page>(new[] { new Page { Id = 2, Modified = DateTimeOffset.Now } })));
+            await _cacheProvider.GetOrSet<Page>(Core.Contracts.Enumerations.CacheType.DistributedMemoryCache, "LOL",
+                async (cancellationToken) => await Task.FromResult(new List<Page>(new[] { new Page { Id = 2, Modified = DateTimeOffset.Now } })));
 
             return await Task.FromResult(value);
         }

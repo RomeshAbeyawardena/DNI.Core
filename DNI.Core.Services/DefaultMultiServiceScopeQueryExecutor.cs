@@ -1,17 +1,18 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using Microsoft.Extensions.DependencyInjection;
+
     internal class MultiServiceScopeQuery
     {
         public Type Respository { get; set; }
+
         public IQueryable Query { get; set; }
     }
 
@@ -24,7 +25,7 @@ namespace DNI.Core.Services
 
     internal class DefaultMultiServiceScopeQueryExecutor
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         internal object GetRequiredService(Type serviceType, IServiceScope serviceScope)
         {
@@ -38,23 +39,22 @@ namespace DNI.Core.Services
 
         public DefaultMultiServiceScopeQueryExecutor(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
-
-        
 
         public async Task<IDictionary<Type, IEnumerable>> RunAsync(int maximumServiceScopesInUse, params MultiServiceScopeQuery[] queries)
         {
             var serviceScopeCount = 0;
-            foreach(var query in queries)
+            foreach (var query in queries)
             {
-                if(serviceScopeCount >= maximumServiceScopesInUse) 
+                if (serviceScopeCount >= maximumServiceScopesInUse)
+                {
                     throw new IndexOutOfRangeException();
-               
-                using var serviceScope = _serviceProvider.CreateScope();
-                
-                var service = GetRequiredService(query.Respository, serviceScope);
+                }
 
+                using var serviceScope = serviceProvider.CreateScope();
+
+                var service = GetRequiredService(query.Respository, serviceScope);
             }
 
             return new Dictionary<Type, IEnumerable>();

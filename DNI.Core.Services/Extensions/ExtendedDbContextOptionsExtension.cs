@@ -1,13 +1,12 @@
-﻿using DNI.Core.Contracts.Generators;
-using DNI.Core.Services.Generators;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using DNI.Core.Contracts.Generators;
+    using DNI.Core.Services.Generators;
+    using Microsoft.EntityFrameworkCore.Infrastructure;
+    using Microsoft.Extensions.DependencyInjection;
 
     internal class ExtendedDbContextOptionsExtensionInfo : DbContextOptionsExtensionInfo
     {
@@ -28,7 +27,6 @@ namespace DNI.Core.Services.Extensions
         public ExtendedDbContextOptionsExtensionInfo(ExtendedDbContextOptionsExtension extendedDbContextOptionsExtension)
             : base(extendedDbContextOptionsExtension)
         {
-
         }
     }
 
@@ -44,7 +42,6 @@ namespace DNI.Core.Services.Extensions
 
         public void Validate(IDbContextOptions options)
         {
-            
         }
     }
 }

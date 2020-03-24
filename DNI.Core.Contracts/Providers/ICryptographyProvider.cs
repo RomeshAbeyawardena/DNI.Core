@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Contracts.Providers
+﻿namespace DNI.Core.Contracts.Providers
 {
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+
     /// <summary>
-    /// Represents a CryptographyProvider to encrypt or decrypt data
+    /// Represents a CryptographyProvider to encrypt or decrypt data.
     /// </summary>
     public interface ICryptographyProvider
     {
         /// <summary>
-        /// Generates TCryptographicCredentials from a set of specified parameters
+        /// Generates TCryptographicCredentials from a set of specified parameters.
         /// </summary>
         /// <typeparam name="TCryptographicCredentials"></typeparam>
         /// <param name="symmetricAlgorithm"></param>
@@ -24,7 +24,7 @@ namespace DNI.Core.Contracts.Providers
             where TCryptographicCredentials : ICryptographicCredentials;
 
         /// <summary>
-        /// Generates TCryptographicCredentials from a set of specified parameters
+        /// Generates TCryptographicCredentials from a set of specified parameters.
         /// </summary>
         /// <typeparam name="TCryptographicCredentials"></typeparam>
         /// <param name="keyDerivationPrf"></param>
@@ -39,7 +39,7 @@ namespace DNI.Core.Contracts.Providers
             where TCryptographicCredentials : ICryptographicCredentials;
 
         /// <summary>
-        /// Generates TCryptographicCredentials from a set of specified parameters
+        /// Generates TCryptographicCredentials from a set of specified parameters.
         /// </summary>
         /// <typeparam name="TCryptographicCredentials"></typeparam>
         /// <param name="keyDerivationPrf"></param>
@@ -55,7 +55,7 @@ namespace DNI.Core.Contracts.Providers
             where TCryptographicCredentials : ICryptographicCredentials;
 
         /// <summary>
-        /// Encrypts a textual value using specified Cryptographic credentials
+        /// Encrypts a textual value using specified Cryptographic credentials.
         /// </summary>
         /// <param name="cryptographicCredentials"></param>
         /// <param name="value"></param>
@@ -63,7 +63,7 @@ namespace DNI.Core.Contracts.Providers
         Task<IEnumerable<byte>> Encrypt(ICryptographicCredentials cryptographicCredentials, string value);
 
         /// <summary>
-        /// Decrypts an array of bytes using specified Cryptographic credentials
+        /// Decrypts an array of bytes using specified Cryptographic credentials.
         /// </summary>
         /// <param name="cryptographicCredentials"></param>
         /// <param name="value"></param>

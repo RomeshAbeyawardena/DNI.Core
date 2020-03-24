@@ -1,10 +1,10 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using DNI.Core.Contracts;
+
     public static class ReflectionDescriber
     {
         public static IDescribe Describe()
@@ -15,17 +15,19 @@ namespace DNI.Core.Services
 
     internal class DefaultDescribe : IDescribe
     {
-        private readonly ITypesDescriptor _typesDescriptor;
-        private readonly IAssembliesDescriptor _assembliesDescriptor;
+        private readonly ITypesDescriptor typesDescriptor;
+        private readonly IAssembliesDescriptor assembliesDescriptor;
+
         public Action<ITypesDescriptor> Types { get; set; }
+
         public Action<IAssembliesDescriptor> Assemblies { get; set; }
 
         public IEnumerable<Type> DescribedTypes
         {
             get
             {
-                Types?.Invoke(_typesDescriptor);
-                return _typesDescriptor.ToTypeArray();
+                Types?.Invoke(typesDescriptor);
+                return typesDescriptor.ToTypeArray();
             }
         }
 
@@ -33,15 +35,15 @@ namespace DNI.Core.Services
         {
             get
             {
-                Assemblies?.Invoke(_assembliesDescriptor);
-                return _assembliesDescriptor.Assemblies;
+                Assemblies?.Invoke(assembliesDescriptor);
+                return assembliesDescriptor.Assemblies;
             }
         }
 
         public DefaultDescribe()
         {
-            _typesDescriptor = new DefaultTypesDescriptor();
-            _assembliesDescriptor = new DefaultAssembliesDescriptor();
+            typesDescriptor = new DefaultTypesDescriptor();
+            assembliesDescriptor = new DefaultAssembliesDescriptor();
         }
     }
 }

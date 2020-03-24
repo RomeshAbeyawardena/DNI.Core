@@ -1,8 +1,8 @@
-﻿using DNI.Core.Contracts.Options;
-using System;
-
-namespace DNI.Core.Contracts.Stores
+﻿namespace DNI.Core.Contracts.Stores
 {
+    using System;
+    using DNI.Core.Contracts.Options;
+
     public interface IJsonFileCacheTrackerStore : ICacheTrackerStore
     {
         public IJsonFileCacheTrackerStoreOptions Options { get; }

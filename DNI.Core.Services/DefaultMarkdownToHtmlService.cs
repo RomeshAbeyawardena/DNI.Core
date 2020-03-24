@@ -1,9 +1,9 @@
-﻿using DNI.Core.Contracts.Services;
-using System;
-using Markdig;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using DNI.Core.Contracts.Services;
+    using Markdig;
+
     internal sealed class DefaultMarkdownToHtmlService : IMarkdownToHtmlService
     {
         public string ToHtml(string markdown, Action<MarkdownPipelineBuilder> builder)

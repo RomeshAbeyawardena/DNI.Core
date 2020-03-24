@@ -1,15 +1,15 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Options;
-using DNI.Core.Services.Options;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Options;
+    using DNI.Core.Services.Options;
+    using Microsoft.EntityFrameworkCore;
+
     public static class DefaultPagerResult
     {
         public static IPagerResult<T> Create<T>(IQueryable<T> query)
@@ -21,18 +21,22 @@ namespace DNI.Core.Services
 
     internal sealed class DefaultPagerResult<T> : IPagerResult<T>
     {
-        private readonly IQueryable<T> _query;
-        
-        public int Length => _query.Count();
-        public Task<int> LengthAsync => _query.CountAsync();
+        private readonly IQueryable<T> query;
+
+        public int Length => query.Count();
+
+        public Task<int> LengthAsync => query.CountAsync();
+
         public async Task<int> GetTotalNumberOfPages(int maximumRowsPerPage, bool useAsync = true)
         {
-            var length = useAsync 
-                ? await LengthAsync 
+            var length = useAsync
+                ? await LengthAsync
                 : await Task.FromResult(Length);
 
-            if(maximumRowsPerPage == 0 || length == 0)
+            if (maximumRowsPerPage == 0 || length == 0)
+            {
                 return 0;
+            }
 
             var totalPageNumbersinDecimal = Convert.ToDecimal(length) / Convert.ToDecimal(maximumRowsPerPage);
 
@@ -40,13 +44,15 @@ namespace DNI.Core.Services
                 Math.Ceiling(totalPageNumbersinDecimal));
         }
 
-        public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage, 
+        public async Task<IEnumerable<T>> GetItems(int pageNumber, int maximumRowsPerPage,
             bool useAsync = true, CancellationToken cancellationToken = default)
         {
-            return await GetPagedItems(pagerResultOptions => {
-                pagerResultOptions.PageNumber = pageNumber; 
-                pagerResultOptions.MaximumRowsPerPage = 
-                maximumRowsPerPage; pagerResultOptions.UseAsync = useAsync; 
+            return await GetPagedItems(
+                pagerResultOptions =>
+            {
+                pagerResultOptions.PageNumber = pageNumber;
+                pagerResultOptions.MaximumRowsPerPage =
+                maximumRowsPerPage; pagerResultOptions.UseAsync = useAsync;
             }, cancellationToken);
         }
 
@@ -61,19 +67,23 @@ namespace DNI.Core.Services
 
             pagerResultOptionsBuilder(pagerResultOptions);
 
-            var query = _query;
+            var query = this.query;
 
             var rowsToSkip = (pagerResultOptions.PageNumber - 1) * pagerResultOptions.MaximumRowsPerPage;
 
             if (rowsToSkip > 0)
+            {
                 query = query.Skip(rowsToSkip);
+            }
 
             var totalRows = pagerResultOptions.UseAsync
                 ? await query.CountAsync(cancellationToken)
                 : query.Count();
 
             if (totalRows > pagerResultOptions.MaximumRowsPerPage)
+            {
                 query = query.Take(pagerResultOptions.MaximumRowsPerPage);
+            }
 
             return pagerResultOptions.UseAsync
                 ? await query.ToArrayAsync(cancellationToken)
@@ -82,7 +92,7 @@ namespace DNI.Core.Services
 
         private DefaultPagerResult(IQueryable<T> query)
         {
-            _query = query;
+            this.query = query;
         }
     }
 }

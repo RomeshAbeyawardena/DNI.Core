@@ -1,36 +1,48 @@
-﻿using System;
-using System.Reflection;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System;
+    using System.Reflection;
+
     public static class PropertyInfoExtensions
     {
         public static object GetDefaultValue(this PropertyInfo propertyInfo)
         {
             var propertyType = propertyInfo.PropertyType;
 
-            if(propertyType == typeof(byte) 
-                || propertyType == typeof(short) 
-                || propertyType == typeof(int) 
-                || propertyType == typeof(long) 
+            if (propertyType == typeof(byte)
+                || propertyType == typeof(short)
+                || propertyType == typeof(int)
+                || propertyType == typeof(long)
                 || propertyType == typeof(decimal)
                 || propertyType == typeof(float))
+            {
                 return 0;
+            }
 
-            if(propertyType == typeof(DateTime))
+            if (propertyType == typeof(DateTime))
+            {
                 return default(DateTime);
+            }
 
-            if(propertyType == typeof(DateTimeOffset))
+            if (propertyType == typeof(DateTimeOffset))
+            {
                 return default(DateTimeOffset);
+            }
 
-            if(propertyType == typeof(string))
+            if (propertyType == typeof(string))
+            {
                 return default(string);
+            }
 
-            if(propertyType == typeof(Guid))
+            if (propertyType == typeof(Guid))
+            {
                 return default(Guid);
+            }
 
-            if(propertyType == typeof(byte[]))
-                return default (byte[]);
+            if (propertyType == typeof(byte[]))
+            {
+                return default(byte[]);
+            }
 
             return default;
         }

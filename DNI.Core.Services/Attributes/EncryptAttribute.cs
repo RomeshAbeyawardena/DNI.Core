@@ -1,8 +1,8 @@
-﻿using DNI.Core.Contracts.Enumerations;
-using System;
-
-namespace DNI.Core.Services.Attributes
+﻿namespace DNI.Core.Services.Attributes
 {
+    using System;
+    using DNI.Core.Contracts.Enumerations;
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class EncryptAttribute : Attribute
     {
@@ -14,7 +14,9 @@ namespace DNI.Core.Services.Attributes
         }
 
         public string EncryptionSaltKey { get; }
+
         public EncryptionMethod EncryptionMethod { get; }
+
         public StringCase Case { get; }
     }
 }

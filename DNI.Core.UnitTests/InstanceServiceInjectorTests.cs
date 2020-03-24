@@ -92,7 +92,7 @@ namespace DNI.Core.UnitTests
         {
             Assert.Throws<InvalidOperationException>(() => sut.CreateInstance<MyMockConsumerWithNumerousConstructors>());
         }
-        
+
         private class MyMockConsumerWithNumerousConstructors
         {
             public MyMockConsumerWithNumerousConstructors(MyMockService mockService)

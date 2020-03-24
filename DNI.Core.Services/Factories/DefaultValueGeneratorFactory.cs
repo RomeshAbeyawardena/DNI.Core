@@ -1,22 +1,22 @@
-﻿using DNI.Core.Contracts.Factories;
-using DNI.Core.Contracts.Generators;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-
-namespace DNI.Core.Services.Factories
+﻿namespace DNI.Core.Services.Factories
 {
+    using System;
+    using DNI.Core.Contracts.Factories;
+    using DNI.Core.Contracts.Generators;
+    using Microsoft.Extensions.DependencyInjection;
+
     internal sealed class DefaultValueGeneratorFactory : IDefaultValueGeneratorFactory
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         public IDefaultValueGenerator<TEntity> GetDefaultValueGenerator<TEntity>()
         {
-            return _serviceProvider.GetRequiredService<IDefaultValueGenerator<TEntity>>();
+            return serviceProvider.GetRequiredService<IDefaultValueGenerator<TEntity>>();
         }
 
         public DefaultValueGeneratorFactory(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
     }
 }

@@ -1,27 +1,27 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Options;
-using DNI.Core.Contracts.Services;
-using DNI.Core.Services.Options;
-using Microsoft.Extensions.Logging;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.IO;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Options;
+    using DNI.Core.Contracts.Services;
+    using DNI.Core.Services.Options;
+    using Microsoft.Extensions.Logging;
+
     internal sealed class DefaultFileSystemService : IFileService
     {
         public static SemaphoreSlim SavingSemaphoreSlim = new SemaphoreSlim(1, 1);
         public static SemaphoreSlim ReadingSemaphoreSlim = new SemaphoreSlim(1, 1);
-        private readonly ILogger<IFileService> _logger;
-        private readonly IRetryHandler _retryHandler;
-        private readonly IRetryHandlerOptions _retryHandlerOptions;
+        private readonly ILogger<IFileService> logger;
+        private readonly IRetryHandler retryHandler;
+        private readonly IRetryHandlerOptions retryHandlerOptions;
 
         public DefaultFileSystemService(ILogger<IFileService> logger, IRetryHandler retryHandler, IRetryHandlerOptions retryHandlerOptions)
         {
-            _logger = logger;
-            _retryHandler = retryHandler;
-            _retryHandlerOptions = retryHandlerOptions;
+            this.logger = logger;
+            this.retryHandler = retryHandler;
+            this.retryHandlerOptions = retryHandlerOptions;
         }
 
         public void Dispose()
@@ -45,14 +45,14 @@ namespace DNI.Core.Services
             try
             {
                 await ReadingSemaphoreSlim.WaitAsync(cancellationToken);
-                return await _retryHandler.Handle(async (file) =>
+                return await retryHandler.Handle(
+                    async (file) =>
                 {
-                    using var fileStream = file.GetFileStream(_retryHandlerOptions, _logger);
+                    using var fileStream = file.GetFileStream(retryHandlerOptions, logger);
 
                     using var streamReader = new StreamReader(fileStream);
                     return await streamReader.ReadToEndAsync();
-
-                }, file, _retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
+                }, file, retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
             }
             finally
             {
@@ -65,11 +65,11 @@ namespace DNI.Core.Services
             try
             {
                 await SavingSemaphoreSlim.WaitAsync(cancellationToken);
-                await _retryHandler.Handle(async (file) =>
+                await retryHandler.Handle(
+                    async (file) =>
                 {
                     await File.WriteAllTextAsync(file.FullPath, content, cancellationToken);
-                }, file, _retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
-
+                }, file, retryHandlerOptions.IOExceptionRetryAttempts, false, typeof(IOException));
             }
             finally
             {

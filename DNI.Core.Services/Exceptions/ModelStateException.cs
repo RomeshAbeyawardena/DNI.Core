@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Linq;
-using System.Text;
-
-namespace DNI.Core.Services.Exceptions
+﻿namespace DNI.Core.Services.Exceptions
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+
     public class ModelStateException : Exception
     {
         private readonly string NewLine = Environment.NewLine;

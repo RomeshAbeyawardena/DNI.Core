@@ -1,8 +1,8 @@
-﻿using DNI.Core.Contracts;
-using System.Collections.Generic;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.Collections.Generic;
+    using DNI.Core.Contracts;
+
     public static class Switch
     {
         public static ISwitch<TKey, TValue> Create<TKey, TValue>()

@@ -26,7 +26,7 @@
 //            _distributedCacheServiceMock = new Mock<ICacheService>();
 //            _sessionCacheServiceMock = new Mock<ICacheService>();
 //            _iisMock = new Mock<IIs>();
-            
+
 //            _cacheProviderFactoryMock.Setup(cacheProvider => cacheProvider.GetCache(CacheType.DistributedMemoryCache))
 //                .Returns(_distributedCacheServiceMock.Object)
 //                .Verifiable();
@@ -43,7 +43,7 @@
 //            var cancellationToken = CancellationToken.None;
 
 //            var testCacheModelInstance = new TestCacheModel();
-            
+
 //            _distributedCacheServiceMock.Setup(cacheService => cacheService
 //                .Get<TestCacheModel>(nameof(testCacheModelInstance), cancellationToken))
 //                .Returns(Task.FromResult(testCacheModelInstance))
@@ -61,7 +61,7 @@
 //            var cancellationToken = CancellationToken.None;
 
 //            var testCacheModelInstance = new TestCacheModel();
-            
+
 //            _distributedCacheServiceMock.Setup(cacheService => cacheService
 //                .Set(nameof(testCacheModelInstance), testCacheModelInstance, cancellationToken))
 //                .Returns(Task.CompletedTask)
@@ -80,7 +80,7 @@
 //            var cancellationToken = CancellationToken.None;
 
 //            var testCacheModelInstance = new TestCacheModel();
-            
+
 //            _distributedCacheServiceMock.Setup(cacheService => cacheService
 //                .Set(nameof(testCacheModelInstance), It.IsAny<TestCacheModel>(), cancellationToken))
 //                .Returns(Task.CompletedTask)

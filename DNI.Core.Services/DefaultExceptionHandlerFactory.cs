@@ -1,27 +1,27 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Factories;
-using DNI.Core.Services.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Factories;
+    using DNI.Core.Services.Extensions;
+    using Microsoft.Extensions.DependencyInjection;
+
     internal sealed class DefaultExceptionHandlerFactory : IExceptionHandlerFactory
     {
-        
         public IExceptionHandlerFactory RegisterExceptionHandlers(IServiceCollection services, params Assembly[] assemblies)
         {
-            
             foreach (var assembly in assemblies)
             {
-                foreach(var type in assembly.GetTypes().Where(type => type.IsOfType<IExceptionHandler>()))
+                foreach (var type in assembly.GetTypes().Where(type => type.IsOfType<IExceptionHandler>()))
                 {
                     var genericServiceType = type.GetInterfaces().SingleOrDefault(interfaceType => interfaceType.IsGenericType);
 
-                    if(genericServiceType == null)
+                    if (genericServiceType == null)
+                    {
                         continue;
+                    }
 
                     services.AddSingleton(genericServiceType, type);
                 }
@@ -44,19 +44,20 @@ namespace DNI.Core.Services
         public IExceptionHandler GetExceptionHandler(Type exceptionType)
         {
             var exceptionHandlerType = typeof(IExceptionHandler<>).MakeGenericType(exceptionType);
-            var service = _serviceProvider.GetService(exceptionHandlerType);
-            return (IExceptionHandler) service;
+            var service = serviceProvider.GetService(exceptionHandlerType);
+            return (IExceptionHandler)service;
         }
 
         public IExceptionHandler<TException> GetExceptionHandler<TException>() where TException : Exception
         {
-            return _serviceProvider.GetService<IExceptionHandler<TException>>();
+            return serviceProvider.GetService<IExceptionHandler<TException>>();
         }
 
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
+
         public DefaultExceptionHandlerFactory(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace DNI.Core.Web.ViewComponents
         {
             var getPageTask = _pageService.GetPage(request.PageName, request.ParentPageId);
 
-            var headerViewComponentViewModel = Map<Page,HeaderViewComponentModel>(await getPageTask);
+            var headerViewComponentViewModel = Map<Page, HeaderViewComponentModel>(await getPageTask);
 
             return View(headerViewComponentViewModel);
         }

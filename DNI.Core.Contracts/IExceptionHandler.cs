@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-
-namespace DNI.Core.Contracts
+﻿namespace DNI.Core.Contracts
 {
+    using System;
+    using Microsoft.AspNetCore.Mvc.Filters;
+
     public interface IExceptionHandler
     {
         bool HandleException(ExceptionContext exception);
@@ -11,6 +11,6 @@ namespace DNI.Core.Contracts
     public interface IExceptionHandler<TException> : IExceptionHandler
         where TException : Exception
     {
-        
+        TException Exception { get; }
     }
 }

@@ -1,7 +1,7 @@
-﻿using DNI.Core.Contracts;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using DNI.Core.Contracts;
+
     public static class AppHost
     {
         public static IAppHost<TStartup> Build<TStartup>()

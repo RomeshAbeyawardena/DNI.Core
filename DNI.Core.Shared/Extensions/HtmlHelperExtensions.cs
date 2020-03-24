@@ -1,10 +1,10 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Shared.Extensions
+﻿namespace DNI.Core.Shared.Extensions
 {
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using Microsoft.AspNetCore.Html;
+    using Microsoft.AspNetCore.Mvc.Rendering;
+
     public static class HtmlHelperExtensions
     {
         /// <summary>
@@ -15,16 +15,22 @@ namespace DNI.Core.Shared.Extensions
         /// <param name="displayOnConditionTrue"></param>
         /// <param name="displayOnConditionFalse"></param>
         /// <returns></returns>
-        public static IHtmlContent DisplayIf(this IHtmlHelper htmlHelper, 
-            bool condition, IHtmlContent displayOnConditionTrue, 
+        public static IHtmlContent DisplayIf(
+            this IHtmlHelper htmlHelper,
+            bool condition,
+            IHtmlContent displayOnConditionTrue,
             IHtmlContent displayOnConditionFalse = default)
         {
             if (condition)
+            {
                 return displayOnConditionTrue;
-            
-            if(displayOnConditionFalse != default)
+            }
+
+            if (displayOnConditionFalse != default)
+            {
                 return displayOnConditionFalse;
-            
+            }
+
             return htmlHelper.Raw(string.Empty);
         }
 
@@ -36,18 +42,24 @@ namespace DNI.Core.Shared.Extensions
         /// <param name="displayOnConditionTrue"></param>
         /// <param name="displayOnConditionFalse"></param>
         /// <returns></returns>
-        public static async Task<IHtmlContent> DisplayIfAsync(this IHtmlHelper htmlHelper, 
-            Task<bool> condition, Task<IHtmlContent> displayOnConditionTrue,
+        public static async Task<IHtmlContent> DisplayIfAsync(
+            this IHtmlHelper htmlHelper,
+            Task<bool> condition,
+            Task<IHtmlContent> displayOnConditionTrue,
             Task<IHtmlContent> displayOnConditionFalse = default)
         {
-            if(await condition
+            if (await condition
                 .ConfigureAwait(false))
+            {
                 return await displayOnConditionTrue
                     .ConfigureAwait(false);
+            }
 
-            if(displayOnConditionFalse != default)
+            if (displayOnConditionFalse != default)
+            {
                 return await displayOnConditionFalse
                     .ConfigureAwait(false);
+            }
 
             return htmlHelper.Raw(string.Empty);
         }
@@ -61,11 +73,16 @@ namespace DNI.Core.Shared.Extensions
         /// <param name="displayOnConditionTrue"></param>
         /// <param name="displayOnConditionFalse"></param>
         /// <returns></returns>
-        public static async Task<IHtmlContent> DisplayIfAsync<T>(this IHtmlHelper htmlHelper, Task<bool> condition, Task<T> displayOnConditionTrue, 
+        public static async Task<IHtmlContent> DisplayIfAsync<T>(
+            this IHtmlHelper htmlHelper,
+            Task<bool> condition,
+            Task<T> displayOnConditionTrue,
             Task<T> displayOnConditionFalse = default)
         {
-            return await DisplayIfAsync(htmlHelper, condition, 
-                htmlHelper.HtmlRawAsync(displayOnConditionTrue), 
+            return await DisplayIfAsync(
+                htmlHelper,
+                condition,
+                htmlHelper.HtmlRawAsync(displayOnConditionTrue),
                 htmlHelper.HtmlRawAsync(displayOnConditionFalse));
         }
 
@@ -77,12 +94,16 @@ namespace DNI.Core.Shared.Extensions
         /// <param name="displayonConditionTrue"></param>
         /// <param name="displayonConditionFalse"></param>
         /// <returns></returns>
-        public static async Task<IHtmlContent> DisplayIfAsync(this IHtmlHelper htmlHelper,
-            Task<bool> condition, Task<string> displayonConditionTrue, 
+        public static async Task<IHtmlContent> DisplayIfAsync(
+            this IHtmlHelper htmlHelper,
+            Task<bool> condition,
+            Task<string> displayonConditionTrue,
             Task<string> displayonConditionFalse = default)
         {
-            return await DisplayIfAsync(htmlHelper, condition, 
-                htmlHelper.HtmlRawAsync(displayonConditionTrue), 
+            return await DisplayIfAsync(
+                htmlHelper,
+                condition,
+                htmlHelper.HtmlRawAsync(displayonConditionTrue),
                 htmlHelper.HtmlRawAsync(displayonConditionFalse));
         }
 
@@ -114,15 +135,17 @@ namespace DNI.Core.Shared.Extensions
         /// <param name="displayOnConditionTrue"></param>
         /// <param name="displayOnConditionFalse"></param>
         /// <returns></returns>
-        public static IHtmlContent DisplayIf(this IHtmlHelper htmlHelper, 
-            bool condition, string displayOnConditionTrue, 
+        public static IHtmlContent DisplayIf(
+            this IHtmlHelper htmlHelper,
+            bool condition,
+            string displayOnConditionTrue,
             string displayOnConditionFalse = default)
         {
-            return DisplayIf(htmlHelper, condition, 
-                htmlHelper.Raw(displayOnConditionTrue), 
-                displayOnConditionFalse == null 
-                ? null 
-                : htmlHelper.Raw(displayOnConditionFalse));
+            return DisplayIf(
+                htmlHelper,
+                condition,
+                htmlHelper.Raw(displayOnConditionTrue),
+                displayOnConditionFalse == null ? null : htmlHelper.Raw(displayOnConditionFalse));
         }
 
         public static IHtmlContent FormatContent(this IHtmlHelper htmlHelper, string format, params object[] values)

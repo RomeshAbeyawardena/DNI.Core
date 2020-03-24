@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace DNI.Core.Contracts
+﻿namespace DNI.Core.Contracts
 {
+    using System.Collections.Generic;
+
     public interface IAppHostEventArgs
     {
         IEnumerable<object> Arguments { get; set; }

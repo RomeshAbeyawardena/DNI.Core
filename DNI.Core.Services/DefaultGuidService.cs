@@ -1,10 +1,10 @@
-﻿using DNI.Core.Contracts.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Contracts.Services;
+
     internal sealed class DefaultGuidService : IGuidService
     {
         public Guid Generate()
@@ -14,8 +14,10 @@ namespace DNI.Core.Services
 
         public Guid Parse(string guid)
         {
-            if(Guid.TryParse(guid, out var parsedGuid))
+            if (Guid.TryParse(guid, out var parsedGuid))
+            {
                 return parsedGuid;
+            }
 
             return default;
         }

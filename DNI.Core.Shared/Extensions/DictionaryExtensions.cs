@@ -1,11 +1,11 @@
-﻿using DNI.Core.Shared.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Shared.Extensions
+﻿namespace DNI.Core.Shared.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using DNI.Core.Shared.Attributes;
+
     public static class DictionaryExtensions
     {
         public static TClaim ToClaimObject<TClaim>(this IDictionary<string, object> dictionary, params object[] constructorArguments)
@@ -28,7 +28,7 @@ namespace DNI.Core.Shared.Extensions
             return ToObject<T>(dictionary, null, null, constructorArguments);
         }
 
-        public static T ToObject<T>(this IDictionary<string, object> dictionary, Type customAttributeType = null, 
+        public static T ToObject<T>(this IDictionary<string, object> dictionary, Type customAttributeType = null,
             string attributePropertyOrField = null, params object[] constructorArguments)
         {
             var objectType = typeof(T);
@@ -38,12 +38,14 @@ namespace DNI.Core.Shared.Extensions
 
             foreach (var (key, value) in dictionary)
             {
-                var property = properties.FirstOrDefault(prop => prop.Name == key 
+                var property = properties.FirstOrDefault(prop => prop.Name == key
                 || MatchesCustomAttributeField(prop, customAttributeType, attributePropertyOrField, key)
                 || MatchesInheritedInterfacesCustomAttributeField(prop, interfaceTypes, customAttributeType, attributePropertyOrField, key));
 
                 if (property == null)
+                {
                     continue;
+                }
 
                 property.SetValue(instance, Convert.ChangeType(value, property.PropertyType));
             }
@@ -55,22 +57,30 @@ namespace DNI.Core.Shared.Extensions
             string attributePropertyOrField = null, params object[] constructorArguments)
         {
             var objectDictionary = new Dictionary<string, object>();
-            
+
             foreach (var (key, value) in dictionary)
             {
                 object val = value;
 
-                if(long.TryParse(value, out var integerValue))
+                if (long.TryParse(value, out var integerValue))
+                {
                     val = integerValue;
+                }
 
-                if(decimal.TryParse(value, out var decimalValue))
+                if (decimal.TryParse(value, out var decimalValue))
+                {
                     val = decimalValue;
+                }
 
-                if(bool.TryParse(value, out var booleanValue))
+                if (bool.TryParse(value, out var booleanValue))
+                {
                     val = booleanValue;
+                }
 
-                if(Guid.TryParse(value, out var guidValue))
+                if (Guid.TryParse(value, out var guidValue))
+                {
                     val = guidValue;
+                }
 
                 objectDictionary.Add(key, val);
             }
@@ -84,9 +94,11 @@ namespace DNI.Core.Shared.Extensions
             {
                 var interfaceProperty = interfaceType.GetProperty(property.Name);
 
-                if(interfaceProperty != null 
+                if (interfaceProperty != null
                     && MatchesCustomAttributeField(interfaceProperty, customAttributeType, propertyOrFieldName, value))
+                {
                     return true;
+                }
             }
 
             return false;
@@ -98,15 +110,17 @@ namespace DNI.Core.Shared.Extensions
                     ? default
                     : property.GetCustomAttributes(customAttributeType, true))?.SingleOrDefault();
 
-
             if (propertyCustomAttribute == null)
+            {
                 return false;
+            }
 
             var attributeProperty = customAttributeType.GetProperty(propertyOrFieldName);
-            
 
-            if(attributeProperty == null)
+            if (attributeProperty == null)
+            {
                 return false;
+            }
 
             var propertyName = attributeProperty.GetValue(propertyCustomAttribute);
 

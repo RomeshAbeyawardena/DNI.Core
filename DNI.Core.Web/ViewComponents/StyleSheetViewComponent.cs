@@ -14,12 +14,13 @@ namespace DNI.Core.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(PageViewComponentRequestViewModel request)
         {
-            var pageTask =_pageService.GetPage(request.PageName, request.ParentPageId);
+            var pageTask = _pageService.GetPage(request.PageName, request.ParentPageId);
             var styleSheets = _pageService.GetStyleSheets(await pageTask);
 
             var styleSheetViewModels = Map<StyleSheet, StyleSheetViewModel>(await styleSheets);
 
-            return View(new StyleSheetViewComponentModel {
+            return View(new StyleSheetViewComponentModel
+            {
                 StyleSheetViewModel = styleSheetViewModels
             });
         }

@@ -1,24 +1,24 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Enumerations;
-using DNI.Core.Contracts.Providers;
-using DNI.Core.Services.Attributes;
-using DNI.Core.Services.Extensions;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services.Providers
+﻿namespace DNI.Core.Services.Providers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Enumerations;
+    using DNI.Core.Contracts.Providers;
+    using DNI.Core.Services.Attributes;
+    using DNI.Core.Services.Extensions;
+    using Microsoft.Extensions.Logging;
+
     internal sealed class EncryptionProvider : IEncryptionProvider
     {
-        private readonly ILogger<EncryptionProvider> _logger;
-        private readonly IMapperProvider _mapperProvider;
-        private readonly ISwitch<string, ICryptographicCredentials> _cryptographicCredentialsSwitch;
-        private readonly ICryptographyProvider _cryptographyProvider;
-        private readonly IHashingProvider _hashingProvider;
+        private readonly ILogger<EncryptionProvider> logger;
+        private readonly IMapperProvider mapperProvider;
+        private readonly ISwitch<string, ICryptographicCredentials> cryptographicCredentialsSwitch;
+        private readonly ICryptographyProvider cryptographyProvider;
+        private readonly IHashingProvider hashingProvider;
 
         private IEnumerable<PropertyInfo> GetEncryptableProperties(Type type)
         {
@@ -26,18 +26,17 @@ namespace DNI.Core.Services.Providers
                 .Where(property => property.GetCustomAttribute<EncryptAttribute>() != null);
         }
 
-        
-        private async Task<IEnumerable<byte>> Encrypt(EncryptionMethod encryptionMethod,
+        private async Task<IEnumerable<byte>> Encrypt(
+            EncryptionMethod encryptionMethod,
             ICryptographicCredentials cryptographicCredentials, string value, StringCase @case)
         {
-            
             switch (encryptionMethod)
             {
                 case EncryptionMethod.Encryption:
-                    return await _cryptographyProvider.Encrypt(cryptographicCredentials, value.Case(@case));
+                    return await cryptographyProvider.Encrypt(cryptographicCredentials, value.Case(@case));
                 case EncryptionMethod.Hashing:
-                    return _hashingProvider.PasswordDerivedBytes(value, cryptographicCredentials.Key, 
-                        cryptographicCredentials.KeyDerivationPrf, cryptographicCredentials.Iterations, 
+                    return hashingProvider.PasswordDerivedBytes(value, cryptographicCredentials.Key,
+                        cryptographicCredentials.KeyDerivationPrf, cryptographicCredentials.Iterations,
                         cryptographicCredentials.TotalNumberOfBytes);
                 default: throw new NotSupportedException();
             };
@@ -46,15 +45,17 @@ namespace DNI.Core.Services.Providers
         public async Task<TResult> Decrypt<T, TResult>(T value)
         {
             var tResultProperties = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            var resultInstance = _mapperProvider.Map<T, TResult>(value);
+            var resultInstance = mapperProvider.Map<T, TResult>(value);
             foreach (var property in GetEncryptableProperties(typeof(T)))
             {
                 var encryptCustomAttribute = property.GetCustomAttribute<EncryptAttribute>();
 
                 if (encryptCustomAttribute.EncryptionMethod == EncryptionMethod.Hashing)
+                {
                     continue;
+                }
 
-                var cryptographicCredentials = _cryptographicCredentialsSwitch
+                var cryptographicCredentials = cryptographicCredentialsSwitch
                     .Case(encryptCustomAttribute.EncryptionSaltKey);
 
                 var resultProperty = tResultProperties
@@ -63,9 +64,11 @@ namespace DNI.Core.Services.Providers
                 var val = (IEnumerable<byte>)property.GetValue(value);
 
                 if (val == null)
+                {
                     continue;
+                }
 
-                resultProperty.SetValue(resultInstance, await _cryptographyProvider.Decrypt(cryptographicCredentials, val));
+                resultProperty.SetValue(resultInstance, await cryptographyProvider.Decrypt(cryptographicCredentials, val));
             }
 
             return resultInstance;
@@ -75,11 +78,11 @@ namespace DNI.Core.Services.Providers
         {
             var encryptableProperties = GetEncryptableProperties(typeof(T));
             var tResultProperties = typeof(TResult).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            var resultInstance = _mapperProvider.Map<T, TResult>(value);
+            var resultInstance = mapperProvider.Map<T, TResult>(value);
             foreach (var property in encryptableProperties)
             {
                 var encryptCustomAttribute = property.GetCustomAttribute<EncryptAttribute>();
-                var cryptographicCredentials = _cryptographicCredentialsSwitch
+                var cryptographicCredentials = cryptographicCredentialsSwitch
                     .Case(encryptCustomAttribute.EncryptionSaltKey);
 
                 var resultProperty = tResultProperties
@@ -87,17 +90,23 @@ namespace DNI.Core.Services.Providers
 
                 var val = property.GetValue(value);
 
-                if(property.PropertyType.IsArray)
+                if (property.PropertyType.IsArray)
+                {
                     val = cryptographicCredentials.Encoding.GetString((byte[])val);
+                }
 
                 if (val is IEnumerable<byte> enumerableValue)
+                {
                     val = cryptographicCredentials.Encoding.GetString(enumerableValue.ToArray());
-
+                }
 
                 if (val == null)
+                {
                     continue;
+                }
 
-                var encryptedValue = await Encrypt(encryptCustomAttribute.EncryptionMethod,
+                var encryptedValue = await Encrypt(
+                    encryptCustomAttribute.EncryptionMethod,
                     cryptographicCredentials, val.ToString(), encryptCustomAttribute.Case);
 
                 resultProperty.SetValue(resultInstance, encryptedValue);
@@ -132,11 +141,11 @@ namespace DNI.Core.Services.Providers
             ISwitch<string, ICryptographicCredentials> cryptographicCredentialsSwitch,
             ICryptographyProvider cryptographyProvider, IHashingProvider hashingProvider)
         {
-            _logger = logger;
-            _mapperProvider = mapperProvider;
-            _cryptographicCredentialsSwitch = cryptographicCredentialsSwitch;
-            _cryptographyProvider = cryptographyProvider;
-            _hashingProvider = hashingProvider;
+            this.logger = logger;
+            this.mapperProvider = mapperProvider;
+            this.cryptographicCredentialsSwitch = cryptographicCredentialsSwitch;
+            this.cryptographyProvider = cryptographyProvider;
+            this.hashingProvider = hashingProvider;
         }
     }
 }

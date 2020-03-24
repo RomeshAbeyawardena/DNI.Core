@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DNI.Core.Contracts
+﻿namespace DNI.Core.Contracts
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface ITypesDescriptor
     {
-        ITypesDescriptor Describe<T>();
-        ITypesDescriptor Describe(Type type);
         IEnumerable<ITypeDescriptor> DescribedTypes { get; }
+
+        ITypesDescriptor Describe<T>();
+
         IEnumerable<Type> ToTypeArray();
+
+        ITypesDescriptor Describe(Type type);
     }
+
     public interface ITypeDescriptor
     {
         Type Type { get; }
@@ -17,6 +21,6 @@ namespace DNI.Core.Contracts
 
     public interface ITypeDescriptor<T> : ITypeDescriptor
     {
-        
+        T Value { get; }
     }
 }

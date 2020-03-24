@@ -1,24 +1,26 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Contracts;
+
     internal class DefaultListBuilder<T> : IListBuilder<T>
     {
-        private readonly IList<T> _list;
+        private readonly IList<T> list;
 
         public IListBuilder<T> Add(T item)
         {
-            _list.Add(item);
+            list.Add(item);
             return this;
         }
-        
+
         public IListBuilder<T> AddRangle(params T[] items)
         {
-            foreach(var item in items)
+            foreach (var item in items)
+            {
                 Add(item);
+            }
 
             return this;
         }
@@ -27,26 +29,27 @@ namespace DNI.Core.Services
         {
             var array = items.Select(item => getItem(item)).ToArray();
 
-            foreach(var item in array)
+            foreach (var item in array)
+            {
                 Add(item);
+            }
 
             return this;
         }
 
-
         public IEnumerable<T> ToEnumerable()
         {
-            return _list.ToArray();
+            return list.ToArray();
         }
 
         public IList<T> ToList()
         {
-            return _list.ToList();
+            return list.ToList();
         }
 
         private DefaultListBuilder(IList<T> list)
         {
-            _list = list;
+            this.list = list;
         }
 
         public static IListBuilder<T> Create()

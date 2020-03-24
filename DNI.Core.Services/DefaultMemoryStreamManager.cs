@@ -1,25 +1,27 @@
-﻿using DNI.Core.Contracts.Managers;
-using Microsoft.IO;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using DNI.Core.Contracts.Managers;
+    using Microsoft.IO;
+
     internal sealed class DefaultMemoryStreamManager : IMemoryStreamManager
     {
-        private readonly RecyclableMemoryStreamManager _recyclableMemoryStreamManager;
+        private readonly RecyclableMemoryStreamManager recyclableMemoryStreamManager;
 
         public MemoryStream GetStream(bool useRecyclableMemoryStreamManager = true, IEnumerable<byte> buffer = null)
         {
             MemoryStream memoryStream;
-            
-            memoryStream = useRecyclableMemoryStreamManager 
-                ? _recyclableMemoryStreamManager.GetStream() 
+
+            memoryStream = useRecyclableMemoryStreamManager
+                ? recyclableMemoryStreamManager.GetStream()
                 : new MemoryStream();
 
-            if(buffer == null)
+            if (buffer == null)
+            {
                 return memoryStream;
+            }
 
             var bufferArray = buffer.ToArray();
 
@@ -30,7 +32,7 @@ namespace DNI.Core.Services
 
         public DefaultMemoryStreamManager(RecyclableMemoryStreamManager recyclableMemoryStreamManager)
         {
-            _recyclableMemoryStreamManager = recyclableMemoryStreamManager;
+            this.recyclableMemoryStreamManager = recyclableMemoryStreamManager;
         }
     }
 }

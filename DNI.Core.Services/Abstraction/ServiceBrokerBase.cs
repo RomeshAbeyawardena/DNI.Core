@@ -1,22 +1,17 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Options;
-using DNI.Core.Services.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Services.Abstraction
+﻿namespace DNI.Core.Services.Abstraction
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Options;
+    using DNI.Core.Services.Extensions;
+    using Microsoft.Extensions.DependencyInjection;
+
     public abstract class ServiceBrokerBase : IServiceBroker
     {
         public Action<IAssembliesDescriptor> DescribeAssemblies { get; protected set; }
-
-        public static Assembly GetAssembly<T>()
-        {
-            return Assembly.GetAssembly(typeof(T));
-        }
 
         public IEnumerable<Assembly> Assemblies
         {
@@ -28,6 +23,11 @@ namespace DNI.Core.Services.Abstraction
             }
         }
 
+        public static Assembly GetAssembly<T>()
+        {
+            return Assembly.GetAssembly(typeof(T));
+        }
+
         public virtual void RegisterServicesFromAssemblies(IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
         {
             foreach (var assembly in Assemblies)
@@ -37,18 +37,22 @@ namespace DNI.Core.Services.Abstraction
                     .Where(type => type.IsOfType<IServiceRegistration>());
 
                 foreach (var serviceRegistrationType in serviceRegistrationTypes)
+                {
                     RegisterServices(serviceRegistrationType, services, serviceRegistrationOptions);
+                }
 
                 var exceptionHandlerTypes = assembly
                     .GetTypes()
                     .Where(type => type.IsOfType<IExceptionHandler>());
 
                 if (serviceRegistrationOptions.RegisterExceptionHandlers)
+                {
                     foreach (var exceptionHandlerType in exceptionHandlerTypes)
+                    {
                         RegisterExceptionHandlers(services, exceptionHandlerType);
-
+                    }
+                }
             }
-
         }
 
         private void RegisterServices(Type serviceRegistrationType, IServiceCollection services, IServiceRegistrationOptions serviceRegistrationOptions)
@@ -64,7 +68,9 @@ namespace DNI.Core.Services.Abstraction
                 .SingleOrDefault(interfaceType => interfaceType.IsGenericType);
 
             if (genericServiceType == null)
+            {
                 return;
+            }
 
             services.AddSingleton(genericServiceType, implementationType);
         }

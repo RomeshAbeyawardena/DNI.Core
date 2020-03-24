@@ -1,11 +1,11 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Contracts;
+
     internal sealed class DefaultDictionaryBuilder<TKey, TValue> : IDictionaryBuilder<TKey, TValue>
     {
         public static IDictionaryBuilder<TKey, TValue> Create()
@@ -22,7 +22,7 @@ namespace DNI.Core.Services
 
         public IDictionaryBuilder<TKey, TValue> Add(TKey key, TValue value)
         {
-            _dictionary.TryAdd(key, value);
+            dictionary.TryAdd(key, value);
             return this;
         }
 
@@ -34,14 +34,17 @@ namespace DNI.Core.Services
 
         public IDictionaryBuilder<TKey, TValue> AddRange(params KeyValuePair<TKey, TValue>[] values)
         {
-            foreach(var keyValuePair in values)
+            foreach (var keyValuePair in values)
+            {
                 Add(keyValuePair);
+            }
+
             return this;
         }
 
         public IDictionary<TKey, TValue> ToDictionary()
         {
-            return new Dictionary<TKey, TValue>(_dictionary);
+            return new Dictionary<TKey, TValue>(dictionary);
         }
 
         public IDictionaryBuilder<TKey, TValue> AddRange<T>(IEnumerable<T> value, Func<T, TKey> getKey, Func<T, TValue> getValue)
@@ -53,9 +56,9 @@ namespace DNI.Core.Services
 
         private DefaultDictionaryBuilder(IDictionary<TKey, TValue> dictionary)
         {
-            _dictionary = dictionary;
+            this.dictionary = dictionary;
         }
 
-        private readonly IDictionary<TKey, TValue> _dictionary;
+        private readonly IDictionary<TKey, TValue> dictionary;
     }
 }

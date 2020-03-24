@@ -1,14 +1,15 @@
-﻿using System;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System;
+
     public sealed class Instance<T>
     {
-        private T _value;
-        private readonly Func<T> _createExpression;
+        private T value;
+        private readonly Func<T> createExpression;
+
         private Instance(Func<T> createExpression)
         {
-            _createExpression = createExpression;
+            this.createExpression = createExpression;
         }
 
         public static Instance<T> Create(Func<T> createExpression)
@@ -21,6 +22,6 @@ namespace DNI.Core.Services.Extensions
             return isExpression(Value);
         }
 
-        public T Value { get => _value ?? (_value = _createExpression()); }
+        public T Value { get => value ?? (value = createExpression()); }
     }
 }

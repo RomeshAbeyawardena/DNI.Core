@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System.Threading.Tasks;
+
     public static class TaskHelper
     {
         public static async void RunTask(Task task, bool continueCapturedContext = false)

@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace DNI.Core.Contracts.Managers
+﻿namespace DNI.Core.Contracts.Managers
 {
+    using System.Collections.Generic;
+    using System.IO;
+
     /// <summary>
-    /// Represents a manager to manage streams
+    /// Represents a manager to manage streams.
     /// </summary>
     public interface IMemoryStreamManager
     {
         /// <summary>
-        /// Retrieves a usable stream using a recycleable memory stream manager
+        /// Retrieves a usable stream using a recycleable memory stream manager.
         /// </summary>
         /// <param name="useRecyclableMemoryStreamManager"></param>
         /// <param name="buffer"></param>

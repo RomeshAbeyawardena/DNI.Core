@@ -1,17 +1,17 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Contracts;
+
     internal class DefaultInstanceServiceInjector : IInstanceServiceInjector
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceProvider serviceProvider;
 
         public DefaultInstanceServiceInjector(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider;
         }
 
         public TService CreateInstance<TService>()
@@ -28,11 +28,14 @@ namespace DNI.Core.Services
             var implementedServiceList = new List<object>();
             foreach (var parameter in constructor.GetParameters())
             {
-                var service = _serviceProvider.GetService(parameter.ParameterType);
+                var service = serviceProvider.GetService(parameter.ParameterType);
 
                 if (service == null)
-                    throw new ArgumentNullException(parameter.Name,
-                        $"Unable to resolve service type '{ parameter.ParameterType.FullName }'");
+                {
+                    throw new ArgumentNullException(
+                        parameter.Name,
+                        $"Unable to resolve service type '{parameter.ParameterType.FullName}'");
+                }
 
                 implementedServiceList.Add(service);
             }

@@ -14,14 +14,17 @@ namespace DNI.Core.App
         {
             var serviceBroker = ServiceBrokerBuilder
                 .Build(describe => describe.GetAssembly<Startup>());
-            
+
             var value = await AppHost.Build<Startup>()
-                .ConfigureServices(services => { services
-                    .RegisterServiceBroker(serviceBroker, options => { 
-                        options.RegisterAutoMappingProviders = true; 
-                        options.RegisterMessagePackSerialisers = true; 
-                    }); 
-                }) 
+                .ConfigureServices(services =>
+                {
+                    services
+.RegisterServiceBroker(serviceBroker, options =>
+{
+    options.RegisterAutoMappingProviders = true;
+    options.RegisterMessagePackSerialisers = true;
+});
+                })
                 .ConfigureStartupDelegate((startup, arguments) => startup.Begin(arguments.ToArray()))
                 .Start<int>(args).ConfigureAwait(false);
 
@@ -30,7 +33,7 @@ namespace DNI.Core.App
 
         private static void AppHost_OnStart(object sender, IAppHostEventArgs e)
         {
-            Console.WriteLine("Arguments: ",string.Join(',', e.Arguments));
+            Console.WriteLine("Arguments: ", string.Join(',', e.Arguments));
         }
 
         public static void OnCatch(Exception ex)
@@ -77,7 +80,7 @@ namespace DNI.Core.App
 
             protected virtual void Dispose(bool gc)
             {
-                if(gc)
+                if (gc)
                     Console.WriteLine($"Then { Name } was disposed");
             }
 

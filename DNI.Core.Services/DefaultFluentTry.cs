@@ -1,46 +1,50 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Domains;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Domains;
+
     internal class DefaultFluentTry : IFluentTry
     {
-        private readonly ConcurrentBag<Action> _actionConcurrentBag;
-        private readonly ISwitch<Type, ExceptionHandler> _catchActionSwitch;
+        private readonly ConcurrentBag<Action> actionConcurrentBag;
+        private readonly ISwitch<Type, ExceptionHandler> catchActionSwitch;
 
         public IFluentTry Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrow = false)
         {
-            _catchActionSwitch
+            catchActionSwitch
                 .CaseWhen(typeof(TException), ExceptionHandler.Create(exceptionAction, continueOnExceptionThrow));
             return this;
         }
 
         public void Invoke()
         {
-            foreach(var action in _actionConcurrentBag)
+            foreach (var action in actionConcurrentBag)
             {
                 try
                 {
                     action.Invoke();
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
-                    if(!HandleException(exception, out var continueOperation))
+                    if (!HandleException(exception, out var continueOperation))
+                    {
                         throw;
+                    }
 
-                    if(!continueOperation)
+                    if (!continueOperation)
+                    {
                         break;
+                    }
                 }
             }
         }
 
         public IFluentTry Try(Action action)
         {
-            _actionConcurrentBag.Add(action);
+            actionConcurrentBag.Add(action);
             return this;
         }
 
@@ -52,11 +56,13 @@ namespace DNI.Core.Services
         protected bool HandleException(Exception exception, out bool continueOnHandledException)
         {
             continueOnHandledException = false;
-            var exceptionAction = _catchActionSwitch
+            var exceptionAction = catchActionSwitch
                 .Case(exception.GetType());
 
-            if(exceptionAction == null)
+            if (exceptionAction == null)
+            {
                 return false;
+            }
 
             continueOnHandledException = exceptionAction.ContinueOnExceptionThrow;
 
@@ -66,27 +72,31 @@ namespace DNI.Core.Services
 
         protected DefaultFluentTry(ConcurrentBag<Action> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)
         {
-            _actionConcurrentBag = actionConcurrentBag;
-            _catchActionSwitch = catchActionSwitch;
+            this.actionConcurrentBag = actionConcurrentBag;
+            this.catchActionSwitch = catchActionSwitch;
         }
     }
 
     internal class DefaultFluentTry<TResult> : DefaultFluentTry, IFluentTry<TResult>
     {
-        private readonly ConcurrentBag<Func<TResult>> _actionConcurrentBag;
+        private readonly ConcurrentBag<Func<TResult>> actionConcurrentBag;
 
         public virtual new IEnumerable<TResult> Invoke()
         {
             var resultConcurrentBag = new ConcurrentBag<TResult>();
             try
             {
-                foreach(var result in GetResults(_actionConcurrentBag, (a) => a()))
+                foreach (var result in GetResults(actionConcurrentBag, (a) => a()))
+                {
                     resultConcurrentBag.Add(result);
+                }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                if(!HandleException(exception, out var continueOperation))
+                if (!HandleException(exception, out var continueOperation))
+                {
                     throw;
+                }
             }
 
             return resultConcurrentBag;
@@ -94,7 +104,7 @@ namespace DNI.Core.Services
 
         public IFluentTry<TResult> Try(Func<TResult> action)
         {
-            _actionConcurrentBag.Add(action);
+            actionConcurrentBag.Add(action);
             return this;
         }
 
@@ -108,39 +118,43 @@ namespace DNI.Core.Services
             return (IFluentTry<TResult>)base.Catch<TException>(exceptionAction, continueOnExceptionThrow);
         }
 
-        protected IEnumerable<TResult> GetResults<TDelegate>(ConcurrentBag<TDelegate> delegateConcurrentBag, Func<TDelegate,TResult> getResult)
+        protected IEnumerable<TResult> GetResults<TDelegate>(ConcurrentBag<TDelegate> delegateConcurrentBag, Func<TDelegate, TResult> getResult)
             where TDelegate : Delegate
         {
             var resultConcurrentBag = new ConcurrentBag<TResult>();
 
-            foreach(var action in delegateConcurrentBag)
-            { 
+            foreach (var action in delegateConcurrentBag)
+            {
                 try
-                { 
+                {
                     resultConcurrentBag.Add(getResult(action));
                 }
-                catch(Exception exception)
+                catch (Exception exception)
                 {
-                    if(!HandleException(exception, out var continueOnHandledException))
+                    if (!HandleException(exception, out var continueOnHandledException))
+                    {
                         throw;
+                    }
 
-                    if(!continueOnHandledException)
+                    if (!continueOnHandledException)
+                    {
                         break;
+                    }
                 }
             }
             return resultConcurrentBag;
         }
-        
+
         protected DefaultFluentTry(ConcurrentBag<Func<TResult>> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)
             : base(null, catchActionSwitch)
         {
-            _actionConcurrentBag = actionConcurrentBag;
+            this.actionConcurrentBag = actionConcurrentBag;
         }
     }
 
     internal class DefaultFluentTry<T, TResult> : DefaultFluentTry<TResult>, IFluentTry<T, TResult>
     {
-        private readonly ConcurrentBag<Func<T, TResult>> _actionConcurrentBag;
+        private readonly ConcurrentBag<Func<T, TResult>> actionConcurrentBag;
 
         public new static IFluentTry<T, TResult> Create()
         {
@@ -152,15 +166,17 @@ namespace DNI.Core.Services
             var resultConcurrentBag = new ConcurrentBag<TResult>();
             try
             {
-                foreach (var item in GetResults(_actionConcurrentBag, a => a.Invoke(value)))
+                foreach (var item in GetResults(actionConcurrentBag, a => a.Invoke(value)))
                 {
                     resultConcurrentBag.Add(item);
                 }
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                if(!HandleException(exception, out var continueOperation))
+                if (!HandleException(exception, out var continueOperation))
+                {
                     throw;
+                }
             }
 
             return resultConcurrentBag;
@@ -168,7 +184,7 @@ namespace DNI.Core.Services
 
         public IFluentTry<T, TResult> Try(Func<T, TResult> result)
         {
-            _actionConcurrentBag.Add(result);
+            actionConcurrentBag.Add(result);
             return this;
         }
 
@@ -180,7 +196,7 @@ namespace DNI.Core.Services
         protected DefaultFluentTry(ConcurrentBag<Func<T, TResult>> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)
             : base(null, catchActionSwitch)
         {
-            _actionConcurrentBag = actionConcurrentBag;
+            this.actionConcurrentBag = actionConcurrentBag;
         }
     }
 
@@ -195,29 +211,30 @@ namespace DNI.Core.Services
         {
             try
             {
-                await Task.WhenAll(Invoke()).ConfigureAwait(false);;
+                await Task.WhenAll(Invoke()).ConfigureAwait(false); ;
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                if(!HandleException(exception, out var continueOperation))
+                if (!HandleException(exception, out var continueOperation))
+                {
                     throw;
+                }
             }
         }
 
         public new IFluentTryAsync Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown = false)
         {
-            return(IFluentTryAsync)base.Catch<TException>(exceptionAction, continueOnExceptionThrown);
+            return (IFluentTryAsync)base.Catch<TException>(exceptionAction, continueOnExceptionThrown);
         }
 
         public new IFluentTryAsync Try(Func<Task> result)
         {
-            return(IFluentTryAsync)base.Try(result);
+            return (IFluentTryAsync)base.Try(result);
         }
 
         private DefaultFluentTryAsync(ConcurrentBag<Func<Task>> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)
             : base(actionConcurrentBag, catchActionSwitch)
         {
-
         }
     }
 
@@ -227,6 +244,7 @@ namespace DNI.Core.Services
         {
             return new DefaultFluentTryAsync<TResult>(new ConcurrentBag<Func<Task<TResult>>>(), Switch.Create<Type, ExceptionHandler>());
         }
+
         public new IFluentTryAsync<TResult> Catch<TException>(Action<Exception> exceptionAction, bool continueOnExceptionThrown)
         {
             return (IFluentTryAsync<TResult>)base.Catch<TException>(exceptionAction, continueOnExceptionThrown);
@@ -242,11 +260,11 @@ namespace DNI.Core.Services
             return await Task.WhenAll(Invoke());
         }
 
-        private DefaultFluentTryAsync(ConcurrentBag<Func<Task<TResult>>> actionConcurrentBag, 
+        private DefaultFluentTryAsync(
+            ConcurrentBag<Func<Task<TResult>>> actionConcurrentBag,
             ISwitch<Type, ExceptionHandler> catchActionSwitch)
             : base(actionConcurrentBag, catchActionSwitch)
         {
-
         }
     }
 
@@ -255,19 +273,20 @@ namespace DNI.Core.Services
         public DefaultFluentTryAsync(ConcurrentBag<Func<T, Task<TResult>>> actionConcurrentBag, ISwitch<Type, ExceptionHandler> catchActionSwitch)
             : base(actionConcurrentBag, catchActionSwitch)
         {
-
         }
 
         public async Task<IEnumerable<TResult>> InvokeAsync(T value)
         {
             try
             {
-                return await Task.WhenAll(Invoke(value)).ConfigureAwait(false);;
+                return await Task.WhenAll(Invoke(value)).ConfigureAwait(false); ;
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                if(!HandleException(exception, out var continueOperation))
+                if (!HandleException(exception, out var continueOperation))
+                {
                     throw;
+                }
             }
 
             return default;

@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace DNI.Core.Contracts.Enumerations
+﻿namespace DNI.Core.Contracts.Enumerations
 {
+    using System;
+
     /// <summary>
-    /// Specifies a set of character types
+    /// Specifies a set of character types.
     /// </summary>
     [Flags]
     public enum CharacterType
@@ -11,6 +11,6 @@ namespace DNI.Core.Contracts.Enumerations
         Uppercase = 1,
         Lowercase = 2,
         Numerics = 4,
-        Symbols = 8
+        Symbols = 8,
     }
 }

@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-
-namespace DNI.Core.Services.Attributes
+﻿namespace DNI.Core.Services.Attributes
 {
+    using System;
+    using Microsoft.AspNetCore.Mvc.Filters;
+
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-    public sealed class HeaderValueAttribute  : Attribute, IActionFilter
+    public sealed class HeaderValueAttribute : Attribute, IActionFilter
     {
         public HeaderValueAttribute(string name, string value = default)
         {
@@ -13,6 +13,7 @@ namespace DNI.Core.Services.Attributes
         }
 
         public string Name { get; }
+
         public string Value { get; }
 
         public void OnActionExecuted(ActionExecutedContext context)
@@ -24,7 +25,6 @@ namespace DNI.Core.Services.Attributes
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            
         }
     }
 }

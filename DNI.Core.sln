@@ -19,13 +19,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNI.Core.Web", "DNI.Core.We
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{531079ED-E75E-4012-82C4-E674B4A1E950}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		Directory.Build.props = Directory.Build.props
 		DotNet-Pack.ps1 = DotNet-Pack.ps1
 		Get-Version.ps1 = Get-Version.ps1
+		GlobalSupression.cs = GlobalSupression.cs
 		Increment-Version.ps1 = Increment-Version.ps1
 		Increment.ps1 = Increment.ps1
 		Install.ps1 = Install.ps1
 		Readme.md = Readme.md
+		stylecop.json = stylecop.json
 		UpdateVersion-Powershell.ps1 = UpdateVersion-Powershell.ps1
 	EndProjectSection
 EndProject

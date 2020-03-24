@@ -1,10 +1,10 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Contracts;
+
     public static class TypesDescriptor
     {
         public static ITypesDescriptor Describe<T>()
@@ -17,8 +17,10 @@ namespace DNI.Core.Services
         {
             var typeDescriptor = Create();
 
-            if(type != null)
-               return typeDescriptor.Describe(type);
+            if (type != null)
+            {
+                return typeDescriptor.Describe(type);
+            }
 
             return typeDescriptor;
         }
@@ -26,14 +28,15 @@ namespace DNI.Core.Services
         public static ITypesDescriptor Create()
         {
             return new DefaultTypesDescriptor();
-
         }
     }
 
     internal class DefaultTypesDescriptor : ITypesDescriptor
     {
         public IEnumerable<ITypeDescriptor> DescribedTypes => describedTypes.ToArray();
+
         private readonly IList<ITypeDescriptor> describedTypes;
+
         public ITypesDescriptor Describe<T>()
         {
             describedTypes.Add(new DefaultTypeDescriptor<T>());
@@ -73,7 +76,8 @@ namespace DNI.Core.Services
         public DefaultTypeDescriptor()
             : base(typeof(T))
         {
-
         }
+
+        public T Value { get; set; }
     }
 }

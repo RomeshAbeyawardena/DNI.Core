@@ -1,8 +1,8 @@
-﻿using DNI.Core.Contracts;
-using System.Collections.Generic;
-
-namespace DNI.Core.Domains
+﻿namespace DNI.Core.Domains
 {
+    using System.Collections.Generic;
+    using DNI.Core.Contracts;
+
     public struct AppHostEventArgs : IAppHostEventArgs
     {
         public AppHostEventArgs(IEnumerable<object> arguments)

@@ -14,17 +14,20 @@ namespace DNI.Core.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .RegisterServiceBroker<ServiceBroker>(options => { 
-                    options.RegisterAutoMappingProviders = true; 
+                .RegisterServiceBroker<ServiceBroker>(options =>
+                {
+                    options.RegisterAutoMappingProviders = true;
                     options.RegisterMessagePackSerialisers = true;
                     options.RegisterCacheProviders = true;
                     options.RegisterMediatorServices = true;
-                    options.RegisterExceptionHandlers = true; 
-                    options.RegisterJsonFileCacheTrackerStore((serviceProvider, configure) => { 
+                    options.RegisterExceptionHandlers = true;
+                    options.RegisterJsonFileCacheTrackerStore((serviceProvider, configure) =>
+                    {
                         var webHostEnvironment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
                         configure
                             .FileName = Path.Combine(webHostEnvironment.ContentRootPath, "cache.json");
-                    }); }, 
+                    });
+                },
                 out var serviceBroker)
                 .AddMvc();
         }

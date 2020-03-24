@@ -12,7 +12,7 @@
         public string Content { get; set; }
 
         public SectionType SectionType { get; set; }
-        
+
         public Enumerations.SectionType Type => (Enumerations.SectionType)SectionTypeId;
 
         public Page Page { get; set; }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Services.Extensions
+﻿namespace DNI.Core.Services.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
     public static class TypeExtensions
     {
         public static IEnumerable<PropertyInfo> GetCustomAttributeProperties<TAttribute>(this Type entityType, BindingFlags bindingFlags)
@@ -14,7 +14,7 @@ namespace DNI.Core.Services.Extensions
                 .Where(property => property.GetCustomAttribute<TAttribute>() != null);
         }
 
-        public static  bool IsOfType<T>(this Type type)
+        public static bool IsOfType<T>(this Type type)
         {
             var ofType = typeof(T);
 

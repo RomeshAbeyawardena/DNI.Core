@@ -7,6 +7,8 @@ namespace DNI.Core.Web.ExceptionHandlers
 {
     public class UnauthorisedException : IExceptionHandler<UnauthorizedAccessException>
     {
+        public UnauthorizedAccessException Exception => throw new NotImplementedException();
+
         public bool HandleException(ExceptionContext exception)
         {
             exception.Result = new UnauthorizedResult();

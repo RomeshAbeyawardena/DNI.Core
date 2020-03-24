@@ -1,31 +1,38 @@
-﻿using DNI.Core.Domains;
-using FluentValidation;
-using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using DNI.Core.Domains;
+    using FluentValidation;
+    using MediatR;
+
     public sealed class DefaultValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     {
-        private readonly IValidator<TRequest> _validator;
+        private readonly IValidator<TRequest> validator;
 
-        public async Task<TResponse> Handle(TRequest request, 
+        public async Task<TResponse> Handle(
+            TRequest request,
             CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
         {
-            if(_validator == null)
+            if (validator == null)
+            {
                 return await next();
+            }
 
             var response = Activator.CreateInstance<TResponse>();
-                
-            if(!(response is ResponseBase responseBase))
-                return await next();
 
-            var result  = await _validator.ValidateAsync(request);
-
-            if(result.IsValid)
+            if (!(response is ResponseBase responseBase))
+            {
                 return await next();
+            }
+
+            var result = await validator.ValidateAsync(request);
+
+            if (result.IsValid)
+            {
+                return await next();
+            }
 
             responseBase.Errors = result.Errors;
             responseBase.IsSuccessful = false;
@@ -34,7 +41,7 @@ namespace DNI.Core.Services
 
         public DefaultValidationBehaviour(IValidator<TRequest> validator = null)
         {
-            _validator = validator;
+            this.validator = validator;
         }
     }
 }

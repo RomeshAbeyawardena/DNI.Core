@@ -1,11 +1,12 @@
-﻿using FluentValidation.Results;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DNI.Core.Domains
+﻿namespace DNI.Core.Domains
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using DNI.Core.Domains.Contracts;
+    using FluentValidation.Results;
+    using Newtonsoft.Json;
+
     public static class Response
     {
         public static bool IsSuccessful(IResponse response)
@@ -35,16 +36,22 @@ namespace DNI.Core.Domains
                 .Where(property => property.Name == nameof(ResponseBase.Result));
 
             if (!resultProperties.Any())
+            {
                 throw new InvalidCastException();
+            }
 
             foreach (var resultProperty in resultProperties)
+            {
                 resultProperty.SetValue(response, result);
+            }
 
             var successfulProperty = properties
                 .FirstOrDefault(property => property.Name == nameof(ResponseBase.IsSuccessful));
 
             if (successfulProperty == null)
+            {
                 throw new InvalidCastException();
+            }
 
             successfulProperty.SetValue(response, true);
 
@@ -52,21 +59,12 @@ namespace DNI.Core.Domains
         }
     }
 
-    public interface IResponse<T>
-    {
-        T Result { get; set; }
-    }
-
-    public interface IResponse : IResponse<object>
-    {
-        bool IsSuccessful { get; set; }
-        IEnumerable<ValidationFailure> Errors { get; set; }
-    }
-
     public abstract class ResponseBase : IResponse
     {
         public bool IsSuccessful { get; set; }
+
         public IEnumerable<ValidationFailure> Errors { get; set; }
+
         public object Result { get; set; }
     }
 

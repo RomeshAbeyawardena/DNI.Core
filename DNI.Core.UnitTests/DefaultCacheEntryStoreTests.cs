@@ -27,7 +27,7 @@ namespace DNI.Core.UnitTests
         {
             MemoryStream memoryStream;
             var streamWriter = new StreamWriter(memoryStream = new MemoryStream());
-            
+
             streamWriter.Write(data);
             streamWriter.Flush();
 
@@ -40,10 +40,10 @@ namespace DNI.Core.UnitTests
         public void SetUp()
         {
             _fileServiceMock = new Mock<IFileService>();
-           _jsonSerializerMock = new Mock<IJsonSerializer>();
+            _jsonSerializerMock = new Mock<IJsonSerializer>();
             _fileMock = new Mock<IFile>();
             _sut = new DefaultJsonFileCacheTrackerStore(
-                new JsonFileCacheTrackerStoreOptions { FileName = "My test file" }, 
+                new JsonFileCacheTrackerStoreOptions { FileName = "My test file" },
                 _fileServiceMock.Object,
                 _jsonSerializerMock.Object);
         }
@@ -59,7 +59,7 @@ namespace DNI.Core.UnitTests
                 .Returns(_fileMock.Object)
                 .Verifiable();
 
-             var result = await _sut.GetItems(CancellationToken.None);
+            var result = await _sut.GetItems(CancellationToken.None);
 
             Assert.IsNull(result);
             _fileMock.Verify();
@@ -110,7 +110,7 @@ namespace DNI.Core.UnitTests
         {
             var jsonData = string.Empty;
             var memoryStream = CreateMemoryStream(jsonData);
-            
+
             _fileMock.Setup(file => file.Exists)
                 .Returns(true)
                 .Verifiable();
@@ -148,7 +148,7 @@ namespace DNI.Core.UnitTests
         [Test]
         public async Task SaveItems_when_state_is_valid_and_not_empty_returns()
         {
-            
+
             var state = new Dictionary<string, CacheEntryState>();
 
             state.Add("SAS", CacheEntryState.Invalid);

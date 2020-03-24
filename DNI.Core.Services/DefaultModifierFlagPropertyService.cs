@@ -1,22 +1,22 @@
-﻿using DNI.Core.Contracts.Enumerations;
-using DNI.Core.Contracts.Providers;
-using DNI.Core.Contracts.Services;
-using DNI.Core.Services.Attributes;
-using DNI.Core.Services.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using DNI.Core.Contracts.Enumerations;
+    using DNI.Core.Contracts.Providers;
+    using DNI.Core.Contracts.Services;
+    using DNI.Core.Services.Attributes;
+    using DNI.Core.Services.Extensions;
+
     internal sealed class DefaultModifierFlagPropertyService : IModifierFlagPropertyService
     {
-        private readonly IClockProvider _clockProvider;
+        private readonly IClockProvider clockProvider;
 
         public DefaultModifierFlagPropertyService(IClockProvider clockProvider)
         {
-            _clockProvider = clockProvider;
+            this.clockProvider = clockProvider;
         }
 
         public void SetModifierFlagValues<TEntity>(TEntity entity, ModifierFlag modifierFlag)
@@ -27,8 +27,9 @@ namespace DNI.Core.Services
                 .Where(a => a.GetCustomAttribute<ModifierAttribute>().ModifierFlag.HasFlag(modifierFlag));
 
             if (createdModifierFlagAttributes.Any())
-                SetModifierFlagValues(createdModifierFlagAttributes, entity, _clockProvider.DateTimeOffset);
-
+            {
+                SetModifierFlagValues(createdModifierFlagAttributes, entity, clockProvider.DateTimeOffset);
+            }
         }
 
         private IEnumerable<PropertyInfo> GetModifierAttributeProperties<TEntity>()
@@ -36,7 +37,6 @@ namespace DNI.Core.Services
             var entityType = typeof(TEntity);
             return entityType
                 .GetCustomAttributeProperties<ModifierAttribute>(BindingFlags.Public | BindingFlags.Instance);
-
         }
 
         private void SetModifierFlagValues<TEntity>(IEnumerable<PropertyInfo> properties, TEntity entity, object value)
@@ -59,22 +59,31 @@ namespace DNI.Core.Services
             }
 
             if (!isDateTime && !isDateTimeOffset)
+            {
                 throw new InvalidOperationException();
+            }
 
             foreach (var property in properties)
             {
                 if (property.PropertyType == typeof(DateTime) && isDateTimeOffset)
+                {
                     value = dateTimeOffset.DateTime;
+                }
 
                 if (property.PropertyType == typeof(DateTimeOffset) && isDateTime)
+                {
                     value = new DateTimeOffset(dateTimeValue);
+                }
 
                 if (property.PropertyType == typeof(DateTime?) && isDateTimeOffset)
+                {
                     value = dateTimeOffset.DateTime;
+                }
 
                 if (property.PropertyType == typeof(DateTimeOffset?) && isDateTime)
+                {
                     value = new DateTimeOffset?(dateTimeValue);
-
+                }
 
                 property.SetValue(entity, value);
             }

@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using DNI.Core.Contracts.Options;
-
-namespace DNI.Core.Contracts
+﻿namespace DNI.Core.Contracts
 {
+    using DNI.Core.Contracts.Options;
+    using Microsoft.Extensions.DependencyInjection;
+
     public interface IServiceRegistration
     {
         void RegisterServices(IServiceCollection services, IServiceRegistrationOptions options);

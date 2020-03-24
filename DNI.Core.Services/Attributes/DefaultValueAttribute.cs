@@ -1,10 +1,9 @@
-﻿using System;
-
-namespace DNI.Core.Services.Attributes
+﻿namespace DNI.Core.Services.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class DefaultValueAttribute : Attribute
     {
-        
     }
 }

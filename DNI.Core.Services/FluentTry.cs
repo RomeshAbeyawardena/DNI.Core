@@ -1,16 +1,16 @@
-﻿using DNI.Core.Contracts;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using DNI.Core.Contracts;
+
     /// <summary>
-    /// Represents a static factory method to create instances of FluentTry
+    /// Represents a static factory method to create instances of FluentTry.
     /// </summary>
     public static class FluentTry
     {
         /// <summary>
-        /// Creates a new instance of IFluentTry
+        /// Creates a new instance of IFluentTry.
         /// </summary>
-        /// <returns>An instance of IFluentTry</returns>
+        /// <returns>An instance of IFluentTry.</returns>
         public static IFluentTry Create()
         {
             return DefaultFluentTry
@@ -18,7 +18,7 @@ namespace DNI.Core.Services
         }
 
         /// <summary>
-        /// Creates a new instance of IFluentTry<TResult>
+        /// Creates a new instance of IFluentTry.<TResult>
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <returns>An instance of IFluentTry</returns>
@@ -27,10 +27,11 @@ namespace DNI.Core.Services
             return DefaultFluentTry<TResult>
                 .Create();
         }
+
         /// <summary>
-        /// Creates a new instance of IFluentTry
+        /// Creates a new instance of IFluentTry.
         /// </summary>
-        /// <returns>An async instance of IFluentTry</returns>
+        /// <returns>An async instance of IFluentTry.</returns>
         public static IFluentTryAsync CreateAsync()
         {
             return DefaultFluentTryAsync

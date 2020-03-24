@@ -1,35 +1,40 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Services;
-using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Net.Http;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Services;
+
     internal sealed class DefaultHttpClientFactory : IHttpClientFactory
     {
-        private readonly ISwitch<string, HttpClient> _httpClientSwitch;
+        private readonly ISwitch<string, HttpClient> httpClientSwitch;
 
         public HttpClient GetHttpClient(string key, Uri baseUri = null, HttpMessageHandler messageHandler = null)
         {
-            var httpClient = _httpClientSwitch.Case(key);
-            
-            if(httpClient != null)
-                return httpClient;
+            var httpClient = httpClientSwitch.Case(key);
 
-            if(baseUri == null)
+            if (httpClient != null)
+            {
+                return httpClient;
+            }
+
+            if (baseUri == null)
+            {
                 throw new ArgumentNullException(nameof(baseUri));
-            
+            }
+
             httpClient = new HttpClient(messageHandler)
             {
-                BaseAddress = baseUri
+                BaseAddress = baseUri,
             };
 
-            _httpClientSwitch.CaseWhen(key, httpClient);
-            
+            httpClientSwitch.CaseWhen(key, httpClient);
+
             return httpClient;
         }
+
         public HttpClient GetHttpClient(string key, Uri baseUri = null, Action<HttpRequestMessage> onSendAsync = null)
         {
             return GetHttpClient(key, baseUri, DefaultHttpMessageHandler.Create(onSendAsync));
@@ -42,10 +47,12 @@ namespace DNI.Core.Services
 
         private void Dispose(bool gc)
         {
-            if(gc)
+            if (gc)
+            {
                 return;
+            }
 
-            foreach(var (key, client) in _httpClientSwitch)
+            foreach (var (key, client) in httpClientSwitch)
             {
                 client?.Dispose();
             }
@@ -64,28 +71,27 @@ namespace DNI.Core.Services
         public DefaultHttpClientFactory()
             : this(null)
         {
-
         }
 
         public DefaultHttpClientFactory(ISwitch<string, HttpClient> httpClientSwitch = null)
         {
-            _httpClientSwitch = httpClientSwitch ?? Switch.Create<string, HttpClient>();
+            this.httpClientSwitch = httpClientSwitch ?? Switch.Create<string, HttpClient>();
         }
     }
 
     internal sealed class DefaultHttpMessageHandler : HttpClientHandler
     {
-        private readonly Action<HttpRequestMessage> _sendAsync;
+        private readonly Action<HttpRequestMessage> sendAsync;
 
         private DefaultHttpMessageHandler(Action<HttpRequestMessage> sendAsync)
         {
-            _sendAsync = sendAsync;
+            this.sendAsync = sendAsync;
         }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            _sendAsync(request);
+            sendAsync(request);
             return await base.SendAsync(request, cancellationToken);
-
         }
 
         public static HttpMessageHandler Create(Action<HttpRequestMessage> sendAsync)

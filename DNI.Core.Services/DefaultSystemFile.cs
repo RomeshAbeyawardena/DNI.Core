@@ -1,19 +1,23 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Enumerations;
-using DNI.Core.Contracts.Options;
-using Microsoft.Extensions.Logging;
-using System.IO;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.IO;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Enumerations;
+    using DNI.Core.Contracts.Options;
+    using Microsoft.Extensions.Logging;
+
     internal sealed class DefaultSystemFile : IFile
     {
         private static readonly object ReadLock = new object();
-        
+
         private FileStream fileStream;
+
         public string Path { get; }
+
         public string Name { get; }
+
         public FileInfo FileInfo => new FileInfo(FullPath);
+
         public string FullPath => System.IO.Path.Combine(Path, Name);
 
         public bool Exists => File.Exists(FullPath);
@@ -27,19 +31,24 @@ namespace DNI.Core.Services
 
         public Stream GetFileStream(IRetryHandlerOptions options = default, ILogger logger = default)
         {
-            if(options == null)
+            if (options == null)
+            {
                 options = RetryHandler.DefaultOptions;
+            }
 
             lock (ReadLock)
             {
-                return fileStream = RetryHandler.Handle((path) =>
+                return fileStream = RetryHandler.Handle(
+                    (path) =>
                 {
                     if (Exists)
+                    {
                         return File.Open(path, FileMode.Open);
+                    }
+
                     return default;
                 }, FullPath, 5, logger, options, typeof(IOException));
             }
-
         }
 
         public DefaultSystemFile(string fileName)

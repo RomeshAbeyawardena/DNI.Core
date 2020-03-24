@@ -1,14 +1,9 @@
-﻿using System;
-
-namespace DNI.Core.Domains
+﻿namespace DNI.Core.Domains
 {
+    using System;
+
     public class ExceptionHandler
     {
-        public static ExceptionHandler Create(Action<Exception> exceptionAction, bool continueOnExceptionThrow = false)
-        {
-            return new ExceptionHandler(exceptionAction, continueOnExceptionThrow);
-        }
-
         private ExceptionHandler(Action<Exception> exceptionAction, bool continueOnExceptionThrow = false)
         {
             ExceptionAction = exceptionAction;
@@ -16,6 +11,12 @@ namespace DNI.Core.Domains
         }
 
         public Action<Exception> ExceptionAction { get; }
+
         public bool ContinueOnExceptionThrow { get; }
+
+        public static ExceptionHandler Create(Action<Exception> exceptionAction, bool continueOnExceptionThrow = false)
+        {
+            return new ExceptionHandler(exceptionAction, continueOnExceptionThrow);
+        }
     }
 }

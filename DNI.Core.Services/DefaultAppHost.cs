@@ -1,35 +1,35 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+
     internal sealed class DefaultAppHost<TStartup> : IAppHost<TStartup>
         where TStartup : class
     {
-        private readonly IServiceCollection _serviceCollection;
-        private Func<TStartup, IEnumerable<object>, Task> _startupDelegate;
+        private readonly IServiceCollection serviceCollection;
+        private Func<TStartup, IEnumerable<object>, Task> startupDelegate;
 
         private Task GetStartup(object[] args)
         {
-            var serviceProvider = _serviceCollection.BuildServiceProvider();
+            var serviceProvider = serviceCollection.BuildServiceProvider();
             var startup = serviceProvider.GetRequiredService<TStartup>();
-            return _startupDelegate(startup, args);
+            return startupDelegate(startup, args);
         }
 
         public IAppHost<TStartup> ConfigureServices(Action<IServiceCollection> registerServices)
         {
-            registerServices(_serviceCollection);
+            registerServices(serviceCollection);
             return this;
         }
 
         public IAppHost<TStartup> ConfigureStartupDelegate(Func<TStartup, IEnumerable<object>, Task> getStartupDelegate)
         {
-            _startupDelegate = getStartupDelegate;
+            startupDelegate = getStartupDelegate;
             return this;
         }
 
@@ -37,13 +37,14 @@ namespace DNI.Core.Services
         {
             var startupTask = GetStartup(args);
             if (!(startupTask is Task<T> genericTask))
+            {
                 throw new InvalidCastException($"Unable to cast {typeof(Task)} to {typeof(Task<T>)}");
+            }
 
             var result = await FluentTry
                 .CreateAsync<T>()
-                .Try(async() => await genericTask)
+                .Try(async () => await genericTask)
                 .InvokeAsync().ConfigureAwait(false);
-            
 
             return result.FirstOrDefault();
         }
@@ -62,8 +63,8 @@ namespace DNI.Core.Services
 
         public DefaultAppHost()
         {
-            _serviceCollection = new ServiceCollection();
-            _serviceCollection
+            serviceCollection = new ServiceCollection();
+            serviceCollection
                 .AddSingleton(typeof(ILoggerFactory), typeof(LoggerFactory))
                 .AddSingleton(typeof(ILogger<>), typeof(Logger<>))
                 .AddTransient<TStartup>();

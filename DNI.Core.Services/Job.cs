@@ -1,13 +1,14 @@
-﻿using System;
-using System.Reactive.Subjects;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Reactive.Subjects;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     public class JobState
     {
         public Job Job { get; }
+
         public object State { get; }
 
         public JobState(Job job, object state)
@@ -16,23 +17,28 @@ namespace DNI.Core.Services
             State = state;
         }
     }
+
     public class Job : IDisposable
     {
         public bool IsRunning { get; set; }
+
         public ISubject<JobState> Subject { get; }
+
         private Action<Job, object> JobTask { get; }
+
         private int Interval { get; } = 1000;
-        private readonly Timer _timer;
+
+        private readonly Timer timer;
         private object state;
-        
+
         public Job(object initialState, Action<Job, object> jobTask, int interval)
         {
             Subject = new Subject<JobState>();
             JobTask = jobTask;
             Interval = interval;
-            IsRunning =  true;
+            IsRunning = true;
             state = initialState;
-            _timer = new Timer(callback, state, TimeSpan.FromMilliseconds(Interval), TimeSpan.FromMilliseconds(Interval));
+            timer = new Timer(callback, state, TimeSpan.FromMilliseconds(Interval), TimeSpan.FromMilliseconds(Interval));
         }
 
         public void UpdateState(object newState)
@@ -47,11 +53,13 @@ namespace DNI.Core.Services
 
         public async Task Running(CancellationToken cancellationToken)
         {
-            while(IsRunning)
+            while (IsRunning)
+            {
                 await Task.Delay(Interval, cancellationToken);
+            }
 
             Subject.OnCompleted();
-        } 
+        }
 
         public void Dispose()
         {
@@ -61,14 +69,14 @@ namespace DNI.Core.Services
         protected virtual void Dispose(bool gc)
         {
             IsRunning = false;
-            _timer.Dispose();
+            timer.Dispose();
         }
 
         private void callback(object state1)
         {
             JobTask?.Invoke(this, state);
             Subject.OnNext(new JobState(this, state));
-            _timer.Change(TimeSpan.FromMilliseconds(Interval), TimeSpan.FromMilliseconds(Interval));
+            timer.Change(TimeSpan.FromMilliseconds(Interval), TimeSpan.FromMilliseconds(Interval));
         }
     }
 }

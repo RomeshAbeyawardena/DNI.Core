@@ -1,12 +1,12 @@
-﻿using DNI.Core.Contracts.Providers;
-using DNI.Core.Services.Extensions;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using System.Security.Cryptography;
-
-namespace DNI.Core.Services.Providers
+﻿namespace DNI.Core.Services.Providers
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Cryptography;
+    using DNI.Core.Contracts.Providers;
+    using DNI.Core.Services.Extensions;
+    using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+
     internal sealed class HashingProvider : IHashingProvider
     {
         public IEnumerable<byte> GetRandomNumberGeneratorBytes(int length)
@@ -19,11 +19,12 @@ namespace DNI.Core.Services.Providers
         public IEnumerable<byte> HashBytes(string hashName, IEnumerable<byte> bytes)
         {
             return DisposableHelper
-                    .Use(hashAlgorithm => hashAlgorithm.ComputeHash(bytes.ToArray()), 
+                    .Use(
+                        hashAlgorithm => hashAlgorithm.ComputeHash(bytes.ToArray()),
                             () => HashAlgorithm.Create(hashName));
         }
 
-        public IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt, 
+        public IEnumerable<byte> PasswordDerivedBytes(string password, IEnumerable<byte> salt,
             KeyDerivationPrf keyDerivationPrf, int iteration, int totalNumberOfBytes)
         {
             return KeyDerivation.Pbkdf2(password, salt.ToArray(), keyDerivationPrf, iteration, totalNumberOfBytes);

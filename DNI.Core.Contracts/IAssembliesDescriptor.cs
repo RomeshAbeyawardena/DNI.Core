@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
-
-namespace DNI.Core.Contracts
+﻿namespace DNI.Core.Contracts
 {
+    using System.Collections.Generic;
+    using System.Reflection;
+
     public interface IAssembliesDescriptor
     {
-        IAssembliesDescriptor GetAssembly<T>();
         IEnumerable<Assembly> Assemblies { get; }
+
+        IAssembliesDescriptor GetAssembly<T>();
     }
 }

@@ -1,14 +1,14 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Enumerations;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Enumerations;
+
     internal sealed class DefaultSystemDirectory : IDirectory
     {
         public bool Exists => Directory.Exists(FullPath);
@@ -18,7 +18,7 @@ namespace DNI.Core.Services
         public string Path { get; }
 
         public string Name { get; }
-        
+
         public DirectoryInfo DirectoryInfo => new DirectoryInfo(FullPath);
 
         public SystemItemType Type => SystemItemType.Directory;
@@ -31,13 +31,14 @@ namespace DNI.Core.Services
 
         public IEnumerable<IDirectory> GetDirectories(string filter = null)
         {
-            var directories = string.IsNullOrWhiteSpace(filter) 
+            var directories = string.IsNullOrWhiteSpace(filter)
                 ? Directory.GetDirectories(FullPath, filter)
                 : Directory.GetDirectories(FullPath);
 
-            foreach(var directory in directories) 
+            foreach (var directory in directories)
+            {
                 yield return new DefaultSystemDirectory(directory);
-            
+            }
         }
 
         public IEnumerable<IFile> GetFiles(string filter = null)
@@ -46,8 +47,10 @@ namespace DNI.Core.Services
                 ? Directory.GetFiles(FullPath)
                 : Directory.GetFiles(FullPath, filter);
 
-            foreach(var file in files)
+            foreach (var file in files)
+            {
                 yield return new DefaultSystemFile(file);
+            }
         }
     }
 }

@@ -28,13 +28,13 @@ namespace DNI.Core.UnitTests
             messagePackServiceMock = new Mock<IMessagePackService>();
             distributedCacheEntryOptionsMock = new Mock<IOptions<DistributedCacheEntryOptions>>();
             cacheEntryTrackerMock = new Mock<ICacheEntryTracker>();
-            distributedCacheEntryOptionsMock.Setup(m => 
+            distributedCacheEntryOptionsMock.Setup(m =>
                 m.Value)
                 .Returns(new DistributedCacheEntryOptions());
 
             sut = new DefaultDistributedCacheService(distributedCacheMock.Object, cacheEntryTrackerMock.Object,
                 messagePackServiceMock.Object, distributedCacheEntryOptionsMock.Object);
-        } 
+        }
 
         [Test]
         public async Task Get_when_not_null_and_cache_state_is_valid_calls_deserialize()
@@ -51,7 +51,7 @@ namespace DNI.Core.UnitTests
                 .Returns(Task.FromResult(cachedByteResults)).Verifiable();
 
             messagePackServiceMock.Setup(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions))
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions))
                 .Returns(Task.FromResult(testCacheModel))
                 .Verifiable();
 
@@ -63,10 +63,10 @@ namespace DNI.Core.UnitTests
             distributedCacheMock.Verify(distributedCache => distributedCache
                 .GetAsync(nameof(TestCacheModel), cancellationToken), Times.Once);
             messagePackServiceMock.Verify(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions), Times.Once);
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions), Times.Once);
         }
 
-        
+
         [TestCase(CacheEntryState.New)]
         [TestCase(CacheEntryState.Invalid)]
         public async Task Get_when_cache_state_is_invalid_does_not_call_deserialize(CacheEntryState invalidEntityState)
@@ -83,7 +83,7 @@ namespace DNI.Core.UnitTests
                 .Returns(Task.FromResult(cachedByteResults)).Verifiable();
 
             messagePackServiceMock.Setup(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions))
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions))
                 .Returns(Task.FromResult(testCacheModel))
                 .Verifiable();
 
@@ -95,7 +95,7 @@ namespace DNI.Core.UnitTests
             distributedCacheMock.Verify(distributedCache => distributedCache
                 .GetAsync(nameof(TestCacheModel), cancellationToken), Times.Once);
             messagePackServiceMock.Verify(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions), Times.Never);
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions), Times.Never);
         }
 
 
@@ -111,7 +111,7 @@ namespace DNI.Core.UnitTests
                 .Returns(Task.FromResult(cachedByteResults)).Verifiable();
 
             messagePackServiceMock.Setup(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions))
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions))
                 .Returns(Task.FromResult(default(TestCacheModel)))
                 .Verifiable();
 
@@ -119,7 +119,7 @@ namespace DNI.Core.UnitTests
             distributedCacheMock.Verify(distributedCache => distributedCache
                 .GetAsync(nameof(TestCacheModel), cancellationToken), Times.Once);
             messagePackServiceMock.Verify(messagePackService => messagePackService
-                .Deserialise<TestCacheModel>(cachedByteResults, sut._messagePackOptions), Times.Never);
+                .Deserialise<TestCacheModel>(cachedByteResults, sut.MessagePackOptions), Times.Never);
 
             Assert.IsNull(result);
         }
@@ -135,26 +135,26 @@ namespace DNI.Core.UnitTests
             Array.Fill<byte>(cachedByteResults, 255);
 
             distributedCacheMock
-                .Setup(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel),cachedByteResults, 
+                .Setup(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel), cachedByteResults,
                     It.IsAny<DistributedCacheEntryOptions>(), cancellationToken))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
             messagePackServiceMock.Setup(messagePackService => messagePackService
-                .Serialise(testCacheModel, sut._messagePackOptions))
+                .Serialise(testCacheModel, sut.MessagePackOptions))
                 .Returns(Task.FromResult(cachedByteResults.AsEnumerable()))
                 .Verifiable();
 
             await sut.Set(nameof(TestCacheModel), testCacheModel, cancellationToken);
 
-            distributedCacheMock.Verify(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel),cachedByteResults, 
+            distributedCacheMock.Verify(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel), cachedByteResults,
                     It.IsAny<DistributedCacheEntryOptions>(), cancellationToken), Times.Once);
 
             messagePackServiceMock.Verify(messagePackService => messagePackService
-                .Serialise(testCacheModel, sut._messagePackOptions), Times.Once);
+                .Serialise(testCacheModel, sut.MessagePackOptions), Times.Once);
         }
 
-        
+
         [Test]
         public async Task Set_when_parameter_null_does_not_call_Serialize()
         {
@@ -166,23 +166,23 @@ namespace DNI.Core.UnitTests
             Array.Fill<byte>(cachedByteResults, 255);
 
             distributedCacheMock
-                .Setup(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel),cachedByteResults, 
+                .Setup(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel), cachedByteResults,
                     It.IsAny<DistributedCacheEntryOptions>(), cancellationToken))
                 .Returns(Task.CompletedTask)
                 .Verifiable();
 
             messagePackServiceMock.Setup(messagePackService => messagePackService
-                .Serialise(testCacheModel, sut._messagePackOptions))
+                .Serialise(testCacheModel, sut.MessagePackOptions))
                 .Returns(Task.FromResult(cachedByteResults.AsEnumerable()))
                 .Verifiable();
 
             await sut.Set(nameof(TestCacheModel), testCacheModel, cancellationToken);
 
-            distributedCacheMock.Verify(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel),cachedByteResults, 
+            distributedCacheMock.Verify(distributedCache => distributedCache.SetAsync(nameof(TestCacheModel), cachedByteResults,
                     It.IsAny<DistributedCacheEntryOptions>(), cancellationToken), Times.Never);
 
             messagePackServiceMock.Verify(messagePackService => messagePackService
-                .Serialise(testCacheModel, sut._messagePackOptions), Times.Never);
+                .Serialise(testCacheModel, sut.MessagePackOptions), Times.Never);
         }
     }
 }

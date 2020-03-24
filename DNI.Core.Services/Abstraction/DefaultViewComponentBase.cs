@@ -1,11 +1,11 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-
-namespace DNI.Core.Services.Abstraction
+﻿namespace DNI.Core.Services.Abstraction
 {
+    using System;
+    using System.Collections.Generic;
+    using DNI.Core.Contracts;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.DependencyInjection;
+
     public abstract class DefaultViewComponentBase : ViewComponent
     {
         public virtual TDestination Map<TSource, TDestination>(TSource source)
@@ -19,12 +19,15 @@ namespace DNI.Core.Services.Abstraction
         }
 
         protected IMapperProvider MapperProvider => GetService<IMapperProvider>();
+
         protected IMediatorService MediatorService => GetService<IMediatorService>();
 
         protected TService GetService<TService>()
         {
-            if(HttpContext == null)
+            if (HttpContext == null)
+            {
                 throw new NullReferenceException("HttpContext unavailable");
+            }
 
             return HttpContext
                 .RequestServices

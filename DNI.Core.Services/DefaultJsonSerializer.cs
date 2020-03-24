@@ -1,31 +1,31 @@
-﻿using DNI.Core.Contracts;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Text.Json;
+    using System.Threading.Tasks;
+    using DNI.Core.Contracts;
+    using Microsoft.Extensions.Options;
+
     public class DefaultJsonSerializer : IJsonSerializer
     {
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        private readonly JsonSerializerOptions jsonSerializerOptions;
 
         public DefaultJsonSerializer(IOptions<JsonSerializerOptions> options)
         {
-            _jsonSerializerOptions = options.Value;
+            jsonSerializerOptions = options.Value;
         }
 
         public T Deserialize<T>(string value)
         {
-            return JsonSerializer.Deserialize<T>(value, _jsonSerializerOptions);
+            return JsonSerializer.Deserialize<T>(value, jsonSerializerOptions);
         }
 
         public string Serialize<T>(T value)
         {
-            return JsonSerializer.Serialize(value, _jsonSerializerOptions);
+            return JsonSerializer.Serialize(value, jsonSerializerOptions);
         }
     }
 }

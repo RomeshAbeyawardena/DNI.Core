@@ -1,22 +1,22 @@
-﻿using DNI.Core.Contracts;
-using DNI.Core.Contracts.Generators;
-using System;
-using System.Linq.Expressions;
-using System.Reflection;
-
-namespace DNI.Core.Services.Generators
+﻿namespace DNI.Core.Services.Generators
 {
+    using System;
+    using System.Linq.Expressions;
+    using System.Reflection;
+    using DNI.Core.Contracts;
+    using DNI.Core.Contracts.Generators;
+
     internal sealed class DefaultValueGenerator<TEntity> : IDefaultValueGenerator<TEntity>
     {
-        private readonly ISwitch<string, Func<object>> _defaultValueGeneratorSwitch;
-        private readonly ISwitch<string, Func<IServiceProvider, object>> _defaultValueServiceProviderGeneratorSwitch;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ISwitch<string, Func<object>> defaultValueGeneratorSwitch;
+        private readonly ISwitch<string, Func<IServiceProvider, object>> defaultValueServiceProviderGeneratorSwitch;
+        private readonly IServiceProvider serviceProvider;
 
         private DefaultValueGenerator(IServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
-            _defaultValueGeneratorSwitch = Switch.Create<string, Func<object>>();
-            _defaultValueServiceProviderGeneratorSwitch = Switch.Create<string, Func<IServiceProvider, object>>();
+            this.serviceProvider = serviceProvider;
+            defaultValueGeneratorSwitch = Switch.Create<string, Func<object>>();
+            defaultValueServiceProviderGeneratorSwitch = Switch.Create<string, Func<IServiceProvider, object>>();
         }
 
         public static IDefaultValueGenerator<TEntity> Create(IServiceProvider serviceProvider)
@@ -28,10 +28,12 @@ namespace DNI.Core.Services.Generators
         {
             var member = GetMemberInfo(selectProperty);
 
-            if(string.IsNullOrEmpty(member.Name))
+            if (string.IsNullOrEmpty(member.Name))
+            {
                 return default;
+            }
 
-            _defaultValueGeneratorSwitch
+            defaultValueGeneratorSwitch
                 .CaseWhen(member.Name, createInstance);
 
             return this;
@@ -41,10 +43,12 @@ namespace DNI.Core.Services.Generators
         {
             var member = GetMemberInfo(selectProperty);
 
-            if(string.IsNullOrEmpty(member.Name))
+            if (string.IsNullOrEmpty(member.Name))
+            {
                 return this;
+            }
 
-            _defaultValueServiceProviderGeneratorSwitch
+            defaultValueServiceProviderGeneratorSwitch
                 .CaseWhen(member.Name, createInstance);
 
             return this;
@@ -52,7 +56,7 @@ namespace DNI.Core.Services.Generators
 
         public TSelector GetDefaultValue<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty)
         {
-            var member  = GetMemberInfo(selectProperty);
+            var member = GetMemberInfo(selectProperty);
             var memberName = member.Name;
             var memberType = member.DeclaringType;
             return (TSelector)GetDefaultValue(memberName, memberType);
@@ -60,22 +64,28 @@ namespace DNI.Core.Services.Generators
 
         public object GetDefaultValue(string propertyName, Type propertyType)
         {
-            if(string.IsNullOrEmpty(propertyName))
+            if (string.IsNullOrEmpty(propertyName))
+            {
                 return default;
+            }
 
-            var defaultValueGenerator = _defaultValueGeneratorSwitch
+            var defaultValueGenerator = defaultValueGeneratorSwitch
                 .Case(propertyName);
-            
-            if(defaultValueGenerator == null)
-                return _defaultValueServiceProviderGeneratorSwitch.Case(propertyName).Invoke(_serviceProvider);
+
+            if (defaultValueGenerator == null)
+            {
+                return defaultValueServiceProviderGeneratorSwitch.Case(propertyName).Invoke(serviceProvider);
+            }
 
             return defaultValueGenerator.Invoke();
         }
 
         private MemberInfo GetMemberInfo<TSelector>(Expression<Func<TEntity, TSelector>> selectProperty)
         {
-            if(selectProperty.Body is MemberExpression memberExpression)
+            if (selectProperty.Body is MemberExpression memberExpression)
+            {
                 return memberExpression.Member;
+            }
 
             return null;
         }

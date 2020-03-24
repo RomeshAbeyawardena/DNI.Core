@@ -1,10 +1,10 @@
-﻿using DNI.Core.Contracts;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using DNI.Core.Contracts;
+
     public class AssembliesDescriptor
     {
         public static IAssembliesDescriptor GetAssembly<T>()

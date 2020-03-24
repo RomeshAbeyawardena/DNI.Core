@@ -1,24 +1,24 @@
-﻿using DNI.Core.Contracts;
-using System;
-using System.Collections.Generic;
-
-namespace DNI.Core.Services
+﻿namespace DNI.Core.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DNI.Core.Contracts;
+
     public static class DictionaryBuilder
     {
-        public static IDictionaryBuilder<TKey,TValue> Create<TKey,TValue>()
+        public static IDictionaryBuilder<TKey, TValue> Create<TKey, TValue>()
         {
             return DefaultDictionaryBuilder<TKey, TValue>.Create();
         }
 
-        public static IDictionaryBuilder<TKey,TValue> Create<TKey,TValue>(Action<IDictionaryBuilder<TKey, TValue>> dictionaryBuilderAction)
+        public static IDictionaryBuilder<TKey, TValue> Create<TKey, TValue>(Action<IDictionaryBuilder<TKey, TValue>> dictionaryBuilderAction)
         {
-            var dictionaryBuilder = Create<TKey,TValue>();
+            var dictionaryBuilder = Create<TKey, TValue>();
             dictionaryBuilderAction(dictionaryBuilder);
             return dictionaryBuilder;
         }
 
-        public static IDictionaryBuilder<TKey,TValue> Create<TKey,TValue>(IDictionary<TKey, TValue> dictionary)
+        public static IDictionaryBuilder<TKey, TValue> Create<TKey, TValue>(IDictionary<TKey, TValue> dictionary)
         {
             return DefaultDictionaryBuilder<TKey, TValue>.Create(dictionary);
         }

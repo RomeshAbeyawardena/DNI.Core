@@ -24,7 +24,7 @@ namespace DNI.Core.App.Domains
 
         [Encrypt(Constants.PersonalDataEncryption, EncryptionMethod.Encryption)]
         public string LastName { get; set; }
-        
+
         [Encrypt(Constants.PersonalDataEncryption, EncryptionMethod.Hashing)]
         public byte[] Password { get; set; }
 

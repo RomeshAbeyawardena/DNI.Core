@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System;
-using System.Linq;
-
-namespace DNI.Core.Shared.Extensions
+﻿namespace DNI.Core.Shared.Extensions
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+
     public static class StringExtensions
     {
         public static IEnumerable<byte> GetBytes(this string value, Encoding encoding)
@@ -26,6 +26,5 @@ namespace DNI.Core.Shared.Extensions
         {
             return condition ? value : valueOnConditionFalse;
         }
-
     }
 }

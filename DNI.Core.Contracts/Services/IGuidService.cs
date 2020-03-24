@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace DNI.Core.Contracts.Services
+﻿namespace DNI.Core.Contracts.Services
 {
+    using System;
+    using System.Collections.Generic;
+
     public interface IGuidService
     {
         Guid Generate();
+
         Guid Parse(IEnumerable<byte> guidBytes);
+
         Guid Parse(string guid);
     }
 }
