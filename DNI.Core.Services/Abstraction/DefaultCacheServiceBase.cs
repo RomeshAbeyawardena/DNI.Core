@@ -10,18 +10,18 @@
 
     public abstract class DefaultCacheServiceBase : ICacheService
     {
-        private readonly MessagePackSerializerOptions messagePackOptions;
-        
         private readonly IMessagePackService messagePackService;
 
         public DefaultCacheServiceBase(IMessagePackService messagePackService)
         {
-            MessagePackSerializerOptions
+            MessagePackOptions = MessagePackSerializerOptions
                .Standard
                .WithCompression(MessagePackCompression.Lz4Block)
                .WithSecurity(MessagePackSecurity.TrustedData);
             this.messagePackService = messagePackService;
         }
+
+        internal MessagePackSerializerOptions MessagePackOptions { get; }
 
         public abstract Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken = default);
 
@@ -33,12 +33,12 @@
 
         protected async Task<T> Deserialise<T>(IEnumerable<byte> value)
         {
-            return await messagePackService.Deserialise<T>(value, messagePackOptions).ConfigureAwait(false);
+            return await messagePackService.Deserialise<T>(value, MessagePackOptions).ConfigureAwait(false);
         }
 
         protected async Task<IEnumerable<byte>> Serialise<T>(T value)
         {
-            return await messagePackService.Serialise(value, messagePackOptions).ConfigureAwait(false);
+            return await messagePackService.Serialise(value, MessagePackOptions).ConfigureAwait(false);
         }
 
     }

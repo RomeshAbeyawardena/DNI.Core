@@ -19,6 +19,18 @@ namespace DNI.Core.Services
         private readonly ICacheEntryTracker cacheEntryTracker;
         private readonly DistributedCacheEntryOptions distributedCacheEntryOptions;
 
+        public DefaultDistributedCacheService(
+            IDistributedCache distributedCache,
+            ICacheEntryTracker cacheEntryTracker,
+            IMessagePackService messagePackService,
+            IOptions<DistributedCacheEntryOptions> options)
+            : base(messagePackService)
+        {
+            this.distributedCache = distributedCache;
+            this.cacheEntryTracker = cacheEntryTracker;
+            distributedCacheEntryOptions = options.Value;
+        }
+
         public override async Task<T> Get<T>(string cacheKeyName, CancellationToken cancellationToken)
         {
             var result = await distributedCache.GetAsync(cacheKeyName, cancellationToken).ConfigureAwait(false);
@@ -43,8 +55,11 @@ namespace DNI.Core.Services
 
             var serialisedValue = await Serialise(value).ConfigureAwait(false);
 
-            await distributedCache.SetAsync(cacheKeyName, serialisedValue.ToArray(),
-                distributedCacheEntryOptions, cancellationToken).ConfigureAwait(false);
+            await distributedCache.SetAsync(
+                cacheKeyName, 
+                serialisedValue.ToArray(),
+                distributedCacheEntryOptions,
+                cancellationToken).ConfigureAwait(false);
 
             await cacheEntryTracker.SetState(cacheKeyName, CacheEntryState.Valid, cancellationToken);
         }
@@ -65,15 +80,6 @@ namespace DNI.Core.Services
             await Set(cacheKeyName, value, cancellationToken);
 
             return value;
-        }
-
-        public DefaultDistributedCacheService(IDistributedCache distributedCache, ICacheEntryTracker cacheEntryTracker,
-            IMessagePackService messagePackService, IOptions<DistributedCacheEntryOptions> options)
-            : base(messagePackService)
-        {
-            this.distributedCache = distributedCache;
-            this.cacheEntryTracker = cacheEntryTracker;
-            distributedCacheEntryOptions = options.Value;
         }
     }
 }
