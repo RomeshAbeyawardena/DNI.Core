@@ -4,10 +4,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using DNI.Core.Domains;
+    using Domains.Contracts;
     using FluentValidation;
     using MediatR;
 
-    public sealed class DefaultValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public sealed class DefaultValidationBehaviour<TRequest, TResponse, TResult> : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly IValidator<TRequest> validator;
 
@@ -22,7 +23,7 @@
 
             var response = Activator.CreateInstance<TResponse>();
 
-            if (!(response is ResponseBase responseBase))
+            if (!(response is IResponse<TResult> responseBase))
             {
                 return await next();
             }

@@ -69,7 +69,7 @@
             if (options.RegisterMediatorServices)
             {
                 services
-                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(DefaultValidationBehaviour<,>))
+                    .AddTransient(typeof(IPipelineBehavior<,>), typeof(DefaultValidationBehaviour<,,>))
                     .AddTransient<IMediatorService, DefaultMediatorService>();
             }
 

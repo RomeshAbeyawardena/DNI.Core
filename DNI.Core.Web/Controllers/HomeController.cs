@@ -1,9 +1,11 @@
-﻿using DNI.Core.Contracts;
+﻿using AutoMapper;
+using DNI.Core.Contracts;
 using DNI.Core.Contracts.Providers;
 using DNI.Core.Services.Abstraction;
 using DNI.Core.Services.Attributes;
 using DNI.Core.Web.Domains;
 using DNI.Core.Web.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -16,7 +18,7 @@ namespace DNI.Core.Web.Controllers
     {
         private readonly ICacheProvider _cacheProvider;
 
-        public HomeController(IMediatorService mediatorService, IMapperProvider mapperProvider,
+        public HomeController(IMediator mediatorService, IMapper mapperProvider,
             ICacheProvider cacheProvider)
             : base(mediatorService, mapperProvider)
         {

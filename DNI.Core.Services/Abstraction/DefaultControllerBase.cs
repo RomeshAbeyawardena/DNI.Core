@@ -4,86 +4,162 @@
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
+    using AutoMapper;
     using DNI.Core.Contracts;
     using DNI.Core.Domains;
+    using DNI.Core.Domains.Contracts;
     using DNI.Core.Services.Attributes;
     using DNI.Core.Services.Exceptions;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.DependencyInjection;
-    using ResponseHelper = DNI.Core.Domains.Response;
 
     [Route("{controller}/{action}")]
     [HandleException]
 #pragma warning disable CA1012
     public abstract class DefaultControllerBase : Controller
     {
-        public DefaultControllerBase(IMediatorService mediatorService, IMapperProvider mapperProvider)
+        protected DefaultControllerBase(IMediator mediator, IMapper mapper)
         {
-            Mediator = mediatorService;
-            Mapper = mapperProvider;
+            Mediator = mediator;
+            Mapper = mapper;
         }
 
-        protected IMediatorService Mediator { get; }
+        public IMediator Mediator { get; }
 
-        protected IMapperProvider Mapper { get; }
+        public IMapper Mapper { get; }
 
-        protected virtual bool IsResponseValid(ResponseBase response)
+        protected void EnsureValidModelState()
         {
-            return ResponseHelper.IsSuccessful(response);
-        }
-
-        protected async Task InvokeOnNotNull<TResponse>(
-            TResponse response,
-            CancellationToken cancellationToken,
-            Func<TResponse, CancellationToken, Task> onNotNull = default)
-        {
-            if (onNotNull != null)
+            if (!ModelState.IsValid)
             {
-                await onNotNull(response, cancellationToken);
+                throw new ModelStateException(ModelState);
             }
         }
 
-        protected async Task<ActionResult> HandleResponse<TResponse>(
-            TResponse response,
-            CancellationToken cancellationToken,
-            Func<TResponse, CancellationToken, Task> onSuccess = default,
-            Func<TResponse, CancellationToken, Task> onFailure = default)
-            where TResponse : ResponseBase
+        /// <summary>
+        /// Handles a response.
+        /// </summary>
+        /// <typeparam name="TResult">Of type TResult.</typeparam>
+        /// <param name="response"></param>
+        /// <param name="onSuccess"></param>
+        /// <param name="onFailure"></param>
+        /// <returns></returns>
+        protected IActionResult Handle<TResult>(
+            IResponse<TResult> response,
+            Func<IResponse<TResult>, IActionResult> onSuccess = default,
+            Func<IResponse<TResult>, IActionResult> onFailure = default)
         {
-            if (!IsResponseValid(response))
+            if (response == null)
             {
-                await InvokeOnNotNull(response, cancellationToken, onFailure);
-
-                await OnFailure(response, cancellationToken);
-
-                return BadRequest(response.Errors);
+                throw new ArgumentNullException(nameof(response));
             }
 
-            await InvokeOnNotNull(response, cancellationToken, onSuccess);
+            if (onSuccess == null)
+            {
+                onSuccess = response => OnDefaultHandleResponseSuccessful(response);
+            }
 
-            await OnSuccess(response, cancellationToken);
+            if (onFailure == null)
+            {
+                onFailure = response => OnDefaultHandleResponseFailure(response);
+            }
 
+            if (response.IsSuccess)
+            {
+                return onSuccess(response);
+            }
+
+            return onFailure(response);
+        }
+
+        /// <summary>
+        /// Handles a response asynchronously.
+        /// </summary>
+        /// <typeparam name="TResult">Of type TResult.</typeparam>
+        /// <param name="response"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="onSuccess"></param>
+        /// <param name="onFailure"></param>
+        /// <returns></returns>
+        protected async Task<IActionResult> HandleAsync<TResult>(
+            IResponse<TResult> response,
+            CancellationToken cancellationToken,
+            Func<IResponse<TResult>, CancellationToken, Task<IActionResult>> onSuccess = default,
+            Func<IResponse<TResult>, CancellationToken, Task<IActionResult>> onFailure = default)
+        {
+            if (response == null)
+            {
+                throw new ArgumentNullException(nameof(response));
+            }
+
+            if (onSuccess == null)
+            {
+                onSuccess = (response, ct) => OnDefaultHandleResponseSuccessfulAsync(response, ct);
+            }
+
+            if (onFailure == null)
+            {
+                onFailure = (response, ct) => OnDefaultHandleResponseFailureAsync(response, ct);
+            }
+
+            if (response.IsSuccess)
+            {
+                return await onSuccess(response, cancellationToken);
+            }
+
+            return await onFailure(response, cancellationToken);
+        }
+
+        /// <summary>
+        /// Implements a default response handler that is called when a response returns valid.
+        /// </summary>
+        /// <typeparam name="TResult">Represent the result value type of the <see cref="IResponse{TResult}">response</see> object.</typeparam>
+        /// <param name="response">Represents the response object to verify.</param>
+        /// <returns></returns>
+        protected virtual IActionResult OnDefaultHandleResponseSuccessful<TResult>(IResponse<TResult> response)
+        {
             return Ok(response.Result);
         }
 
-        protected virtual Task OnSuccess(ResponseBase responseBase, CancellationToken cancellationToken)
+        /// <summary>
+        /// Implements a default response handler that is called when a response returns invalid.
+        /// </summary>
+        /// <typeparam name="TResult">Of type TResult.</typeparam>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        protected virtual IActionResult OnDefaultHandleResponseFailure<TResult>(IResponse<TResult> response)
         {
-            return Task.CompletedTask;
+            return BadRequest(response.Errors);
         }
 
-        protected virtual Task OnFailure(ResponseBase responseBase, CancellationToken cancellationToken)
+        /// <summary>
+        /// Implements a default async response handler that is called when a response returns valid.
+        /// </summary>
+        /// <typeparam name="TResult">Of type TResult.</typeparam>
+        /// <param name="response"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual Task<IActionResult> OnDefaultHandleResponseSuccessfulAsync<TResult>(
+            IResponse<TResult> response,
+            CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            return Task
+                .FromResult(OnDefaultHandleResponseSuccessful(response));
         }
 
-        protected void EnsureModalStateIsValid()
+        /// <summary>
+        /// Implements a default async response handler that is called when a response returns invalid.
+        /// </summary>
+        /// <typeparam name="TResult">Of type TResult.</typeparam>
+        /// <param name="response"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        protected virtual Task<IActionResult> OnDefaultHandleResponseFailureAsync<TResult>(
+            IResponse<TResult> response,
+            CancellationToken cancellationToken)
         {
-            if (ModelState.IsValid)
-            {
-                return;
-            }
-
-            throw new ModelStateException(ModelState);
+            return Task
+                .FromResult(OnDefaultHandleResponseFailure(response));
         }
     }
 #pragma warning restore CA1012
