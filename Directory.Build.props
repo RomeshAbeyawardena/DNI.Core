@@ -1,12 +1,12 @@
 <Project>
   <PropertyGroup>
     <Deterministic>true</Deterministic>
-    <Version>1.0.0.37</Version>
+    <Version>1.0.0.38</Version>
     <Authors>Romesh Abeyawardena</Authors>
     <Company>Dotnet Insights</Company>
     <Product>Core</Product>
-    <AssemblyVersion>1.0.0.37</AssemblyVersion>
-    <FileVersion>1.0.0.37</FileVersion>
+    <AssemblyVersion>1.0.0.38</AssemblyVersion>
+    <FileVersion>1.0.0.38</FileVersion>
     <NeutralLanguage>en</NeutralLanguage>
     <Copyright>Copyright</Copyright>
     <License>

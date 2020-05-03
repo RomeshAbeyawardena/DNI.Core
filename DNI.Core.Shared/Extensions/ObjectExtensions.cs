@@ -47,5 +47,11 @@
 
             return value == default;
         }
+
+        public static T Configure<T>(this T response, Action<T> configureAction)
+        {
+            configureAction(response);
+            return response;
+        }
     }
 }
