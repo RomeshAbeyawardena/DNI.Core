@@ -18,7 +18,8 @@
     {
         public static IServiceCollection RegisterServiceBroker<TServiceBroker>(
             this IServiceCollection services,
-            Action<IServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
+            Action<IServiceRegistrationOptions> configureOptions, 
+            out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker
         {
             var serviceRegistrationOptions = new DefaultServiceRegistrationOptions();
@@ -33,14 +34,16 @@
 
         public static IServiceCollection RegisterServiceBroker(
             this IServiceCollection services,
-            IServiceBroker serviceBroker, Action<IServiceRegistrationOptions> configure)
+            IServiceBroker serviceBroker, 
+            Action<IServiceRegistrationOptions> configure)
         {
             return ServiceBrokerBuilder.RegisterServiceBroker(services, serviceBroker, configure);
         }
 
         public static IServiceCollection RegisterServiceBroker<TServiceBroker, TServiceRegistrationOptions>(
             this IServiceCollection services,
-            Action<TServiceRegistrationOptions> configureOptions, out TServiceBroker serviceBrokerInstance)
+            Action<TServiceRegistrationOptions> configureOptions, 
+            out TServiceBroker serviceBrokerInstance)
             where TServiceBroker : IServiceBroker
             where TServiceRegistrationOptions : IServiceRegistrationOptions
         {
